@@ -3,7 +3,7 @@
 ## [5.1. ¿Qué es un framework?](05_laravel/5.1.md)
 ## [5.2. Características de Laravel](05_laravel/5.2.md)
 ## [5.3. Instalación de Laravel](05_laravel/5.3.md)
-## [5.4. Arquitectura de Laravel](05_laravel/5.4.md)
+## [5.4. Arquitectura, configuración y convenciones de Laravel](05_laravel/5.4.md)
 ## [5.5. Artisan: la consola que mola](05_laravel/5.5.md)
 ## [5.6. Primeros pasos: Hola mundo](05_laravel/5.6.md)
 ## [5.7. Enrutamiento](05_laravel/5.7.md)
