@@ -1,165 +1,19 @@
 # Frameworks MVC: Laravel
 
-## ¿Qué es un framework?
-
-Un framework es un conjunto estandarizado de prácticas de programación para resolver un problema concreto.
-
-El framework proporciona una serie de clases, librerías y otros componentes para facilitar el desarrollo ágil, seguro y escalable de nuevas aplicaciones.
-
-Un framework MVC PHP es un tipo de framework concreto, destinado a servir de base para desarrollar aplicaciones en PHP con arquitectura MVC.
-
-### ¿Realmente necesito un framework para desarrollar una aplicación web?
-
-No, pero en ciertas ocasiones es muy conveniente.
-
-Hay programadores pro-frameworks y anti-frameworks. Los programadores anti-frameworks realmente acaban desarrollando su propio framework después de varias aplicaciones MVC.
-
-Para decidir si necesitas un framework o no, tienes que conocer antes cómo funcionan y qué ventajas e inconvenientes presentan.
-
-Usar un framework tiene ciertas ventajas, como:
-
-* Reutilización del trabajo ya hecho (no reinventar la rueda).
-* Extensa documentación.
-* Separación en capas.
-* Seguimiento de buenas prácticas de programación.
-* Escalabilidad y mantenimiento.
-* Desarrollo más rápido.
-
-Pero también tiene algunos inconvenientes:
-
-* A veces pueden limitar el desarrollo.
-* Curva de aprendizaje costosa (más en unos frameworks que en otros)
-* Puede llegar a implicar más trabajo, dependiendo del proyecto.
-* Preferencias personales: algunos programadores solo se sienten cómodos si todo el código es suyo.
-* Ocultan gran parte del funcionamiento de la aplicación: no son aptos para aprender a programar.
-
-En resumen: la idea es que, al usar un framework, solo te centras en desarrollar lo importante. El resto (lo que ya estaba desarrollado) no te quita tiempo.
-
-### ¿Qué framework escoger?
-
-Existen multitud de frameworks MVC PHP.
-
-Estos son algunos de gran implantación actual:
-
-* Symfony: el más extendido desde hace alos.
-* Laravel: el que tiene un crecimiento más rápido.
-* CodeIgniter: el más sencillo, aunque su implantación en la industria el menor.
-* Otros framworks MVC PHP importantes son Zend Framework, Yii o CakePHP.
-
-Puedes pasar el resto de tu vida leyendo en foros y en blogs, descargando e instalando varios frameworks para desecharlos a los dos días, esperando a que salga una nueva versión o un framework nuevo...
-
-No hay respuesta a la pregunta: ¿qué framework es mejor?
-
-Además, el framework por sí sólo puede no ser suficiente para un desarrollo completo, y probablemente harán falta otros componentes como:
-
-* Librerías del lado del servidor (pear, pChart, doctrine...)
-* Librerías del lado del cliente (jQuery, vue.js, bootstrap...)
-
-## Laravel
-
-Laravel es un framework PHP MVC para desarrollo rápido de aplicaciones web. Automatiza muchos procesos habituales y tiene una curva de aprendizaje empinada, pero no tanto como otros frameworks (como Symfony). 
-
-Desde hace algunos años, Laravel ha experimentado un crecimiento espectacular en el mercado de las aplicaciones web.
-
-### Características de Laravel
-
-
-
-### Instalación de Laravel
-
-### Arquitectura de Laravel
-
-### Artisan: la consola que mola
-
-### Primeros pasos: Hola mundo
-
-### Enrutamiento
-
-### Vistas y plantillas: Blade
-
-### Controladores
-
-### Migraciones
-
-### Usando la BD con Eloquent
-
-### Usando la BD con QueryBuilder
-
-### Sesiones con Laravel
-
-### Helpers con Laravel
-
-### Flujo de trabajo con Laravel
-
-### Laravel y Vue.js
-
-TODO
-
-### Algunos aspectos avanzados de Laravel
-
-TODO
-
-#### Traducciones
-
-TODO
-
-
-#### Paginación de resultados
-
-TODO
-
-
-#### Páginas de error personalizadas
-
-TODO
-
-
-#### URLs amigables: Routes model bindings
-
-TODO
-
-
-#### Validación avanzada de formularios con form requests
-
-TODO
-
-
-#### Laravel Mix
-
-TODO
-
-
-#### Crear helpers y middlewares
-
-TODO
-
-
-#### Collections
-
-TODO
-
-
-#### Eventos y Listeners
-
-TODO
-
-
-#### Actualizar la versión de Laravel de una aplicación existente sin tirarse por la ventana en el intento
-
-TODO
-
-
-#### Mejora del rendimiento. Caché.
-
-TODO
-
-
-#### Decoradores e interfaces
-
-TODO
-
-
-#### Pruebas con Mockery y Selenium
-
-TODO
-
+## [5.1. ¿Qué es un framework?](laravel/5.1.md)
+## [5.2. Características de Laravel](laravel/5.2.md)
+## [5.3. Instalación de Laravel](laravel/5.3.md)
+## [5.4. Arquitectura de Laravel](laravel/5.4.md)
+## [5.5. Artisan: la consola que mola](laravel/5.5.md)
+## [5.6. Primeros pasos: Hola mundo](laravel/5.6.md)
+## [5.7. Enrutamiento](laravel/5.7.md)
+## [5.8. Vistas y plantillas: Blade](laravel/5.8.md)
+## [5.9. Controladores](laravel/5.9.md)
+## [5.10. Migraciones](laravel/5.10.md)
+## [5.11. Usando la BD con Eloquent](laravel/5.11.md)
+## [5.12. Usando la BD con QueryBuilder](laravel/5.12.md)
+## [5.13. Sesiones con Laravel](laravel/5.13.md)
+## [5.14. Helpers con Laravel](laravel/5.14.md)
+## [5.15. Flujo de trabajo típico con Laravel](laravel/5.15.md)
+## [5.16. Laravel y Vue.js](laravel/5.16.md)
+## [5.17. Algunos aspectos avanzados de Laravel](laravel/5.17.md)
