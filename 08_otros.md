@@ -1,3 +1,0 @@
-# Otras tecnologías
-
-TODO
