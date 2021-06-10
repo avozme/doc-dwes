@@ -1,3 +1,0 @@
-# Arquitectura MVC
-
-TODO
