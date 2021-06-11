@@ -1,19 +1,24 @@
+---
+layout: page
+title: Frameworks PHP MVC. Laravel
+permalink: /laravel/
+---
 # Frameworks MVC: Laravel
 
-## [5.1. ¿Qué es un framework?](05_laravel/5.1.md)
-## [5.2. Características de Laravel](05_laravel/5.2.md)
-## [5.3. Instalación de Laravel](05_laravel/5.3.md)
-## [5.4. Arquitectura, configuración y convenciones de Laravel](05_laravel/5.4.md)
-## [5.5. Artisan: la consola que mola](05_laravel/5.5.md)
-## [5.6. Primeros pasos: Hola mundo](05_laravel/5.6.md)
-## [5.7. Enrutamiento](05_laravel/5.7.md)
-## [5.8. Vistas y plantillas: Blade](05_laravel/5.8.md)
-## [5.9. Controladores](05_laravel/5.9.md)
-## [5.10. Migraciones](05_laravel/5.10.md)
-## [5.11. Usando la BD con Eloquent](05_laravel/5.11.md)
-## [5.12. Usando la BD con QueryBuilder](05_laravel/5.12.md)
-## [5.13. Sesiones con Laravel](05_laravel/5.13.md)
-## [5.14. Helpers con Laravel](05_laravel/5.14.md)
-## [5.15. Flujo de trabajo típico con Laravel](05_laravel/5.15.md)
-## [5.16. Laravel y Vue.js](05_laravel/5.16.md)
-## [5.17. Algunos aspectos avanzados de Laravel](05_laravel/5.17.md)
+## [5.1. ¿Qué es un framework?](1)
+## [5.2. Características de Laravel](2)
+## [5.3. Instalación de Laravel](3)
+## [5.4. Arquitectura, configuración y convenciones de Laravel](4)
+## [5.5. Artisan: la consola que mola](5)
+## [5.6. Primeros pasos: Hola mundo](6)
+## [5.7. Enrutamiento](7)
+## [5.8. Vistas y plantillas: Blade](8)
+## [5.9. Controladores](9)
+## [5.10. Migraciones](10)
+## [5.11. Usando la BD con Eloquent](11)
+## [5.12. Usando la BD con QueryBuilder](12)
+## [5.13. Sesiones con Laravel](13)
+## [5.14. Helpers con Laravel](14)
+## [5.15. Flujo de trabajo típico con Laravel](15)
+## [5.16. Laravel y Vue.js](16)
+## [5.17. Algunos aspectos avanzados de Laravel](17)
