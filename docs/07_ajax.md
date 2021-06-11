@@ -3,6 +3,6 @@ layout: page
 title: Ajax
 permalink: /ajax/
 ---
-# Ajax
+# 7. Ajax
 
 TODO

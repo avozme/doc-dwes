@@ -3,6 +3,6 @@ layout: page
 title: Introducción a PHP
 permalink: /php/
 ---
-# Introducción a PHP
+# 2. Introducción a PHP
 
 TODO
