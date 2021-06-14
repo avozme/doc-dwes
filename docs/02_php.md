@@ -524,4 +524,141 @@ $db->close();   // Cierra la conexión con el servidor
 </table>
 </body>
 
+## Algunos ejecicios básicos de PHP
+
+Aviso previo: para hacer todos estos ejercicios debes tener un servidor Apache con soporte para PHP5 o PHP7 en funcionamiento. De momento, si trabajas con Windows o Mac, lo más cómodo es que tengas instalado XAMPP, WAMPP o MAMPP en tu ordenador. Si lo tuyo es Linux, instala Apache2, MySQL (o MariaDB) y phpMyAdmin desde los repositorios oficiales de tu distribución. 
+
+Ejercicio 0: hola mundo
+Comprueba que todo lo necesario para programar en PHP (editor, cliente ftp, servidor apache, etc.) funciona correctamente. Para hacerlo, escribe un sencillo script que genere el mensaje “Hola mundo”. Luego prueba a sustituirlo por una llamada a la función phpinfo(), para obtener información sobre la versión de PHP con la que estás trabajando en el servidor.
+Ejercicio 1: positivo, negativo
+Diseña un formulario –ejercicio01.html- con un campo de texto en el que puedas escribir números. Al pulsar el botón de enviar debe llamar a un script –ejercicio01.php- que debe decirnos si el número enviado fue positivo, cero o negativo.
+A la página ejercicio01.php añádele un enlace HTML que permita volver a la página anterior. 
+Ejercicio 2: tabla de multiplicar
+Diseña un formulario –ejercicio02.html- con un campo de texto en el que puedas escribir números. Al pulsar el botón de enviar debe llamar a un script –ejercicio02.php- que mostrar la tabla de multiplicar del número introducido. A la página ejercicio02.php añádele un enlace HTML que permita volver a la página anterior. 
+Ejercicio 3: tabla de multiplicar en forma de tabla
+Modifica el ejercicio anterior para que la salida se produzca en una tabla HTML de 5 por 5 casillas. Deben aparecer, por lo tanto, los primeros 25 términos de la tabla de multiplicar. En la cabecera de la tabla coloca un encabezado que ocupe todo el ancho de la misma. Asigna los nombres ejercicio03.html y ejercicio03.php a los archivos.
+Por ejemplo, si el número introducido es el 3, el resultado debe ser:
+Tabla de multiplicar del número 3
+3 x 1 = 3
+3 x 2 = 6
+3 x 3 = 9
+3 x 4 = 12
+3 x 5 = 15
+3 x 6 = 18
+3 x 7 = 21
+3 x 8 = 24
+3 x 9 = 27
+3 x 10 = 30
+3 x 11 = 33
+3 x 12 = 36
+3 x 13 = 39
+3 x 14 = 42
+3 x 15 = 45
+3 x 16 = 48
+3 x 17 = 51
+3 x 18 = 54
+3 x 19 = 57
+3 x 20 = 60
+3 x 21 = 63
+3 x 22 = 66
+3 x 23 = 69
+3 x 24 = 72
+3 x 25 = 75
+
+Ejercicio 4: anagramas
+Una palabra es un anagrama de otra si contiene las mismas letras colocadas en orden diferente. Por ejemplo, "CAVA" es un anagrama de "VACA", y viceversa.
+El ejercicio consiste en escribir un programa en PHP que pida dos palabras y compruebe si la primera es un anagrama de la segunda.
+Ejercicio 5: juego del número secreto
+Construyamos ahora un programa PHP para jugar al típico juego del número secreto. El ordenador elegirá un número al azar entre 1 y 100, y luego nos pedirá que lo adivinemos. Si introducimos un número menor o mayor que el número secreto, el programa nos dará una pista (“el número secreto es mayor” o “el número secreto es menor”). Si acertamos, habremos ganado, y el programa nos dirá cuántos intentos hemos necesitado para adivinar el número.
+
+Ejercicio 6: función potencia
+Escribe una función PHP que reciba dos parámetros (A y B) y devuelva el valor de la potencia de A elevado a B (AB). Escribe también un programa PHP que haga uso de esa función para calcular potencias.
+Ejercicio 7: devolución de arrays
+Escribe un programa PHP que pida cinco números al usuario y los guarde en un array. Luego debe llamar a una función pasándole el array como parámetro, y la función calculará cuál de los cinco números es el mayor, cuál el menor y cuánto vale la media, devolviendo esos tres valores en otro array. Por último, se mostrarán en la pantalla el mayor, el menor y la media.
+Ejercicio 8: formularios complejos
+Crea un formulario (como el de la figura de más abajo) en un archivo ejercicio08.php. Al hacer clic en “Enviar”, debe lanzarse el script ejercicio08_accion.php. Este script debe comprobar que todos los datos del formulario han sido completados. Si no es así, mostrará un mensaje de error y volverá atrás. 
+Luego comprobará si la edad es mayor o igual a 18 años. Si es menor, también mostrará un mensaje y volverá atrás. 
+Si todo es correcto, mostrará los datos presentes del formulario en una tabla, junto con la fecha y la hora actual del sistema (ver segunda imagen)
+Para hacer este ejercicio necesitarás algunas funciones de fecha y hora de PHP. Puedes consultar la referencia completa del lenguaje en la página oficial de PHP: www.php.net. Las funciones de fecha y hora están detalladas en http://www.php.net/manual/es/ref.datetime.php
+
+## Algunos ejercicios avanzados de PHP
+
+Ejercicio 1: Simon dice
+“Simon dice” es un clásico juego de memoria que consiste en componer secuencias de cuatro colores cada vez más largas, y el jugador tiene que recordarlas y reproducirlas. Puedes encontrar muchas versiones de Simon en internet.
+Nosotros vamos a construir una versión simplificada que muestre secuencias de números (aunque podríamos hacerlo con colores sólo complicándolo un poco). El programa mostrará un número entre 1 y 4 durante un instante, y luego borrará la pantalla y pedirá al usuario que lo repita. Después mostrará dos números aleatorios entre 1 y 4 (por ejemplo, 3 – 1), y luego el usuario los tendrá que repetir, y así hasta que el usuario falle al introducir los números.
+
+Ejercicio 2: creación de tablas
+Crea una base de datos nueva llamada Videoclub en MySQL. Puedes utilizar PHPMyAdmin para ello, aunque también podríamos hacerlo desde un programa PHP.
+Luego, escribe un programa PHP llamado ejercicio09.php que sirva para crear las siguientes tablas del Videoclub (sólo usaremos tres por ahora). El programa debe informar de si las tablas se crearon correctamente o si ocurrió algún error al crearlas.
+    • Películas (cod_película#, título, género, país, año, distribuidora)
+    • Personas (cod_persona#, nombre, apellidos)
+    • Actúan (cod_película#, cod_persona#)
+Ejercicio 3: modificación de tablas
+Escribe un programa PHP que, tras pulsar un botón que debe aparecer en la pantalla, realice en la base de datos del ejercicio anterior los siguientes cambios:
+    • Eliminar el campo “distribuidora” a la tabla Películas.
+    • Crear el campo “país” en la tabla Personas.
+    • Crear las claves ajenas de la tabla Actúan. Es decir, que la tabla quede así: Actúan (cod_película#, cod_persona#)
+Ejercicio 4: mantenimiento de tablas maestras
+Crea un programa PHP para mantener la tabla Películas. El programa debe permitir:
+    • Añadir nuevos registros, introduciendo todos los campos de la tabla.
+    • Eliminar registros existentes, introduciendo el código de la película.
+Ejercicio 5: consultas simples
+Escribe un programa en PHP que permita buscar a una película cualquiera introduciendo su código. Debe mostrar todos los datos disponibles en la tabla Películas.
+Ejercicio 6: consultas y actualizaciones
+Combina los ejercicios 11 y 12 para que el mantenimiento de tablas también incluya la posibilidad de modificar registros existentes.
+Primero, el usuario podrá buscar una película introduciendo su código, y el programa mostrará los datos correspondientes a ese registro (o un error si no existe). Luego, podrá modificarse cualquier campo del mismo.
+Ejercicio 7: consultas complejas
+Escribe un último programa PHP que permita consultar una película por código, por título o por género (en los dos últimos casos, la búsqueda puede producir varios resultados, de los que el usuario debe poder seleccionar el que desee). En la pantalla deben aparecer todos los datos de la película, incluyendo su reparto.
+Ejercicio 8: biblioteca del instituto
+La Biblioteca del IES Celia Viñas tiene guardado su fondo de libros en una base de datos con la siguiente estructura ER:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Algunas entidades no son evidentes por sí mismas:
+    • Funciones contiene las funciones que puede realizar un autor en un libro (autor principal, traductor, ilustrador, prologuista, etc.)
+    • TiposFondo se refiere a los diferentes tipos de soporte que existen en la biblioteca: libro, DVD, cuadernillo, documentos sueltos, etc.
+    • Aplicaciones contiene las áreas educativas a los que el libro va dirigido: matemáticas, literatura, astronomía, etc.
+    • El atributo “principal” de la relación FondosAutores sirve para indicar cuál de los autores es el principal en una obra colectiva.
+
+Las tablas que resultan de ese DER son:
+Fondos (IdFondo#, Titulo, Subtitulo, LugarEdicion, IdTipoFondo, IdEditorial)
+Editoriales (IdEditorial#, Editorial)
+Autores (IdAutor#, Autor)
+Ejemplares (IdEjemplar#, IdFondo, ISBN, FechaAlta, Sig1, Sig2, Sig3)
+TiposFondo (IdTipoFondo#, TipoFondo)
+Fondos_Autores (IdAutor#, IdFondo#, idFuncion#, Principal)
+Funciones (IdFunción#, Función)
+Géneros (IdGénero#, Género)
+Fondos_Géneros (IdFondo#, IdGénero#)
+Aplicaciones (IdAplicación#, Aplicación)
+Fondos_Aplicaciones (IdFondo#, IdAplicación#)
+
+Se quiere construir un pequeño programa para poder consultar los fondos de la biblioteca desde la página web del instituto. La consulta debe permitir buscar libros por título, autor, editorial, isbn, aplicación y género. El resultado será una lista de libros de los que el usuario podrá seleccionar uno para obtener la ficha completa del mismo (la ficha incuirá toda la información disponible en la BD para ese libro)
+Después se podrá volver atrás para modificar la búsqueda o para hacer otra búsqueda nueva.
+En el servidor del aula dispones de una réplica de la BD de la biblioteca para hacer las pruebas.
+
+
+
+S
 
