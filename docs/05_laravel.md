@@ -2,10 +2,11 @@
 layout: page
 title: 5 Laravel
 permalink: /laravel/
-parent: Desarrollo Web en Entorno Servidor
 nav_order: 5
 has_children: true
+parent: Desarrollo Web en Entorno Servidor
 ---
+
 # 5. Laravel
 
 Laravel es un framework PHP MVC diseñado para agilizar el desarrollo de aplicaciones web. En los últimos años ha tenido una gran penetración en la industria.
