@@ -7,6 +7,17 @@ has_children: false
 parent: Desarrollo Web en Entorno Servidor
 ---
 # 2. Introducción a PHP
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+- TOC
+{:toc}
+</details>
+
 
 ## 2.1. Programación cliente-servidor
 
@@ -262,23 +273,27 @@ El servidor ejecuta el código PHP que encuentre dentro del archivo, mientras qu
 
 ### 2.3.4. Variables
 
+Las variables de una función/clase/método PHP son siempre **locales**, es decir, sólo están disponibles en esa función/clase/método, salvo que se indique otra cosa.
+
+Si se definen variables fuera de una función, serán globales a todo el fichero actual, pero no pueden usarse en el código ubicado en otros ficheros.
+
 El **identificador** de variable siempre debe empezar por $. Esta es una peculiaridad de PHP que al principio descoloca un poco.
 
-No es necesario declararlas: al inicializarlas queda especificado el tipo. En PHP 7 pueden indicarse los tipos predefinidos (int, float, string...)
+No es necesario declararlas: al inicializarlas queda especificado el tipo. A partir de PHP 7 pueden indicarse los tipos predefinidos (int, float, string...)
 Ejemplos:
 
 ```php
-$a = 4;			// Variable entera (PHP 5)
-int $a = 4;		// Variable entera (PHP 7)
-$media = 52.75;		// Variable real
+$a = 4;                  // Variable entera (PHP 5)
+int $a = 4;              // Variable entera (PHP 7+)
+$media = 52.75;          // Variable real
 $texto = "Hoy es lunes"; // Variable string
 ```
 
 Cualquier variable puede **cambiarse de tipo** con la función **setType()**:
 
 ```php
-$a = "10";		// a es una cadena
-setType($a, "integer");	// a se convierte a entero
+$a = "10";                 // a es una cadena
+setType($a, "integer");    // a se convierte a entero
 ```
 
 Los **tipos de datos** predefinidos en PHP son:
@@ -311,7 +326,7 @@ $a["POR"] = "Portugal";
 
 #### Condicionales
 
-php
+```php
 if (condición)
 {
 acciones-1;
@@ -321,51 +336,82 @@ else
 acciones-2;
 }
 ```
-XXX
-#### Bucle mientras
+
+#### Bucle while
+
+```php
 while (condición)
 {
 acciones;
 }
+```
 
-Bucle repetir
+#### Bucle repeat
+
+```php
 do
 {
 acciones;
 }
 while (condición);
+```
 
-Bucle para
-El bucle para controlado por contador es idéntico a C/C++
+#### Bucles for y foreach
+
+El bucle for controlado por contador es idéntico a C/C++ y Java:
+
+```php
 for (inicialización; condición; incremento)
 {
 acciones;
 }
+```
 
-Hay una variedad muy interesante: el bucle foreach para recorrido de arrays asociativos:
-foreach ($array as $índice=>$variable)
+Hay una variedad de bucle for muy interesante: el bucle foreach para recorrido de arrays asociativos:
+
+```php
+foreach ($array as $índice=>$var)
 {
 acciones;
 }
-El bucle foreach se repite una vez para cada valor guardado en el array. Ese valor se asigna a la variable en cada repetición.
+```
+
+El bucle foreach se repite una vez para cada valor guardado en el array. Ese valor se asigna a la variable $var en cada repetición.
 
 
-Funciones y procedimientos (¡sólo en PHP4!)
+### 2.3.7. Funciones y procedimientos
+
 Los subprogramas (funciones y procedimientos) se escriben en PHP con la misma palabra: function.
-Las funciones deben devolver un valor en su última línea con return. Los procedimientos no.
-Los parámetros de la función en PHP siembre se pasan por valor. Si un procedimiento tiene que devolver varios valores, lo hará en un return con un array, como veremos en los ejercicios.
-Ejemplo:
+
+* Las **funciones** deben devolver un valor en su última línea con return. Si necesitas devolver varios valores, puedes empaquetarlos en un array.
+* Los **procedimientos** no tienen return. Realizan su función y terminan.
+
+Los **parámetros** de la función en PHP siembre se pasan por valor. 
+
+Por ejemplo:
+
+```php
 function calcular_iva($base, $porcentaje)
 {
    $total = $base * $porcentaje /100;
    return $total;
 }
+```
 
-Clases y objetos (¡solo en PHP5 y PHP7!)
+### 2.3.8. Clases y objetos (¡solo en PHP5 y PHP7!)
+
+Las clases, métodos y atributos se declaran de forma muy semejante a C++ y Java:
+
+```php
 class miClase
 {
     // Declaración de propiedades (atributos)
     public $var = 'soy una variable de clase';
+
+    // Método constructor (siempre se llama __construct)
+    public function __construct($valor) {
+        $var = $valor;
+    }
 
     // Declaración de métodos
     public function mostrarVar() {
@@ -375,33 +421,28 @@ class miClase
        $this->var = '';
     }
 }
-// ------------------------------------
-$miObjeto = new miClase();
+```
+
+Para instanciar un objeto de una clase, se usa la palabra new. El constructor puede llevar parámetros o no, como en Java. Por ejemplo:
+
+```php
+$miObjeto = new miClase('Estoy aprendiendo PHP');
 $miObjeto->mostrarVar();
+```
 
-Ámbito de las variables: paso de parámetros por la URL (1)
-Las variables de una función/clase/método PHP son locales, es decir, sólo están disponibles en esa función/clase/método.
-Si se definen variables fuera de una función, serán globales a todo el fichero actual, pero no pueden usarse en scripts ubicados en otros ficheros.
-Para compartir variables entre scripts diferentes, se usa habitualmente la URL (o dirección):
+La salida de este programa sería "Estoy aprendiendo PHP".
 
-<a href="pagina.php?variable1=valor1&variable2=valor2&etc…">
+### 2.3.9. Salida de datos
 
-El código PHP ubicado en “página.php” puede recuperar el valor de las variables $variable1, $variable2, etc.
+PHP puede hacer salidas de datos como cualquier otro lenguaje de programación: puede enviar texto a una impresora, datos a un fichero o puede dibujar ventanas y componentes en un entorno gráfico de usuario.
 
-Ámbito de las variables: paso de parámetros por la URL (2)
-La forma de acceder a las variables recibidas a través de la URL es con el array del sistema $_GET, que se indexa con el nombre de las variables:
+Pero cuando PHP se ejecuta como parte de una aplicación web, nada de eso tiene sentido: esa salida se produciría en el servidor, y nosotros no estamos allí para verla. Nosotros estamos en nuestro cliente (navegador web), pidiendo al servidor que ejecute un programa PHP.
 
-Ejemplo:
+Recuerda que, en este contexto, la salida PHP es siempre código HTML válido. Ese código HTML será recibido por tu navegador, interpretado y mostrado en la ventana del navegador.
 
-<?php
-echo "La variable 2 vale:".$_GET['variable2']."<br>";
-?>
+Observa el uso de "echo" para producir una salida HTML desde este pequeño script PHP:
 
-
-Salida de datos
-Recuerda que PHP se ejecuta dentro de un navegador web. Por lo tanto, su salida debe poder verse en el navegador.
-El navegador web sólo puede mostrar páginas escritas en código HTML, por lo que PHP debe producir como salida código HTML o XHTML válido.
-Ejemplo (observa el uso de “echo” para producir la salida):
+```html
 <body>
  <?php 
      echo "Soy un script de PHP y estoy generando 
@@ -409,11 +450,39 @@ Ejemplo (observa el uso de “echo” para producir la salida):
                voy a escribir <b>esto en negrita</b>"
   ?>
 </body>
+```
 
-Entrada de datos a través de formulario (1)
-Como PHP se ejecuta dentro de HTML, sólo puede recibir datos a través del navegador web.
+### 2.3.10. Paso de parámetros por la URL
+
+Las aplicaciones web pueden recibir parámetros a través de la propia URL de invocación del servidor.
+
+Imagina que tenemos este link en un documento HTML:
+
+```html
+<a href="pagina.php?variable1=valor1&variable2=valor2&etc…">
+```
+
+Al hacer clic en él, pediremos al servidor que ejecute el programa cuyo código fuente está en el archivo "pagina.php", ¿verdad?
+
+Pues bien, ese programa "pagina.php" puede acceder a las variables "variable1", "variable2", etc.
+
+Esto se hace a traves del array global de PHP **$_GET**, que se indexa con el nombre de las variables. Así:
+
+```php
+<?php
+echo "La variable 2 vale:".$_GET['variable2']."<br>";
+?>
+```
+
+### 2.3.11. Entrada de datos a través de formulario (1)
+
+Como PHP se ejecuta dentro de HTML, sólo puede recibir datos del usuario de la aplicación a través del navegador web.
+
 Y sólo hay una forma de introducir datos en una página web: a través de un formulario.
-Ejemplo: supongamos que hemos definido en HTML este sencillo formulario:
+
+Veámoslo con un ejemplo. Supongamos que hemos definido en HTML este sencillo formulario:
+
+```html
 <body>
 <form method="post" action="destino.php">
 Nombre<br/>
@@ -423,48 +492,60 @@ Apellidos<br>
 <input type="submit">
 </form>
 </body>
+```
 
-Entrada de datos a través de formulario (2)
-El formulario se verá en el navegador más o menos así:
+Al pulsar el botón "Enviar", se cargará el script destino.php en el servidor.
 
-XXX captura
-
-Entrada de datos a través de formulario (3)
-Al pulsar sobre “Enviar”, se ejecutará el script destino.php.
 Ese script recibirá dos variables HTML llamadas nombre y apellido, con el valor que el usuario haya introducido en el formulario.
-Para acceder a las variables HTML, se usa el array del sistema $_POST, indexándolo con el nombre de la variable:
 
+Para acceder a las variables HTML, se usa el array del sistema **$_POST**, indexándolo con el nombre de la variable:
+
+```php
 <?php 
      echo "La variable nombre vale".$_POST['nombre']."<br>" 
 ?>
+```
 
-Observa que $_POST es una variable semejante a $_GET. Puedes utilizar una u otra según el method que hayas establecido en tu formulario HTML.
-La variable $_REQUEST sirve tanto para POST como para GET. Por eso será la que nosotros usaremos preferentemente en nuestros programas.
+Observa que $_POST es una variable semejante a $_GET. Puedes utilizar una u otra según el valor del atributo *method* de tu formulario HTML.
 
-## Interacción entre MariaDB y PHP
+La variable **$_REQUEST** sirve tanto para POST como para GET. **Por eso será la que nosotros usaremos preferentemente en nuestros programas**.
 
-Interacción de PHP con MySQL o MariaDB
+## 2.4. Interacción entre MariaDB y PHP
+
 MySQL es un SGBD profesional, por lo que la interacción con él busca ser eficiente y segura, pero no necesariamente fácil.
+
 Hay básicamente tres métodos de utilizar MySQL:
-A través de la línea de comandos:
-Iniciamos una sesión en MySQL con:
-$ mysql -u nombre_usuario -p contraseña
-Y luego tenemos a nuestra disposición montones de comandos para hacer cosas con la base de datos, incluyendo cualquier instrucción válida en SQL.
-A través de un interfaz gráfico como PHPMyAdmin:
-Es un conjunto de scripts en lenguaje PHP que proporcionan un interfaz aceptablemente cómodo para trabajar con MySQL.
-Es el método más utilizado para ejecución interactiva de SQL.
-A través de un programa escrito en PHP o algún otro lenguaje con posibilidad de acceso a MySQL.
-Este método de acceso será el que nosotros practicaremos a continuación.
 
-Acceso a MySQL con PHP4
+* A través de la línea de comandos:
+   Iniciamos una sesión en MySQL con:
+   
+```
+$ mysql -h servidor -u nombre_usuario -p
+```
+
+   Y luego tenemos a nuestra disposición montones de comandos para hacer cosas con la base de datos, incluyendo cualquier instrucción válida en SQL.
+
+* A través de una aplicación con interfaz gráfico como PHPMyAdmin, una aplicación web escrita en PHP que proporciona un interfaz muy cómodo para trabajar con MySQL o MariaDB.
+
+* A través de un programa escrito en PHP o algún otro lenguaje con posibilidad de acceso a MySQL. Este método de acceso será el que nosotros practicaremos a lo largo del curso. Por ahora, vamos a ver lo fundamental.
+
+### 2.4.1. Acceso a MySQL con PHP4
+
 El modo en que se accedía a bases de datos en PHP4 era mediante bibliotecas de funciones diferentes para cada SGBD.
-Este tipo de codificación está obsoleta y se desaconseja su uso. Ya no tiene soporte oficial, por lo que no se resolverán futuros problemas de seguridad o estabilidad.
-Lo mostramos aquí para que sepáis lo que NO se debe hacer. 
-Encontraréis mucho código de esta naturaleza en la red que DEBE SER EVITADO.
 
-Acceso a MySQL con PHP4
+Este tipo de codificación está obsoleta y se desaconseja su uso. Ya no tiene soporte oficial, por lo que no se resolverán futuros problemas de seguridad o estabilidad.
+
+**Lo mostramos aquí para que sepáis lo que NO se debe hacer.** 
+
+**Encontraréis mucho código de esta naturaleza en la red que DEBE SER EVITADO.**
+
+#### Acceso a MySQL con PHP4
+
 PHP4 utiliza una biblioteca de funciones PHP cuyo nombre empieza por mysql_.
-Por ejemplo, para insertar un registro en una BD MySQL:
+
+Por ejemplo, para insertar un registro en una BD MySQL, se hacía así:
+
+```php
 <?php
 //Conectamos con MySQL
 mysql_connect("URL","nombre_usuario","contraseña");
@@ -475,10 +556,11 @@ mysql_select_db("nombre_base_de_datos");
 //Ejecucion de cualquier sentencia SQL válida
 mysql_query("INSERT INTO clientes (nombre,telefono) VALUES ('$nombre','$telefono')");
 ?>
+```
 
-Consultas SQL con PHP4 (1/2)
-La ejecución de consultas (SELECT) produce la devolución de un conjunto de registros. Esos regisotrs se manejan en PHP con un cursor. Observa cómo se hace en este ejemplo:
-<body>
+Y para ejecutar consultas (SELECT), se recogía el resultado en un cursor. Observa cómo se hacía en este ejemplo:
+
+```php
 <?php
 //Nos conectamos con MySQL
 mysql_connect(“URL","user","password");
@@ -509,39 +591,23 @@ mysql_free_result($result)
 ?>
 </table>
 </body>
+```
 
-Otras funciones importantes para trabajar con MySQL en PHP4 (1/2)
-mysql_connect("URL", "user", "password");
-Conecta con MySQL. En la URL hay que poner la dirección completa dónde se encuentra el servidor funcionando (ejemplos: “localhost”, “219.39.21.23”, “http://miservidor.com”, “/home/user”, etc.)
-mysql_select_db("nombre_base_de_datos");
-Abre una base de datos de las que MySQL tenga disponibles.
-mysql_close($variable_bd);
-Cierra la conexión con MySQL. La $variable_bd nos la devolvió mysql_connect().
-Es aconsejable hacerlo antes de que termine el programa.
+**RECUERDA: esta forma de operar con la base de datos está OBSOLETA y DEBE SER EVITADA.** Te la mostramos aquí solo para que sepas reconocerla si te la encuentras por las procelosas aguas de internet.
 
-Otras funciones importantes para trabajar con MySQL en PHP4 (2/2)
-mysql_query("sentencia-SQL");
-Ejecuta el código SQL especificado. Pueden introducirse en su interior variables PHP (siempre precedidas del símbolo $).
-Si es un SELECT, el resultado debe asignarse a una variable.
-mysql_fetch_array($variable);
-Procesa la variable donde se guardó el resultado de un SELECT.
-Cada llamada devuelve un registro completo, que debe asignarse a su vez a otra variable.
-Con esa variable podemos acceder a cada uno de los campos, indexándola por el nombre del campo (ver ejemplo anterior).
-mysql_affected_rows();
-Devuelve el número de registros afectados por la última operación SQL (válido para INSERTE, UPDATE y DELETE)
-mysql_num_rows();
-Como la anterior, pero para SELECT
+### 2.4.2. Acceso a MySQL con PHP5+
 
+Desde PHP5, se utiliza una biblioteca de clases para acceder a los diferentes SGBDs.
 
-Acceso a MySQL con PHP5 y PHP7
-Desde PHP5 se utiliza una biblioteca de clases para acceder a los diferentes SGBDs.
-Este tipo de codificación es la que se recomienda en la actualidad. 
 Todos los nuevos desarrollos deberían usar las bibliotecas de clases y prescindir de las viejas librerías de funciones.
-Todos los desarrollos antiguos deberían migrarse a PHP7 por razones de seguridad, compatibilidad y eficiencia.
-¡Cuidado! Mucho código de ejemplo de PHP que circula por la red es PHP4 y DEBE SER EVITADO.
 
-Acceso a MySQL con PHP5 / PHP7
+*Vuelvo a repetirlo: mucho código de ejemplo de PHP que circula por la red es PHP4 y DEBE SER EVITADO.*
+
+#### Acceso a MySQL con PHP5+
+
 Por ejemplo, para insertar un registro en una BD MySQL:
+
+```php
 <?php
 // Conectamos con el servidor y abrimos la BD.
 $conexdb = new mysqli('host','username','password','database');
@@ -550,18 +616,28 @@ $conexdb = new mysqli('host','username','password','database');
 // Por ejemplo:
 $conexdb->query("INSERT INTO clientes (nombre,telefono) VALUES ('$nombre','$telefono')");
 ?>
+```
 
-Aviso para navegantes
-PHP5/7 proporciona varios mecanismos para acceder a bases de datos (¡demasiadas formas de hacer lo mismo!):
-La extensión mysqli en su forma procedimental.
-Es idéntica a la de PHP4, pero cambiando la palabra “mysql” por “mysqli”. 
-Por ejemplo, mysql_connect() cambia a mysqli_connect().
-Apta para programadores perezosos y anticuados, que no quieren pasarse a la POO.
-La extensión mysqli en su forma orientada a objetos. 
-Es la que nosotros recomendamos. Los ejemplos que estamos mostrando usan esta forma.
-La extensión PDO. Se trata de una clase genérica que permite acceder a cualquier gestor de bases de datos mediante el mismo conjunto de métodos. En funcionalidad y rendimiento es idéntica a mysqli.
+PHP proporciona varios mecanismos para acceder a bases de datos (¡demasiadas formas de hacer lo mismo!):
 
-Consultas SQL con PHP5 y PHP7 (1/2)
+* **La extensión mysqli en su forma procedimental.**
+
+   Es idéntica a la de PHP4, pero cambiando la palabra “mysql” por “mysqli”. 
+
+   Por ejemplo, mysql_connect() cambia a mysqli_connect().
+
+   Esta forma es apta para programadores perezosos y anticuados, que no quieren pasarse a la programación orientada a objetos.
+
+* **La extensión mysqli en su forma orientada a objetos.**
+
+   Es la que nosotros estamos usando y usaremos todo el curso.
+   
+* **La extensión PDO.**
+
+   Se trata de una clase genérica que permite acceder a cualquier gestor de bases de datos mediante el mismo conjunto de métodos. En funcionalidad y rendimiento es idéntica a mysqli.
+
+#### Consultas SQL con PHP5+
+XXX
 La ejecución de consultas (SELECT) produce la devolución de un conjunto de registros. Esos registros se manejan en PHP con un cursor. Observa cómo se hace en este ejemplo:
 <body>
 <?php
@@ -596,7 +672,7 @@ $db->close();   // Cierra la conexión con el servidor
 </table>
 </body>
 
-## Algunos ejecicios básicos de PHP
+## 2.5. Ejemplos de uso de PHP
 
 Aviso previo: para hacer todos estos ejercicios debes tener un servidor Apache con soporte para PHP5 o PHP7 en funcionamiento. De momento, si trabajas con Windows o Mac, lo más cómodo es que tengas instalado XAMPP, WAMPP o MAMPP en tu ordenador. Si lo tuyo es Linux, instala Apache2, MySQL (o MariaDB) y phpMyAdmin desde los repositorios oficiales de tu distribución. 
 
