@@ -1,7 +1,7 @@
 ---
 layout: page
 title: 1.4 Prestashop
-permalink: /cms/wordpress
+permalink: /cms/prestashop
 nav_order: 4
 has_children: false
 parent: 1 Sistemas gestores de contenido (CMS)

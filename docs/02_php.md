@@ -10,237 +10,308 @@ parent: Desarrollo Web en Entorno Servidor
 
 ## 2.1. Programación cliente-servidor
 
-Desde hace una década, es habitual ejecutar programas remotos a través del navegador de internet
-Solución CLIENTE - SERVIDOR.
-El navegador de internet es el programa CLIENTE, que lanza peticiones al SERVIDOR.
-El SERVIDOR es otra máquina remota, en la que corren los programas SERVIDORES (p.ej: el servidor http es el que nos sirve las páginas web para poder verlas en el cliente)
-Desde la web se puede así acceder a los recursos del servidor. Por ejemplo, mediante instrucciones SQL puede usarse una BD alojada en el servidor.
+En los primeros tiempos de Internet, no se ejecutaban programas en el servidor. Solo se pedían páginas estáticas más o menos elaboradas que había sido grabadas en el servidor por un administrador de sistemas. A esto se le denomina web 1.0.
 
-Esquema CLIENTE – SERVIDOR
-Ejemplo: servicio www
+A alguien se le ocurrió la idea de que los propios visitantes podrían también crear contenido. Ese contenido se guardaría en el servidor (en archivos o en una base de datos) y posteriormente podría recuperarse para generar con él una web dinámica, que no existía previamente y que nadie, en realidad, ha tecleado.
 
-XXX imagen
+Esa web dinámica estaría generada por un programa ejecutado en el servidor, un programa cuya salida sería HTML válido, comprensible por el navegador que la reciba. A esto se le denomina web 2.0 y supuso una revolución tan grande como el propio nacimiento de Internet.
 
-Esquema CLIENTE – SERVIDOR
-Otro ejemplo de servicio www
+### 2.1.1. Un poco de jerga informática
 
-XXX imagen
+Antes de continuar, tienes que asegurarte de que comprendes bien el significado de algunos términos:
 
-## 2.2. Caja de herramientas para programación de aplicaciones web
+* Un **servidor** es un programa que se ejecuta en una máquina conectada a una red y que permanece dormido hasta que una petición procedente de la red lo despierta. Entonces, el programa hace algo (consulta datos, elabora un cálculo, lo que sea) y devuelve su resultado por la red.
+* Por extensión, un servidor también es cualquier ordenador donde se ejecute un programa servidor. Es decir, usamos la misma palabra para referirnos a un programa y al ordenador donde se ejecuta ese programa. Mala idea, ya lo sé, pero es lo que hay.
+* El **cliente** es el programa que envía esas peticiones al programa servidor para despertarlo. También es el programa que recoge el resultado devuelto por el servidor.
+* Por extensión, la máquina donde se ejecuta un programa cliente también se llama cliente.
 
-### 2.2.1. DHTML
+Pues bien, en programación web, nuestro cliente es el **navegador web** (también llamado cliente web). Cualquier navegador del universo conocido entra en esta categoría (excepto, tal vez, Internet Explorer).
 
-DHTML y PHP son los lenguajes que nos van a permitir ejecutar programas en el servidor y acceder a sus recursos a través de páginas web.
-Existen otras posibilidades, como:
-DHTML con ASP
-DHTML con JSP
-DHTML con Python, Ruby, Perl, etc.
-MySQL / MariaDB es un servidor de bases de datos que nos permitirá conectarnos a ellas y ejecutar sentencias SQL de forma remota al visitar una página web.
-También hay otras posibilidades, como:
-SQL Server
-Oracle
-PostgreSQL
+Y un servidor es cualquier máquina de la red donde se esté ejecutando un programa servidor web como Apache, Nginx, Tomcat, IIS y otros cuando viejos amigos que irás conociendo a lo largo de este curso.
 
-DHTML (Dynamic HTML) no existe como tal, sino que es la conjunción de tres lenguajes:
-HTML
-CSS
-JavaScript
-DHTML sirve para crear las páginas web por las que navegamos todos los días. Cada uno de sus lenguajes componentes se encarga de hacer una parte del trabajo.
+### 2.1.2. Una petición web en la época 1.0
 
+Ahora que tienes claro qué es un servidor y un cliente web, puedes comprender el siguiente esquema.
 
-Resumiendo, las herramientas que necesitaremos  son:
-HTML
-CSS
-JavaScript / jQuery / Ajax
-PHP u otro lenguaje de script de servidor (Python, Ruby, Perl, etc)
-Un framework para trabajar con el lenguaje elegido.
-MySQL / MariaDB u otro SGBD que permita acceso remoto.
+En él, se ilustra lo que ocurre cuando un cliente web (recuerda: tu navegador) envía al servidor la peiticón de una **página estática**. 
 
-A continuación introduciremos las herramientas básicas. A lo largo del curso, iremos viendo el resto. 
+El servidor, en este caso, se limita a enviar al cliente el documento HTML tal cual está almacenado en su disco duro, sin cambiar una sola coma.
 
-### 2.2.2. HTML
+![Ejemplo de servicio www](/assets/images/02-servicio-www-1.jpg)
 
-HTML = HyperText Markup Language (Lenguaje de Etiquetas de Hipertexto)
-Es un lenguaje para formatear documentos:
-Permite definir el tipo de letra, tamaño, formato y color de los textos.
-Permite insertar imágenes y otro contenido multimedia.
-Permite crear listas, tablas, enumeraciones...
-Permite crear enlaces entre secciones del mismo documento, o enlaces con otros documentos (hipertexto)
-NO es un lenguaje de programación:
-No permite programar algoritmos.
-Pero sí permite incrustar otros lenguajes de programación en su interior, aumentando así su potencia.
-Los trozos de código embebidos dentro de HTML se denominan scripts.
+### 2.1.3. Una petición web en la época 2.0
 
-En 1990 se crea HTML (procedente de un lenguaje anterior, SGML) junto con la World Wide Web, para formatear los documentos de la www.
-Se amplía en sucesivas versiones hasta la 3.0, que no consiguió éxito debido a las limitaciones de los navegadores de la época.
-Comienza la guerra de navegadores: Microsoft y Netscape sacan sus propios “dialectos” de HTML y destrozan en estándar.
-A partir de HTML 4 se intenta unir las características de los dos, pero el resultado es demasiado complejo.
-Se hace evidente que hay que hacer una “limpieza” de HTML
-Así surge XHTML, la versión XML de HTML, mucho más estricta y formal, con menos añadidos pero igual de potente.
+Con la web 2.0 la cosa cambia bastante porque aparecen las **páginas dinámicas**, aunque tendrás que fijarte bien en el esquema para apreciar la diferencia, ¿verdad?
 
-Versiones actuales de HTML recomendadas:
-HTML 4.01 transicional: HTML clásico, con todos los elementos del HTML antiguo, aunque se recomiende no usar muchos de ellos)
-HTML 4.01 estricto: también llamado XHTML, no permite usar los elementos HTML desaprobados, tales como definición de formatos.
-HTML5: elimina definitivamente los elementos antiguos del lenguaje e incorpora algunos nuevos para completar la asimilación con XML.
-La especificación para HTML6 (o HTML Next) está actualmente en desarrollo.
+Quédate con lo importante: en este esquema, el cliente web no pide un documento HTML, sino *un programa*, que puede estar escrito en PHP o algún otro lenguaje, eso es lo de menos. 
+
+Ese programa se ejecuta en el servidor, y *el resultado de esa ejecución* es lo que recibe el cliente, *no el programa en sí*.
+
+![Ejemplo de servicio www](/assets/images/02-servicio-www-2.jpg)
+
+Así es como funcionan las aplicaciones web.
+
+## 2.2. Caja de herramientas para desarrollar de aplicaciones web
+
+Para desarrollar apliaciones web necesitamos una caja de herramientas bastante completa. Algunas herramientas son fundamentales, como el martillo o el destornillador de una caja de herramientas convencional. Otras, en cambio, son optativas y dependerán del trabajo que vayamos a realizar y de nuestras propias preferencias como desarrolladores.
+
+En esta sección vamos a hacer un repaso de las herramientas fundamentales, las que no pueden faltar en tu caja de herramientas. Algunas ya las conoces y otras las aprenderemos a manejar a lo largo de este curso. Se trata de:
+
+* DHTML (HTML, CSS y Javascript)
+* PHP u otro lenguaje de script de servidor (Python, Ruby, Perl, etc)
+* MySQL / MariaDB u otro SGBD que permita acceso remoto.
+
+### 2.2.1. HTML
+
+DHTML (Dynamic HTML) no es un lenguaje como tal, sino que, como probablemente sabes ya, es la conjunción de tres lenguajes:
+
+* HTML
+* CSS
+* JavaScript
+
+DHTML y PHP son los lenguajes que nos van a permitir ejecutar programas en el servidor y acceder a sus recursos a través de páginas web, pero existen otras posibles combinaciones como:
+
+* DHTML con ASP
+* DHTML con JSP
+* DHTML con Python, Ruby, Perl, etc.
+
+HTML significa "HyperText Markup Language" (Lenguaje de Etiquetas de Hipertexto). Como sin duda sabrás, se trata de un lenguaje para formatear documentos:
+
+* Permite definir el tipo de letra, tamaño, formato y color de los textos.
+* Permite insertar imágenes y otro contenido multimedia.
+* Permite crear listas, tablas, enumeraciones...
+* Permite crear enlaces entre secciones del mismo documento, o enlaces con otros documentos (hipertexto)
+
+HTML **NO** es un lenguaje de programación: no permite programar algoritmos. Pero sí permite incrustar otros lenguajes de programación en su interior, aumentando así su potencia.
+
+Los trozos de código embebidos dentro de HTML se denominan ***scripts***.
+
+#### Brevísima historia de HTML
+
+* En 1990 se crea HTML (procedente de un lenguaje anterior, SGML) junto con la World Wide Web, para formatear los documentos de la www.
+* Se amplía en sucesivas versiones hasta la 3.0, que no consiguió éxito debido a las limitaciones de los navegadores de la época.
+* Comienza la guerra de navegadores: Microsoft y Netscape sacan sus propios “dialectos” de HTML y destrozan en estándar.
+* A partir de HTML 4 se intenta unir las características de los dos, pero el resultado es demasiado complejo.
+* Se hace evidente que hay que hacer una “limpieza” de HTML
+   * Así surge XHTML, la versión XML de HTML, mucho más estricta y formal, con menos añadidos pero igual de potente.
+
+Las versiones actuales de HTML son:
+
+* HTML 4.01 transicional: HTML clásico, con todos los elementos del HTML antiguo. En la actualidad está obsoleto, pero aún quedan muchas páginas antiguas que lo utilizan.
+* HTML 4.01 estricto: también llamado XHTML, no permite usar los elementos HTML desaprobados, tales como definición de formatos. También se considera obsoleto.
+* HTML5: elimina definitivamente los elementos antiguos del lenguaje e incorpora algunos nuevos para completar la asimilación con XML. Es el estándar actual.
+* La especificación para HTML6 (o HTML Next) está actualmente en desarrollo.
 
 ### 2.2.3. CSS
 
-CSS = Cascade Style Sheet (Hojas de estilo en cascada)
-Es un lenguaje para la definición de los formatos utilizados en una página web.
-CSS sólo permite definir el formato (es decir, el aspecto) de la página, no su contenido.
-Al definir los formatos en otra parte, se pueden reutilizar a lo largo de una o incluso de varias páginas.
-Si cambiamos la definición CSS del formato, se cambian automáticamente los formatos de todas las páginas que usen esa definición.
-El objetivo último es separar completamente el formato de la página de su contenido → XHTML.
-CSS 2.1 se usa con HTML 4. CSS3 se usa con HTML5 y ya se puede considerar soportado universalmente.
+CSS significa "Cascade Style Sheet" (Hojas de estilo en cascada).
+
+CSS es un lenguaje para la definición de los formatos utilizados en una página web. Sólo permite definir el formato (es decir, el aspecto) de la página, no su contenido.
+
+Al definir los formatos en otra parte, se pueden reutilizar a lo largo de una o incluso de varias páginas: si cambiamos la definición CSS del formato, se cambian automáticamente los formatos de todas las páginas que usen esa definición.
+
+El objetivo último de CSS es **separar completamente el formato de la página de su contenido**.
+
+CSS 2.1 se usaba con HTML 4. CSS3 se usa con HTML5 y se considera el estándar actual. Está soportado universalmente, aunque, como sin duda habrás sufrido en tus carnes, los diferentes navegadores pueden interpretar de forma ligeramente distinta algunas definiciones CSS.
 
 ### 2.2.4. Javascript
 
 JavaScript es un lenguaje interpretado que puede ser incrustado dentro del código HTML de una página web.
-Todos los navegadores web actuales son capaces de interpretar código JavaScript.
+
 El código JavaScript puede interactuar y modificar cualquier parte del documento HTML, por lo que dota a las páginas web de dinamismo e interactividad.
-JavaScript no es Java, aunque su sintaxis está a medio camino entre C++ y Java.
-La implementación de JavaScript de cada navegador es distinta, obteniéndose resultados que no siempre son iguales. Por ejemplo:
-V8 = motor JS de Chrome
-WebKit = motor JS de Safari
-Rhino = motor JS de Mozilla Firefox
-WebKit = motor JS de Microsoft Edge
+
+**JavaScript no es Java**, por mucho que su nombre se parezca. También su sintaxis puede recordar un poco a Java en algunas ocasiones. Pero déjame que te lo repita de nuevo: Javascript no es Java.
+
+La implementación de JavaScript de cada navegador es distinta, obteniéndose resultados que no siempre son iguales, por desgracia para los desarrolladores. Por ejemplo:
+
+* V8 = motor JS de Chrome
+* WebKit = motor JS de Safari
+* Rhino = motor JS de Mozilla Firefox
+* WebKit = motor JS de Microsoft Edge
 
 ### 2.2.5. PHP
 
 PHP es un acrónimo recursivo. Significa “PHP Hypertext Preprocessor”
-Es un lenguaje de programación usado generalmente para generar páginas web dinámicas.
-Es ese caso, aparece embebido en documentos HTML / XHTML.
-Pero también puede usarse para crear aplicaciones convencionales (usando las extensiones PHP-Qt o PHP-GTK)
-Permite conectarse con múltiples bases de datos: MySQL, Oracle, Postgres, SQL Server, DB2, etc. También puede conectar por ODBC.
-Se parece mucho a otros lenguajes 3GL y O.O. (en particular a C/C++), por lo que la curva de aprendizaje para los que ya saben programar es muy corta.
-Surge en 1995 como extensión de CGI (otro lenguaje para acceso a funciones del servidor)
-PHP3 (1998) tuvo un gran éxito comercial.
-PHP4 (2000) es la versión más extendida (por desgracia): la mayoría de los scripts en PHP que circulan por la red están escritos en esta versión obsoleta.
-PHP5 (2004) tiene soporte para orientación a objetos y una biblioteca de clases bastante bien diseñada. Por lo tanto, desde esta versión PHP pasa de ser un lenguaje estructurado (3GL) a ser un lenguaje orientado a objetos.
-PHP6 empezó a desarrollarse en 2007 y se canceló en 2014.
-PHP7 es la última versión (7.4.10 en septiembre de 2020). El mantenimiento de PHP4 ha concluido y el de PHP5 se detuvo en 2018, por lo que todas las nuevas aplicaciones deberían escribirse en PHP7.
 
-Lo nuevo en PHP 7:
-Mejoras importantes de rendimiento.
-Unificación de la sintaxis de las variables.
-Declaración de tipos devueltos por los métodos.
-Declaración de tipos escalares (integer, float, string y boolean)
-Clases anónimas.
-Reemplazo de antiguos errores internos de PHP por excepciones manejables en tiempo de ejecución.
-Operador de comparación <=>
-Etc
+Sí, así es el sentido del humor de los informáticos. Qué le vamos a hacer.
 
-Pros
-Completamente libre y abierto.
-Muy eficiente.
-Ejecutable en (casi) cualquier servidor.
-Excelente documentación.
-Curva de aprendizaje baja si ya sabes programar.
-Entornos de desarrollo abundantes, para todos los gustos.
-Fácil interoperatibilidad con otros sistemas, en particular con bases de datos.
-Comunidad muy grande.
-Sigue siendo líder del mercado de aplicaciones web.
+Es un lenguaje de programación de propósito general. Junto con librerías como PHP-Qt o PHP-GTK, puedes programar con él cualquier aplicación de escritorio.
 
-Cons
-Fallos de diseño (corregidos en su mayoría a partir de PHP 5), como:
-Los métodos para acceso a bases de datos cambian según el SGBD usado.
-Nombres de funciones inconsistentes.
-No es completamente orientado a objetos.
-Tipado confuso y, a veces, impredecible.
-Grandes (e incompatibles) cambios entre versiones.
-Pérdida lenta pero imparable de cuota de mercado (en favor de Python)
-Pésima relación señal/ruido en la web: ¡hay demasiados malos desarrolladores en PHP!
+Pero, por circunstancias más debidas al azar que a otra cosa, se empezó a usar para desarrollo web al comienzo de la web 2.0, y hoy en día se utiliza casi exclusivamente para ese propósito.
 
-Lenguajes script de cliente
-Son lenguajes que se ejecutan en la máquina cliente.
-El servidor web envía al cliente una página HTML con código en otro lenguaje en su interior.
-El navegador del cliente ejecuta ese código en su máquina
-JavaScript es un lenguaje de cliente
-Lenguajes script de servidor
-Son lenguajes que se ejecutan en la máquina servidor.
-El servidor web ejecuta el script, cuya salida es un fichero en HTML.
-Ese fichero HTML es enviado a la máquina cliente, que lo interpreta y visualiza. Puede contener en su interior scripts de cliente.
-PHP es un lenguaje de servidor
-Los scripts de servidor pueden acceder a los recursos ubicados en el servidor: bases de datos, ficheros, etc.
+Cuando se usa en desarrollo web, PHP aparece embebido dentro de documentos HTML.
+
+#### Características de PHP
+
+* PHP permite conectarse con múltiples bases de datos: MySQL, MariaDB, Oracle, PostgreSQL, SQL Server, DB2, etc. También puede conectar por ODBC.
+* Se parece mucho a otros lenguajes de tercera generación y orientados a objeto (en particular a C/C++ y, por tanto, a Java). Su curva de aprendizaje para los que ya saben programar es muy plana.
+
+#### Brevísima historia de PHP
+
+* Surge en 1995 como extensión de CGI (otro lenguaje para acceso a funciones del servidor)
+* PHP3 (1998) tuvo un gran éxito comercial.
+* PHP4 (2000) es la versión más extendida (por desgracia): la mayoría de los scripts en PHP que circulan por la red están escritos en esta versión obsoleta.
+* PHP5 (2004) tiene soporte para orientación a objetos y una biblioteca de clases bastante bien diseñada. Por lo tanto, desde esta versión PHP pasa de ser un lenguaje estructurado (3GL) a ser un lenguaje orientado a objetos.
+* PHP6 empezó a desarrollarse en 2007 y se canceló en 2014.
+* PHP7 introdujo novedades menores y estuvo vigente hasta 2020. En el momento de escribi esto (junio de 2021) es la versión dominante en la mayoría de los servidores web.
+* PHP8 es la última versión (8.0.7 en junio de 2021). Las versiones PHP4 y PHP5 se consideran obsoletas e inseguras. Aún existe soporte para PHP7, pero todas las nuevas aplicaciones se deberían escribir pensando en PHP8.
+
+#### Lo nuevo en PHP 8
+
+PHP 8 no tiene demasiadas novedades con respecto a PHP 7, como este no las tenía con respecto a PHP 5.
+
+Debes tener en cuenta que el mayor salto evolutivo se produjo entre PHP 4 y PHP 5. A partir de ahí, y para principiantes como nosotros, la cosa no ha cambiado demasiado.
+
+Algunas de las novedades más destacables de PHP 8 son:
+
+* Mejoras importantes de rendimiento, con la aparición de JIT (Just in Time Compiler), un compilador de PHP que trabaja de forma transparente al programador para incrementar la velocidad de ejecución.
+* Mejoras menores en el manejo de las clases y métodos abstractos.
+* Simplificación en la declaración de atributos.
+* Posibilidad de usar arrays con índices negativos.
+* Etc
+
+#### Ventajas de PHP sobre otros lenguajes
+
+* Es un lenguaje libre y abierto.
+* Es muy eficiente.
+* Es ejecutable en (casi) cualquier servidor.
+* Cuenta con una excelente documentación y miles de foros y sitios donde consultar dudas.
+* La curva de aprendizaje es baja si ya sabes programar.
+* Existen mogollón de entornos de desarrollo para PHP, para todos los gustos.
+* Fácil interoperatibilidad con otros sistemas, en particular con bases de datos.
+* Comunidad muuuy grande.
+* Aunque llevan décadas diciendo que es un lenguaje moribundo, lo cierto es que sigue siendo líder del mercado de aplicaciones web.
+
+#### Inconvenientes de PHP
+
+* Fallos de diseño (corregidos en su mayoría a partir de PHP 5), como:
+   * Los métodos para acceso a bases de datos cambian según el SGBD usado.
+   * Nombres de funciones inconsistentes.
+   * No es completamente orientado a objetos.
+   * Tipado confuso y, a veces, impredecible.
+* Grandes (e incompatibles) cambios entre versiones.
+* Pérdida lenta pero constante de cuota de mercado.
+* Pésima relación señal/ruido en la web: ¡hay demasiados *malos* desarrolladores en PHP!
 
 ### 2.2.6. MariaDB
 
-MariaDB es un gestor de bases de datos relacional multiusuario y multiplataforma.
-Permite mútiples conexiones remotas.
-El software libre.
-Existen librerías para acceder a MariaDB desde muchos lenguajes: C/C++, Java, PHP, Perl, Pascal... Además, hay drivers ODBC.
-Está muy extendida en aplicaciones web, generalmente en combinación con PHP.
-Cuenta un un interfaz gráfico programado en PHP, llamado PHPMyAdmin, que se ejecuta en el navegador web.
+Otra de las herramientas básicas de nuestra caja de herramientas es el gestor de bases de datos relacionales (SGBD).
 
-MySQL surgió como un proyecto OpenSource en Suecia en 1995.
-El objetivo era lograr un SGBD rápido y fiable que cumpliera con el estándar SQL.
-Las primeras versiones (que se denominaron mSQL) eran muy ineficientes.
-La popularización de PHP y su ganancia en eficiencia a partir de la versión 3 la han hecho muy popular en la actualidad.
-Tras su adquisición por Oracle, se intentó relegar al segmento medio-bajo en el mercado de los SGBD y surgió un fork: MariaDB.
-Versión más reciente (agosto 2020): MariaDB 10.5.5
+MySQL / MariaDB es el SGBD líder del mercado de las aplicaciones web. Nos permitirá conectarnos a la base de datos y ejecutar sentencias SQL de forma remota al visitar una aplicación web.
 
-## 2.3. Sintaxis de PHP
+Existen otras posibilidades, desde luego, como:
+* SQL Server
+* Oracle
+* PostgreSQL
+* SQLite
+
+También está la posibilidad de usar base de datos no relacionales, como MongoDB, Cassandra o Redis. PHP puede conectarse también a estos sistemas, pero la forma de trabajar es diferente que con bases de datos relacionales. Como estas últimas son, de lejos, las predominantes en el mercado, nos centraremos en ellas.
+
+#### Características de MariaDB
+
+* MariaDB es un gestor de bases de datos relacional multiusuario y multiplataforma.
+* Permite mútiples conexiones remotas.
+* Es software libre.
+* Existen librerías para acceder a MariaDB desde muchos lenguajes: C/C++, Java, PHP, Perl, Pascal... Además, hay drivers ODBC.
+* Está muy extendida en aplicaciones web, generalmente en combinación con PHP.
+* Cuenta un interfaz gráfico programado en PHP, llamado PHPMyAdmin, que se ejecuta en el navegador web. Por supuesto, se puede usar cualquier otro cliente compatible con MySQL, como MySQL Workbench.
+
+#### Brevísima historia de MariaDB
+
+* MySQL surgió como un proyecto OpenSource en Suecia en 1995.
+* El objetivo era lograr un SGBD rápido y fiable que cumpliera con el estándar SQL.
+* Las primeras versiones (que se denominaron mSQL) eran muy ineficientes.
+* La popularización de PHP y su ganancia en eficiencia a partir de la versión 3 la han hecho muy popular en la actualidad.
+* Tras su adquisición por Oracle, se intentó relegar al segmento medio-bajo en el mercado de los SGBD y surgió un fork: MariaDB.
+* Versión más reciente (junio 2021): MariaDB 10.5.10
+
+## 2.3. La sintaxis de PHP
+
+### 2.3.1. Cómo embeber PHP dentro de HTML
 
 El código PHP se escribe incrustado dentro de un documento de texto mediante estas etiquetas:
-<?php .... ?>
-La sintaxis clásica se ha desechado en PHP 7:
-<script language= “php”> ... </script>
 
+```html
+<?php .... ?>
+```
+
+La sintaxis clásica está obsoleta desde PHP 7:
+
+```html
+<script language= "php"> ... </script>
+```
 Este archivo debe tener extensión .php.
+
 El servidor ejecuta el código PHP que encuentre dentro del archivo, mientras que el código HTML es enviado al cliente sin modificar.
 
-Comentarios en PHP: 
+### 2.3.2. Comentarios
+
+```php
 // Comentario de una línea
 #  Comentario de una línea
 /* Comentario de una o varias líneas */
+```
 
-Operadores: son iguales que los de C/C++:
-Asignación: 	$a = 3;
-Comparación:  ==, <=, >=, !=, <=>, etc.
-Operadores aritméticos: +, -, *, /, %...
-Operadores lógicos: &&, ||, !
-Etc.
+### 2.3.3. Operadores
 
-Variables
-El identificador siempre debe empezar por $
+* Operadores: son iguales que los de C/C++:
+* Asignación: 	$a = 3;
+* Comparación:  ==, <=, >=, !=, <=>, etc.
+* Operadores aritméticos: +, -, *, /, %...
+* Operadores lógicos: &&, ||, !
+
+### 2.3.4. Variables
+
+El **identificador** de variable siempre debe empezar por $. Esta es una peculiaridad de PHP que al principio descoloca un poco.
+
 No es necesario declararlas: al inicializarlas queda especificado el tipo. En PHP 7 pueden indicarse los tipos predefinidos (int, float, string...)
 Ejemplos:
+
+```php
 $a = 4;			// Variable entera (PHP 5)
 int $a = 4;		// Variable entera (PHP 7)
 $media = 52.75;		// Variable real
 $texto = "Hoy es lunes"; // Variable string
+```
 
-Variables asignadas por referencia (&):
-Cuando una variable se asigna a otra usando el operador &, ambas pasan a compartir el mismo espacio de memoria. A partir de ahora, un cambio en una de las dos provoca un cambio en la otra.
-$a = &$b;		// a y b son “la misma” variable
+Cualquier variable puede **cambiarse de tipo** con la función **setType()**:
 
-Cambio de tipo en las variables
-Cualquier variable puede cambiarse de tipo con la función setType:
-$a = “10”;		// a es una cadena
-setType($a, “integer”);	// a se convierte a entero
+```php
+$a = "10";		// a es una cadena
+setType($a, "integer");	// a se convierte a entero
+```
 
-Los tipos predefinidos en PHP son:
-integer (entero)
-double (real)
-bool (booleano)
-string (cadena)
-array (pues eso)
+Los **tipos de datos** predefinidos en PHP son:
 
+* integer (entero)
+* double (real)
+* bool (booleano)
+* string (cadena)
+* array (pues eso)
 
-Arrays
-Los arrays en PHP son colecciones de variables del mismo o de distinto tipo identificadas por un índice.
-Ejemplos:
+### 2.3.5. Arrays
+
+Los arrays en PHP son colecciones de variables del mismo o de distinto tipo identificadas por un índice. Se parecen más a los ArrayList de Java que a los arrays clásicos propiamente dichos.
+
+```php
 $a[1] = "lunes";
 $a[2] = "martes";
 $a[3] = "miércoles";
-Lo habitual es que el índice sea un número entero, pero puede no serlo (array asociativo):
+```
+
+El índice no tiene por qué ser un número entero: puede ser un String (array asociativo):
+
+```php
 $a["ESP"] = "España";
 $a["FRA"] = "Francia";
 $a["POR"] = "Portugal";
+```
 
-Condicionales
+### 2.3.6. Estructuras de control
 
+#### Condicionales
+
+php
 if (condición)
 {
 acciones-1;
@@ -249,8 +320,9 @@ else
 {
 acciones-2;
 }
-
-Bucle mientras
+```
+XXX
+#### Bucle mientras
 while (condición)
 {
 acciones;
