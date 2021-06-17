@@ -24,106 +24,73 @@ En cualquier caso, es conveniente que conozcas el esquema ACL completo (5 tablas
 
 ## 3.2. Cookies
 
-XXX
+### 3.2.1. ¿Qué son las cookies?
 
-PHP soporta cookies HTTP de forma transparente. Las Cookies son un mecanismo por el cuál se almacenan datos en el navegador remoto y así rastrear o identificar a usuarios que vuelven, pero también puede utilizarse cualquier otro valor que deba permanecer de un script a otro. Se pueden configurar Cookies usando la función setcookie() o setrawcookie(). 
+Las cookies son pequeños archivos de texto enviados desde el servidor que se almacenan en el lado del cliente. Permiten guardar información de forma persistente, de manera que se mantenga entre una petición al servidor y otra. Una cookie puede durar minutos, horas, días o incluso indefinidamente.
 
-Las Cookies son parte del header HTTP, así es que setcookie() debe ser llamada antes que cualquier otra salida sea enviada al browser. En caso contrario, el valor de la cookie no estará disponible hasta que se recargue la página. 
+PHP soporta cookies de forma transparente. Se pueden configurar Cookies usando las funciones setcookie() o setrawcookie() y el array global $_COOKIE. 
 
-setcookie()
-setcookie(), junto con la variable superglobal $_COOKIE, es el modo principal de manejar cookies en PHP.
+### 3.2.2. Menajando cookies con PHP
 
-Esta función define una cookie para ser enviada junto con el resto de las cabeceras de HTTP. Al igual que otras cabeceras, las cookies deben ser enviadas antes de que el script genere ninguna salida (es una restricción del protocolo http). Ésto implica que las llamadas a esta función se coloquen antes de que se genere cualquier salida, incluyendo las etiquetas <html> y <head> al igual que cualquier espacio en blanco.
+#### Enviar una cookie: setcookie()
 
-Una vez que han sido enviadas las cookies, se puede acceder a ellas en la próxima carga de la página gracias a los arrays $_COOKIE o $HTTP_COOKIE_VARS. Nótese que las superglobales tales como $_COOKIE están disponibles a partir de PHP 4.1.0. 
+Esta función define una cookie que se enviará al cliente junto con el resto de las cabeceras de HTTP. Devuelve *true* si la cookie se envía con éxito o *false* en caso contrario. 
 
-La sintaxis de setcookie() es:
+Su sintaxis es:
+
+```php
 bool setcookie ( string $name [, string $value [, int $expire = 0 [, string $path [, string $domain [, bool $secure = false [, bool $httponly = false ]]]]]] )
+```
 
-Los parámetros de setcookie() son:
+Las cookies deben enviarse antes de que el script genere ninguna salida. Esto es una restricción del protocolo http. Por lo tanto, debes llamar a esta función antes de hacer *cualquier* salida, incluidos espacios en blanco. En caso contrario, la cookie no estará disponible hasta que la página se recargue.
 
-name 
-El nombre de la cookie. 
+La función setcookie() admite un montón de parámetros, la mayor parte de ellos optativos:
 
-value 
-El valor de la cookie. Este valor se guarda en el computador del cliente; no almacene información sensible. Asumiendo que el name es 'cookiename', este valor se obtiene con $_COOKIE['cookiename']. 
+* **name**: El nombre de la cookie. Este es el único obligatorio. 
+* **value**: El valor de la cookie.
+* **expire**: El tiempo que la cookie tardará en expirar. Se trata de una fecha expresada en formato Unix.
+* **path**: La ruta del servidor para la que la cookie estará disponible. Si se utiliza '/', la cookie estará disponible en la totalidad del dominio.
+* **domain**: El dominio para el cual la cookie está disponible.
+* **secure**: Si la cookie solo debería enviarse en caso de conexión https, pon este argument a *true*.
+* **httponly**: Esta cookie solo será accesible a través de http. Es decir, no podrá utilizarse desde Javascript.
 
-expire 
-El tiempo en el que expira la cookie. Es una fecha Unix por tanto está en número de segundos a partir de la presente época. En otras palabras, probablemente utilizará la función time() más el número de segundos que quiere que dure la cookie. También podría utilizar la función mktime(). time()+60*60*24*30 configurará la cookie para expirar en 30 días. Si se pone 0, o se omite, la cookie expirará al final de la sesión (al cerrarse el navegador). 
+Aquí tienes tres ejemplos de envío de la misma cookie:
 
-path 
-La ruta dentro del servidor en la que la cookie estará disponible. Si se utiliza '/', la cookie estará disponible en la totalidad del domain. Si se configura como '/foo/', la cookie sólo estará disponible dentro del directorio /foo/ y todos sus sub-directorios en el domain, tales como /foo/bar/. El valor por defecto es el directorio actual en donde se está configurando la cookie. 
-
-domain 
-El dominio para el cual la cookie está disponible. Establecer el dominio a 'www.example.com' hará que la cookie esté disponible en el subdominio www y subdominios superiores. Las cookies disponibles en un dominio inferior, como 'example.com', estarán disponibles en dominios superiores, como 'www.example.com'. Los navegadores antiguos pueden necesitar un . al inicio para comparar todos los subdominios. 
-
-secure 
-Indica que la cookie sólo debiera transmitirse por una conexión segura HTTPS desde el cliente. Cuando se configura como TRUE, la cookie sólo se creará si es que existe una conexión segura. 
-
-httponly 
-Cuando es TRUE la cookie será accesible sólo a través del protocolo HTTP. Esto significa que la cookie no será accesible por lenguajes de scripting, como JavaScript. Se ha indicado que esta configuración ayuda efectivamente a reducir el robo de identidad a través de ataques XSS (aunque no es soportada por todos los navegadores). pero esa afirmación se disputa a menudo. Agregado a partir de PHP 5.2.0. Puede ser TRUE o FALSE 
-
-El valor devuelto por setcookie() es booleano. Si existe algún tipo de output anterior a la llamada de esta función, setcookie() fallará y retornará FALSE. Si setcookie() ejecuta satisfactoriamente, retornará TRUE. Esto no indica si es que el usuario ha aceptado la cookie o no. 
- 
-Ejemplo #1 ejemplo de envío con setcookie() 
-
+```php
 <?php 
-$value = 'cualquier cosa'; 
+$value = 'I'm your father'; 
 
-setcookie("TestCookie", $value); 
-setcookie("TestCookie", $value, time()+3600);  /* expira en una hora */ 
-setcookie("TestCookie", $value, time()+3600, "/~rasmus/", "example.com", 1); 
-?> 
-Nótese que la parte del valor de la cookie será automáticamente codificada con urlencode al enviar la cookie, y al ser recibida será automáticamente decodificada y asignada a una variable con el mismo nombre que el nombre de la cookie. Si no se desea ésto, se puede usar setrawcookie() si es que se está utilizando PHP 5. Para ver el contenido de nuestra cookie de prueba en un script, simplemente siga uno de los ejemplo siguientes: 
+setcookie("VaderQuote", $value); 
+setcookie("VaderQuote", $value, time()+3600);  // la cookie expira en una hora 
+setcookie("VaderQuote", $value, time()+3600, "/quotes/", "bestquotes.com", 1); 
+?>
+```
 
+#### Recuperar una cookie: $_COOKIES[]
+
+Para ver el contenido de una cookie, simplemente hay que acceder al array global $_COOKIES. Por ejemplo: 
+
+```php
 <?php 
 // Imprimir una cookie individual 
-echo $_COOKIE["TestCookie"]; 
-echo $HTTP_COOKIE_VARS["TestCookie"]; 
+echo $_COOKIE["VaderQuote"]; 
 
-//Otra manera de depurar/probar es viendo todas las cookies 
-print_r($_COOKIE); 
 ?> 
+```
 
+#### Borrar una cookie 
 
-Ejemplo #2 ejemplo de borrado con setcookie() 
+Para forzar el borrado de una cookie en el cliente basta con enviarla con una fecha de expiración anterior a la fecha actual. Por ejemplo:
 
-Al borrar una cookie debiese asegurarse que la fecha de expiración ya ha pasado, de modo a detonar el mecanismo de eliminación del navegador. El siguiente ejemplo muestra cómo borrar las cookies enviadas en el ejemplo anterior: 
-
+```php
 <?php 
-//establecer la fecha de expiración a una hora atrás 
-setcookie ("TestCookie", "", time() - 3600); 
-setcookie ("TestCookie", "", time() - 3600, "/~rasmus/", "example.com", 1); 
-?> 
-
-
-Ejemplo #3 setcookie() y los arrays 
-
-También puede crear arrays de cookies utilizando la notación de arrays en el nombre de la cookie. El efecto de ésto es de crear tantas cookies como elementos hay en el array, pero al recibir el script la cookie, todos los valores son colocados en un array con el nombre de la cookie: 
-
-<?php 
-// crear las cookies 
-setcookie("cookie[tres]", "cookietres"); 
-setcookie("cookie[dos]", "cookiedos"); 
-setcookie("cookie[uno]", "cookieuno"); 
-
-// imprimirlas luego que la página es recargada 
-if (isset($_COOKIE['cookie'])) { 
-    foreach ($_COOKIE['cookie'] as $name => $value) { 
-        $name = htmlspecialchars($name); 
-        $value = htmlspecialchars($value); 
-        echo "$name : $value <br />\n"; 
-    } 
-} 
-?> 
-
-El resultado del ejemplo sería: 
-tres : cookietres 
-dos : cookiedos 
-uno : cookieuno
+setcookie ("VaderQuote", "", time() - 3600);  // Establece la fecha de expiración una hora en el pasado
+?>
+``` 
 
 ## 3.3. Sesiones
 
+XXX
 El soporte para sesiones en PHP consiste en que un script puede almacenar cierta información en el servidor para que esté disponible para otros scripts que se ejecuten posteriormente. Esto habilita la construcción de aplicaciones más personalizadas e interactivas. 
 
 Un visitante que accede a su sitio web se el asigna un id único, también llamado id de sesión (SID). Este SID almacenado en una cookie en la parte del cliente o se propaga de forma transparente en el URL. 
