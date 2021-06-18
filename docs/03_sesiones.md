@@ -90,141 +90,126 @@ setcookie ("VaderQuote", "", time() - 3600);  // Establece la fecha de expiraci�
 
 ## 3.3. Sesiones
 
-XXX
-El soporte para sesiones en PHP consiste en que un script puede almacenar cierta información en el servidor para que esté disponible para otros scripts que se ejecuten posteriormente. Esto habilita la construcción de aplicaciones más personalizadas e interactivas. 
+Las sesiones en PHP habilitan un mecanismo para que un script almacene variables (llamadas **variables de sesión**) en el servidor de manera persistente, de modo que posteriores peticiones de scripts procedentes de un cliente puedan acceder a esas variables.
 
-Un visitante que accede a su sitio web se el asigna un id único, también llamado id de sesión (SID). Este SID almacenado en una cookie en la parte del cliente o se propaga de forma transparente en el URL. 
+Cada cliente tiene su propio espacio de variables de sesión en el servidor, de manera que no se mezclan unas con otras, ni un cliente puede acceder a las variables de otro cliente.
 
-El soporte para sesiones permite almacenar los datos entre peticiones en el array superglobal $_SESSION. Cuando un visitante accede a su sitio web, PHP comprobará automáticamente (si session.auto_start está establecido a 1), o sobre su petición (explícitamete a través de session_start() o implícitamente a través de session_register()), si se ha enviado un id de sesión específico con la petición. Si éste es el caso, se recuperan las variables de sesión anteriormente guardadas para ese SID.
+La forma en la que PHP logra distinguir a los clientes entre sí es enviándoles una cookie con un valor aleatorio diferente para cada cliente.
 
-$_SESSION (y todas las variables registradas) son serializadas internamente por PHP utilizando el gestor de serialización especificado en el ajuste ini session.serialize_handler, por lo que, en principio, admite el almacenamiento de variables complejas, incluídos objetos completos. 
+En el archivo php.ini se puede configurar la manera en la que PHP almacenará las variables de sesión (en memoria, en un fichero, etc), pero esto es irrelevante de cara a su funcionamiento y compete más al administrador del sistema que al programador. Lo que a nosotros nos interesa es aprender a crear variables de sesión, asignarles valor y recuperarlo posteriormente.
 
-Uso básico de sesiones
+### 3.3.1. Abrir sesiones: session_start()
 
-Las sesiones siguen un flujo de trabajo sencillo. Cuando una sesión se inicia, PHP recuperará una sesión existente usando el SID pasado desde la cookie de sesión o, si no se pasa una sesión, se creará una sesión nueva. PHP rellenará la variable superglobal $_SESSION con cualesquiera datos de sesión asociados al SID actual. Cuando PHP se cierra, automáticamente toma el contenido de la variable superglobal $_SESSION, la serializa, y la envía para almacenarla usando el gestor de almacenamiento de sesiones. 
+Antes de acceder a cualquier variable de sesión (ya sea para crearla, para modificarla o para eliminarla) necesitamos indicarle a PHP que queremos usar variables de sesión en ese scrpit.
 
-Por omisión, PHP usa el gestor interno de almacenamiento files, el cual se establece mediante session.save_handler. Éste guarda los datos de sesión en el servidor en la ubicación especificada por la directiva de configuración session.save_path. Lógicamente, este comportamiento puede modificarse en la configuración del servidor web.
+La función **session_start()** se usa para eso: habilita el acceso a las variables de sesión, es decir, crea una nueva sesión o reanuda una sesión preexistente.
 
-Las sesiones se puede iniciar manualmente usando la función session_start(), y si la directiva session.auto_start se establece a 1, una sesión se iniciará automáticamente en el momento en que PHP envíe cualquier salida al buffer de salida. 
+Las sesiones admiten un nombre, por si necesitas crear sesiones separadas para el mismo cliente. No obstante, la mayor parte de las veces te bastará con crear sesiones sin nombre, sin necesidad de pasar ningún argumento a session_start().
 
-Las sesiones normalmente se cierran automáticamente cuando PHP termina de ejecutar un script, pero se pueden cerrar manualmente usando la función session_write_close(). 
+### 3.3.2. Usar variables de sesión: $_SESSION
 
-Ejemplo #1: Registrar una variable con $_SESSION. 
-<?php 
-session_start(); 
-if (!isset($_SESSION['count'])) { 
-  $_SESSION['count'] = 0; 
-} else { 
-  $_SESSION['count']++; 
-} 
-?> 
+Las variables de sesión se manipulan a través del array superglobal **$_SESSION**.
 
-Ejemplo #2 Dejar de registrar una variable con $_SESSION 
-<?php 
-session_start(); 
-unset($_SESSION['count']); 
-?> 
+Si necesitas una variable de sesión llamada, por ejemplo, nombre_usuario, simplemente haz esto:
 
-Pasar el ID de Sesión 
-PHP utiliza dos métodos para propagar el SID (Session ID) a cada script que se ejecuta en el servidor: 
-    • Cookies 
-    • Parámetro de URL 
+```php
+session_start();
+$_SESSION['nombre_usuario'] = "lo-que-sea";
+```
 
-El módulo de sesiones soporta ambos métodos. Las cookies son óptimas, pero ya que no están siempre disponibles, también se proporciona una manera alternativa. El segundo método embebe el id de sesión directamente en las URL de manera transparente. 
+Por supuesto, el valor de esa posición del array $_SESSION puede consultarse o modificarse cuando lo necesitemos.
 
-El siguiente ejemplo muestra cómo registrar una variable, y cómo enlazar correctamente a otra página usando SID. 
+### 3.3.3. Eliminar variables de sesión: unset() y session_destroy()
 
-Ejemplo: Contar el número de peticiones de un sólo usuario 
-<?php 
+La función **unset()** se utiliza para destruir cualquier variable, incluidas las de sesión:
 
-session_start(); 
+```php
+unset($_SESSION['nombre_usuario']);
+```
 
-if (empty($_SESSION['count'])) { 
-   $_SESSION['count'] = 1; 
-} else { 
-   $_SESSION['count']++; 
-} 
-?> 
+Si lo que deseas es destruir todas las variables de sesión, es preferible recurrir a **session_destroy()**.
 
-<p> 
-Hola visitante, ha visto esta página <?php echo $_SESSION['count']; ?> veces. 
-</p> 
+Ahora bien, session_destroy() destruye la información asociada a la sesión actual, pero no elimina realmente las variables de la memoria del servidor ni borra la cookie de sesión del cliente.
 
-<p> 
-Para continuar, <a href="nextpage.php?<?php echo htmlspecialchars(SID); ?>">haga clic 
-aquí</a>. 
-</p> 
+Para asegurarte de destruir todas las variables de sesión, puedes usar la función **session_unset()**. 
 
-(Nota: La función htmlspecialchars() se puede usar cuando se imprime SID para prevenir ataques relacionados con XSS) 
+Y, para borrar la cookie de sesión, debes usar **setcookie()**, como en este ejemplo:
 
-Gestores de sesión personalizados
-Almacenar el SID en una cookie en el lado del cliente y, más aún, propagar el SID por la URL, implican importantes problemas de seguridad para las variables de sesión (ver más abajo). Un método más seguro es almacenar el SID en algún lugar del servidor, como una base de datos o un fichero.
+```php
 
-Para implementar el almacenamiento en bases de datos, o cualquier otro método de almacenamiento, se necesita usar session_set_save_handler() para crear un conjunto de funciones de almacenamiento a nivel de ususario. A partir de PHP 5.4.0 se pueden crear gestores de sesiones usando la clase SessionHandlerInterface o extendiendo los gestores internos de PHP heredando de la clase SessionHandler. 
+<?php
+// Retomar la sesión.
+session_start();
 
-Las llamadas de retorno especificadas en session_set_save_handler() son métodos llamados por PHP durante el ciclo de vida de una sesión: open, read, write y close, y para las tareas domésticas: destroy para borrar una sesión y gc para la recoleción periódica de basura. 
+// Destruir todas las variables de sesión (optativo)
+session_unset();
 
-Por lo tanto, PHP siempre necesita gestores de almacenamiento de sesiones. El predeterminado normalmente es el gestor de almacenamiento interno 'files'. Se puede establecer un gestor de almacenamiento personalizado usando session_set_save_handler(). Se pueden porporcionar de forma alternativa gestores de almacenamiento interno mediante extensiones de PHP, tales como sqlite, memcache y memcached y pueden establecerse con session.save_handler. 
+// Si se desea destruir la sesión completamente, borre también la cookie de sesión.
+// Nota: ¡Esto destruirá la sesión, y no la información de la sesión!
+$params = session_get_cookie_params();
+setcookie(session_name(), '', time() - 42000,
+        $params["path"], $params["domain"],
+        $params["secure"], $params["httponly"]
+);
 
-Cuando se inicia la sesión, PHP llamará internamente al gestor open seguido de la llamada de retorno read la cual debería devolver una cadena codificada exactamente como si fuera pasada originalmente para almacenamiento. Una vez que la llamada de retorno read devuelve la cadena codificada, PHP la decodificará y rellenará el array resultante en la variable superglobal $_SESSION. 
-
-Cuando PHP se cierra (o se llama a session_write_close()), PHP codificará internamente la variable superglobal $_SESSION y la pasará conjuntamente con el ID de sesión a la llamada de retorno write. Después de finalizada la llamada de retorno write, PHP invocará internamente al gestor de llamada de retorno close. 
-
-Cuando una sesión se destruye de forma específica, PHP llamará al gestor destroy con el ID de sesión. 
-
-PHP llamará a la llamada de retorno gc de vez en cuando para terminar cualquier registro de sesión según lo establecido en el tiempo de vida máximo de una sesión. Esta rutina debería borrar todos los registros del almacenamiento persistente a los que se accedió por última vez más allá del parámetro $lifetime.
-
-Nótese que raramente merece la pena tomarse la molestia en desarrollar un gestor de sesiones personalizado del modo que aquí se ha descrito. Para un uso convencional de variables de sesión, es suficiente con el mecanismo basado en cookies o en propagación mediante URL. Y, si nuestra aplicación web necesita unos estándares de calidad superiores, encontraremos gestores de sesión basados en bases de datos y/o ficheros en el lado del servidor desarrollados por terceros y plenamente funcionales (por ejemplo, todos los frameworks proporcionan algún mecanismo en este sentido)
-
-
+// Finalmente, cerrar la sesión
+session_destroy();
+?>
+```
 
 ## 3.4. Sesiones, cookies y seguridad
 
 Cookies y variables de sesión se usan a menudo para controlar la seguridad de la aplicación web.
+
 Por ejemplo, tras el login, el ID del usuario puede almacenarse en:
-Una cookie. Si existe esa cookie, significa que el login ha sido correcto y la aplicación puede continuar.
-Una variable de sesión. Si existe tal variable, el login ha sido correcto.
+
+* **Una cookie**. Si existe esa cookie, significa que el login ha sido correcto y la aplicación puede continuar.
+* **Una variable de sesión**. Si existe determinada variable (por ejemplo, una con el id del usuario), el login ha sido correcto.
+
 Cuando el usuario abandona la aplicación, el programa debe destruir la cookie o cerrar la sesión.
 
-¡Ningún método es completamente seguro!
+Pues bien: **ninguno de estos métodos es completamente seguro**.
+
 Las cookies pueden rastrearse o modificarse en el ordenador del cliente. Además, algunos clientes las tienen desactivadas. ¡No te puedes fiar de ellas!
-Las variables de sesión, en principio más seguras, pueden ser atacadas capturando el ID de sesión.
+
+Las variables de sesión, en principio más seguras, pueden ser atacadas capturando el ID de sesión, como veremos más adelante.
+
 El método más seguro, y el más complicado de programar, es el que combina:
-Cookies y/o variables de sesión.
-Variables guardadas en una tabla de la BD.
 
+* Cookies y/o variables de sesión.
+* Variables guardadas en una tabla de la BD.
 
-El módulo de sesión no puede garantizar que la información que se almacena en una sesión sea vista sólo por el usuario que creó la sesión. Se necesita tomar medidas de seguridad adicionales para proteger activamente la integridad de la sesión, dependiendo del valor asociado con ella.
-
-Evalúe la importancia de la información soportada por sus sesiones y utilice protecciones adicionales si es encesario. Esto normalmente conlleva un precio, reduciendo la comodidad para el usuario. Por ejemplo, si quiere proteger a los usuarios de tácticas de ingeniería social simples, necesita habilitar session.use_only_cookies. En este caso, las cookies deben estar activas incondicionalmente en el lado del usuario, o las sesiones no funcionarán.
-
-Hay varias maneras de capturar un SID existente y, por lo tanto, un atacante puede, con relativa facilidad, hacerse pasar por quien no es. Recuerde que el SID se almacena en una cookie o se transmite en la URL. Si no está encriptado, el SID fluirá en texto plano por la red. La única solución aquí es implementar SSL en su servidor y hacerlo obligatorio para los usuarios.
-
-Por último, para desarrollar un sitio web de alta seguridad se puede utilizar una combinación de todos estos elementos, combinados con el uso de la base de datos como depósito de las variables de sesión. Es decir, se pueden almacenar la variables de sesión en cookies del lado del cliente y en la base de datos en el servidor, donde están más seguras que en variables de sesión, y se puede comprobar la coherencia de ambos valores cuando sea necesario. Añadiendo la codificación mediante SSL, el sitio web se convertiría en altamente seguro. Como se ha mencionado antes, muchos de estos mecanismos se encuentran presentes en los frameworks más populares para desarrollo web con PHP, como Laravel, Symfony, Zend, CakePHP o Codeigniter.
+El uso de frameworks solventes (como los que veremos este curso) hace innecesario tomarse este trabajo, puesto que todos habilitan un mecanismo de sesiones seguras que mejora notablemente las prestaciones de las sesiones nativas de PHP.
 
 ## 3.5. Técnicas de ataque frecuentes
 
-Fuente: securitybydefault.com
+(Esta sección está adaptada de [securitybydefault.com](securitybydefault.com))
 
-Escribir aplicaciones PHP no es demasiado difícil. Pero muchos olvidan los aspectos de seguridad que deben ser tenidos en cuenta al implementar estas aplicaciones. A veces no se piensa en el daño que puede sufrir un sitio web hasta que ya es demasiado tarde.
+Uno de los fallos más graves y más frecuentes a la hora de escribir aplicaciones PHP es olvidarse de la seguridad.
 
-Se debe empezar a diseñar con cabeza y no ser meros robots codificando. Veamos un poco más a fondo las posibles amenazas y recomendaciones para hacer que nuestro sitio web sea un poco más seguro.
+Cualquier aplicación web, por el mero hecho de estar abierta a recibir información procedente de la red, es susceptible de ser atacada. Y te aseguro que, antes o después, cualquier aplicación que está online acaba por ser atacada. Es una certeza matemática.
+
+En esta sección vamos a describir qué tipos de ataque son los más frecuentes.
+
+Aunque proporcionaremos algunas estrategias de defensa (que debes tener en cuenta en tus desarrollos), hay una estrategia común a todos estos ataques: utilizar un framework potente como Laravel, Symfony o Zend, debidamente actualizado. Los mecanismos de seguridad que implementan estos frameworks son suficientes para la mayor parte de los casos y se mejoran cada vez que se descubre una vulnerabilidad.
 
 ### 3.5.1. Captura de ID de sesión
 
-El ID de sesión se pasa entre páginas de forma transparente a través de cookies o de la URL (con POST). Un atacante puede leer el ID de sesión en el paquete http y acceder a las variables de sesión.
-Solución:
-Combinar las variables de sesión con cookies o con entradas en la base de datos.
-No confiar en variables de sesión para información sensible.
+El ID de sesión se guarda como una cookie en el cliente. Por lo tanto, viaja en el paquete http desde el servidor hasta el cliente.
 
-Las sesiones y las cookies pueden ser usadas para comprometer las cuentas de los usuarios. Cuando se almacena una cookie en el ordenador ésta puede ser modificada por el usuario.
+Un atacante que esté escuchando en esa red puede leer el ID de sesión del paquete http y, de ese modo, suplantar la identidad de la persona que inició la sesión. También puede inyectar Javascript a su víctima para capturar de ese modo el ID de sesión, con idénticos resultados.
 
-Se recomienda:
+Soluciones:
 
-    • Cambiar el identificador de la sesión a menudo. Utilizando la función session_regenerate_id() se reduce la posibilidad de que el identificador sea interceptado.
-    • Usando versiones PHP5.2 o posteriores se puede denegar al Javascript del navegador el acceso a la cookie activando el flag httponly.
+* Combinar las variables de sesión con cookies o con entradas en la base de datos.
+* Cambiar el ID de sesión periódicamente.
+* No confiar en variables de sesión de PHP para almacenar información muy sensible.
+* Denegar el acceso a la cookie de sesión desde Javascript (usando el atributo httponly).
+* Acceder solo a webs que usen https, no http. De ese modo, la cookie de sesión viaja encriptada hasta el navegador.
 
 ### 3.5.2. Inyección de SQL
+
+XXX
 
 Este ataque se produce cuando un atacante ejecuta sentencias SQL en la base de datos del sitio web, insertando en un campo del formulario sentencias SQL dentro de otra sentencia SQL haciendo que se ejecute la sentencia invasora.
 
