@@ -195,9 +195,9 @@ Aunque proporcionaremos algunas estrategias de defensa (que debes tener en cuent
 
 ### 3.5.1. Captura de ID de sesión
 
-El ID de sesión se guarda como una cookie en el cliente. Por lo tanto, viaja en el paquete http desde el servidor hasta el cliente.
+Como ya hemos visto, el ID de sesión se guarda como una cookie en el cliente. Por lo tanto, viaja en el paquete http desde el servidor hasta el cliente.
 
-Un atacante que esté escuchando en esa red puede leer el ID de sesión del paquete http y, de ese modo, suplantar la identidad de la persona que inició la sesión. También puede inyectar Javascript a su víctima para capturar de ese modo el ID de sesión, con idénticos resultados.
+Un atacante que esté escuchando en esa red puede **leer el ID de sesión del paquete http** y, de ese modo, **suplantar la identidad** de la persona que inició la sesión. También puede inyectar Javascript a su víctima para capturar de ese modo el ID de sesión, con idénticos resultados.
 
 Soluciones:
 
@@ -209,16 +209,47 @@ Soluciones:
 
 ### 3.5.2. Inyección de SQL
 
-XXX
+Este ataque consiste en que **un usuario malintencionado ejecuta sentencias SQL contra la base de datos** del sitio web insertándolas en un formulario.
 
-Este ataque se produce cuando un atacante ejecuta sentencias SQL en la base de datos del sitio web, insertando en un campo del formulario sentencias SQL dentro de otra sentencia SQL haciendo que se ejecute la sentencia invasora.
+Por ejemplo, si un atacante supone que nuestra tabla de usuarios se llama *users* (una suposición muy razonable), podría inyectar SQL en el formulario de login. 
 
-Se recomienda:
+Imaginemos un formulario de login donde se introduzcan el *nick* del usuario y la contraseña. El atacante nos atacaría escribiendo algo como esto en el campo *nick*:
 
-    • Filtrar los datos. Por ejemplo, si tenemos en nuestro formulario el campo username, y sabemos que los usuarios sólo pueden estar compuestos por letras y números, no se deben permitir caracteres como " ' " o " = " . O si se trata del campo e-mail, podemos utilizar expresiones regulares para validarlo, como preg_match('/^.+@.+\..{2,3}$/',$_POST['email'])
-    • Usar funciones que escapan caracteres especiales de una cadena para su uso en una sentencia SQL, como mysql_real_escape_string(), la cual coloca barras invertidas antes de los siguientes caracteres: \x00, \n, \r, \, ', " y \x1a. O addslashes(). La directiva de PHP magic_quotes_gpc está activada por defecto, y básicamente ejecuta la función addslashes() en todos los datos GET, POST, y COOKIE. No se debe utilizar addslashes() en las cadenas que ya se han escapado con magic_quotes_gpc ya que se hará un doble escape.
+```
+nada'; DELETE * FROM users; #
+```
+
+Imagina lo que pasaría si esta cadena se enviase sin filtrar a una variable php (por ejemplo, $nick) y se lanzase una consulta más o menos así:
+
+```
+$sql = "SELECT * FROM users WHERE nick = '$nick' and passwd = '$pass'";
+```
+
+¿Te lo ha imaginado ya? 
+
+Lo que sucedería es que, al expandir la varible $nick en ese string, se obtendría esta concatenación de sentencias sql:
+
+```
+SELECT * FROM users WHERE nick ='nada';
+DELETE * FROM users;
+#'and passwd = '$pass'
+```
+
+Cuando el gestor de base de datos reciba esas sentencias, las ejecutará en orden. El primer SELECT no devolverá ningún resultado, pero es sintácticamente correcto y, en cualquier caso, al atacante no le interesan esos resultados. Luego ejecutará el DELETE y ¡bingo! El simpático atacante acaba de cepillarse nuestra tabla de usuarios.
+
+(La tercera línea se ignorará, porque empieza por un símbolo de comentario).
+
+El atacante no solo puede ejecutar un DELETE, sino que puede llevar a cabo otras acciones destructivas (¿qué tal un DROP DATABASE?) o instrusivas (puede intentar insertar un usuario administrador fraudulento en la tabla users). Y todo ello partiendo de una suposición bastante plausible: que la tabla de usuarios se llama *users*.
+
+Para blindarse frente a inyecciones de SQL, se recomienda:
+
+* **Filtrar los datos. SIEMPRE**. Por ejemplo, si tenemos en nuestro formulario un campo *username* y sabemos que los usuarios sólo pueden estar compuestos por letras y números, no se deben permitir caracteres como comillas, puntos y coma, asteriscos, etc.
+* **Escapar los caracteres especiales** de cualquier dato de entrada antes de enviarla al gestor de bases de datos. Por ejemplo, mysql_real_escape_string() coloca barras invertidas antes de ciertos caracteres. addslashes() hace algo parecido. En las versiones recientes de PHP, el escape de caracteres especiales se hace automáticamente con cualquier dato que llegue por GET o POST.
+* **Usar nombres poco habituales para las tablas** de la base de datos. Una estrategia frecuente es utilizar un identificador significativo (como *users* para la tabla de usuarios) y añadirle varios caracteres o números aleatorios (así, la tabla se convertiría en algo como *users_58283*). Ese sufijo aleatorio se suele almacenar en un archivo de configuración para que esté accesible para todos los scripts del programa.
 
 ### 3.5.3. XSS (cross site scripting)
+
+XXX
 
 Las vulnerabilidades de XSS permiten ejecutar código de scripting en el contexto del sitio web:
 
@@ -232,7 +263,7 @@ Un usuario que ejecute este código con JavaScript activado en su navegador ser�
 
 Se recomienda:
 
-    • Filtrar todos los datos externos. El filtrado de datos es la práctica más importante que se puede adoptar. Al validar todos los datos externos a medida que entran y salen de la aplicación se mitigarán la mayoría de las preocupaciones del XSS.
+    • **Filtrar todos los datos externos. El filtrado de datos es la práctica más importante que se puede adoptar. Al validar todos los datos externos a medida que entran y salen de la aplicación se mitigarán la mayoría de las preocupaciones del XSS.
     • Utilizar las funciones que tiene PHP que ayudan al filtrado. Pueden ser útiles htmlentities () que convierte caracteres a entidades HTML, strip_tags () que elimina las etiquetas HTML y PHP de una cadena y utf8_decode ().
     • Basarse en listas blancas. Supongamos que los datos no son válidos hasta que no se pruebe que lo son. Esto implica verificar la longitud y asegurar que sólo los caracteres válidos son permitidos. Por ejemplo, si se inserta el nombre y apellidos, se debe asegurar que sólo se permiten letras y espacios. Por ejemplo Berners-Lee se consideraría nula, pero esto se puede arreglar añadiendo este nombre a la lista blanca. Es mejor rechazar datos válidos que aceptar datos maliciosos.
     • Utilizar una convención de nomenclatura estricta. Una convención de nomenclatura puede ayudar a los desarrolladores a distinguir entre datos filtrados y sin filtrar.
