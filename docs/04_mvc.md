@@ -8,35 +8,72 @@ parent: Desarrollo Web en Entorno Servidor
 ---
 # 4. Arquitectura MVC
 
+Cuando hablamos de arquitectura de una aplicación web nos referimos a la estructura básica que la sustenta, como los pilares de un edificio en construcción. Si quitas las paredes, las ventanas, las puertas, los azulejos de la cocina... todavía pueden distinguirse las formas fundamentales, ¿verdad?
+
+En este tema, hablaremos mucho de la arquitectura más popular en aplicaciones web (llamada MVC; no te preocupes, pronto se convertirá en tu mejor amiga). Pero, antes, vamos a darle una vuelta al término "arquitectura", porque en aplicaciones web se usa con dos significados distintos que conviene que tengas claros para no hacerte un lío. 
+
 ## 4.1 Arquitecturas FÍSICAS multinivel (multitier)
 
-Arquitectura en 2 niveles:
+Hablamos indistintamente de "arquitectura de una aplicación web" para referirnos a dos cosas distintas: la arquitectura física y la arquitectura lógica. Y ahí empiezan los líos.
 
-XXX esquema
+Vamos a intentar desliarnos antes de apretar el nudo.
 
-Arquitectura en 3 niveles:
+Una **arquitectura física de varios niveles** (multinivel o multitier, en inglés) consiste en un conjunto de ordenadores conectados a una red que ejecutan de forma conjunta una aplicación.
 
-XXX esquema
+El ejemplo más sencillo es la arquitectura cliente-servidor, la más popular en aplicaciones web sencillas: una máquina cliente y una máquina servidor ejecutan alternativamente fragmentos del código, proporcionando al usuario final la sensación de una aplicación unificada. 
+
+![Arquitectura en 2 niveles](/assets/images/04-arquitectura-2-niveles.png)
+
+Por supuesto, nada impide que tengamos más de dos máquinas colaborando en red par ejecutar una aplicación web. Podemos tener, por ejemplo, un cliente, un servidor web y un servidor de bases de datos (estos dos últimos en dos máquinas físicas diferentes). Esto sería una arquitectura de 3 niveles físicos.
+
+La arquitectura de N niveles tendría este aspecto:
+
+![Arquitectura en N niveles](/assets/images/04-arquitectura-N-niveles.png)
 
 ## 4.2 Arquitecturas LÓGICAS multicapa (multilayer)
 
-Ventajas:
-Desarrollos paralelos en cada capa
-Aplicaciones robustas (encapsulamiento)
-Matenimiento más sencillo
-Más flexibilidad para añadir módulos
-Más escalabilidad para aumentar rendimiento
+Ahora viene la vuelta de tuerca: la arquitectura de una aplicación también puede referirse a sus capas (layers) lógicas. Es decir, a las capas de software que nosotros, como desarrolladores, crearemos.
+
+Dividir una aplicación en capas que colaboran entre sí por medio de interfaces bien definidos no es una idea nueva, ni pertenece exclusivamente al ámbito de la programación web. Pero la mayor parte de las aplicaciones web hacen uso de este mecanismo de abstracción.
+
+La idea es dividir nuestra aplicación en capas de niveles de abstracción cada vez mayor. La capa superior (la más abstracta) es la que interacciona con el usuario: ahí se implementará nuestro interfaz de usuario, o lo que en aplicaciones web se llama *front-end*.
+
+La capa inferior (la menos abstracta) es la que está en contacto con el hardware de la máquina. Bueno, con el hardware no: debajo de ella habrá otras capas que ya no pertenecen a nuestra aplicación y que se encargarán de ello: el sistema operativo, el servidor, el gestor de bases de datos, o lo que sea. Pero nuestra capa inferior será la que interactúe con esas otras capas que escapan a nuestros dominios y que están en contacto con la máquina.
+
+Esta división en capas de abstracción, que puede parecer al neófito una complicación innecesaria, tiene un montón de ventajas y por eso se usa en cualquier aplicación un poco más complicada que "Hola, mundo".
+
+### 4.2.1. Ventajas de las arquitecturas multicapa
+
+Las arquitecturas multicapa permiten varias cosas que no pueden hacerse con los códigos monolíticos. Entre otras:
+
+* Desarrollar en paralelo cada capa (mayor rapidez de desarrollo).
+* Aplicaciones más robustas (gracias al encapsulamiento. ¿Te suena? ¡Programación orientada a objetos!).
+* Matenimiento más sencillo.
+* Más flexibilidad para añadir módulos.
+* Más escalabilidad para aumentar rendimiento.
 
 ### 4.2.1. Esquema Modelo-Vista-Controlador (MVC)
 
-XXX esquema
+Y por fin llegamos a la palabreja: Modelo-Vista-Controlador o MVC. ¿Qué narices es esto?
 
-Arquitectura en 3 capas
-Es una generalización del patrón MVC.
+Tan solo una arquitectura multicapa estandarizada. Una arquitectura de 3 capas, para ser exactos.
 
-XXX esquema
+Este es el esquema de una arquitectura en 3 capas. Recuerda: cada capa ejecuta una parte de la solución, y entre ellas colaboran para formar la aplicación completa. La capa superior interactúa con el usuario; la capa inferior, con la máquina (donde dice "hardware", debería decir "cualquier cosa menos abstracta que nuestro programa"). Tienes permiso para imaginar cada capa como una clase con sus métodos y atributos.
 
-Hay que decidir qué componentes hay, sus funciones, y en qué capa y qué nivel físico encaja cada uno.
+![Arquitectura en 3 capas](/assets/images/04-arquitectura-3-capas.png)
+
+Pues bien, si a esas tres les ponemos nombres exóticos como modelo, vista y controlador, y remeneamos un poco el esquema, ya lo tenemos: la arquitectura MVC.
+
+![Arquitectura MVC](/assets/images/04-arquitectura-mvc.png)
+
+Es decir, la arquitectura MVC solo es un caso particular de la arquitectura en 3 capas.
+
+¿Y ya está? Bueno, no. Ahora tienes que aprender qué signfica *en realidad* esta palabrería.
+
+Para que tengas una idea completa del asunto, ahora tienes que aprender qué parte de la aplicación se ejecuta en cada una de las capas. Pero es más simple de lo que parece. Y lo maravilloso es que el 99,99% de las aplicaciones web encajan como un guante en esta arquitectura. Es decir, apenas tendremos que hacer trabajo de diseño previo, porque, si es una aplicación web, ya sabemos qué clases tendremos que construir: los que nos indique la arquitectura MVC.
+
+Antes de entrar en profundidad, un breve apunte: por supuesto, nada impide construir arquitecturas con más de 3 capas. De hecho, nosotros vamos a usar una variante del MVC en el que se añade una capa adicional por debajo del modelo, es decir, una arquitectura con 4 capas. Pero ya llegaremos a eso.
+
 
 ### 4.2.2. Otras arquitecturas multicapa
 Modelo de capas mejorado con una capa de entidades
