@@ -9,45 +9,70 @@ nav_order: 6
 
 ## 6.1. ¿Qué es un servicio web?
 
-¿Qué es un servicio web?
-Es una forma de permitir que las aplicaciones se comuniquen independientemente de la plataforma.
-Las aplicaciones intercambian mensajes generalmente mediante XML o JSON.
-Hay dos estándares principales en la industria para implementar servicios web: SOAP y REST.
+Como dijimos al estudiar el patrón MVC, esta arquitectura no es la única manera de plantear las aplicaciones web. En este tema vamos a hablar de otra manera en la que las aplicaciones web funcionan muy frecuentemente: como simples servicios.
 
-Diferencia entre un servicio web y una aplicación web
-Un servicio web está pensado para que lo use otra aplicación (el cliente), no un ser humano.
-Por ese motivo, carece de interfaz de usuario y no produce salidas HTML legibles.
-Los servicios web suelen producir salidas XML o JSON, pensadas para que los clientes las procesen.
+### 6.1.1. Una definición de servicio web
+
+Un **servicio web** es una forma de permitir que una aplicación cliente y una aplicación servidor se comuniquen entre sí e intercambien información independientemente de la plataforma en la que cada una se ejecute.
+
+Los mensajes que las aplicaciones se intercambiar generalmente tienen formato XML o JSON.
+
+Hay dos estándares principales en la industria para implementar servicios web: **SOAP** y **REST**.
+
+### 6.1.2. Diferencias entre servicios web y aplicaciones web
+
+Llegados a este punto, puede que estés pensando: "Vale, pero ¿en qué se diferencia todo esto de una aplicación web MVC? ¿No intercambian también el cliente y el servidor información independientemente de la plataforma en la que se ejecuta cada uno?".
+
+Pues sí, pero hay algunas **diferencias fundamentales entre un servicio web y una aplicación web**:
+
+* Una aplicación web está diseñada para que un ser humano interactúe con ella a través de un interfaz DHTML. Un servicio web, en cambio, está pensado para que lo use otra aplicación (el cliente), no un ser humano.
+* Por ese motivo, los servicios web carecen de interfaz de usuario y no produce salidas HTML legibles. Es decir, un servicio web **no tiene vistas**.
+* En cambio, los servicios web suelen producir salidas XML o JSON, pensadas para que los clientes las procesen. Una aplicación web solo hace esto cuando responde a una petición Ajax, algo que veremos más adelante.
+
+Por lo demás, un servicio web puede tener una arquitectura *aproximadamente* MVC, y digo *aproximadamente* porque el servicio web, como acabo de contarte, carece de vistas. Pero puede seguir conservando sus controladores y sus modelos. Los controladores se encargarán de convertir los datos de los modelos a JSON o XML y devolverlos al cliente.
 
 ## 6.2. SOAP
 
-¿Qué es SOAP?
-SOAP (Single Object Access Protocol) es un mecanismo para la implementación, descripción y publicación de servicios en red.
+**SOAP (Single Object Access Protocol)** es un mecanismo estandarizado para la implementación, descripción y publicación de servicios en red.
+
 SOAP establece el modo en el que deben comportarse el cliente y el servidor para hablar entre sí, así como la forma en la que el servidor debe dar a conocer sus servicios.
-Es un mecanismo orientado al proceso, a diferencia de REST, que está orientado a los datos.
 
-La pila de protocolos de SOAP
+Es un mecanismo orientado al proceso, a diferencia de REST, que está orientado a los datos y que veremos después.
+
+### 6.2.1. La pila de protocolos de SOAP
+
+El estándar SOAP define una serie de protocolos de niveles de abstracción crecientes. Esta colección de protocolos suele denominarse **pila de protocolos SOAP**, y son los siguientes:
 
 XXX imagen
 
-Ejemplo de intercambio de mensajes SOAP
+Vamos a explicar brevemente en qué consiste cada protocolo de la pila, y lo vamos a hacer, como en otras ocasiones, por medio de un ejemplo en lugar de perdernos en largas y farragosas explicaciones.
 
-XXX imagen
+### 6.2.2. El protocolo SOAP
+
+#### Ejemplo 1: Consulta de una BD de marcas y modelos de coches.
+
+Vamos a programar un servicio web muy sencillo capaz de servir a los clientes que nos lo pidan un listado de las marcas de coches que existen y otro con los modelos registrados que pertenecen a una marca en concreto.
+
+El servidor, por lo tanto, necesita dos funciones:
+
+* ObtenerMarcas
+* ObtenerModelos($marca)
+
+El cliente, como es lógico, debe conocer cómo utilizar el servidor. Esto puede hacerse mediante el protocolo WSDL (que ya veremos un poco después) por otras vías más tradicionales: documentación de la API, guía del desarrollador, manual de usuario...
+
+En estos ejemplos, tanto el servidor como el cliente estarán escritos en PHP. Por supuesto, puede usarse cualquier otro lenguaje para ello, en particular en el lado del cliente. Para saber cómo hacer un cliente SOAP en otros lenguajes, consulta la documentación de tu lenguaje preferido.
+
+Pues bien, **en el lado del servidor** necesitaremos crear un objeto de tipo SoapServer:
+
+```php
+$soapS = new SoapServer("fichero WSDL");
+```
+
+Como aún no vamos a usar fichero WSDL XXX
 
 
 
-  
-Ejemplo 1: Consulta de una BD de marcas y modelos de coches.
-Existirán dos funciones:
-ObtenerMarcas
-ObtenerModelos($marca)
-No usaremos fichero WSDL (descripción del servicio)
-El cliente debe conocer cómo utilizar el servidor por otras vías más tradicionales: documentación de la API, guía del desarrollador, manual de usuario...
-
-Objetos SoapServer y SoapClient:
-Para crear un servidor:
-$soapS = new SoapServer(“fichero WSDL”);
-Para crear un cliente:
+Para crear un cliente
 $soapC = new SoapClient(“fichero WSDL”);
 Si no tenemos WSDL:
 $soapS = new SoapServer(null, “URI del servidor”);
