@@ -316,13 +316,13 @@ Por lo tanto, no es un documento que vayas a tener que redactar tú, ni siquiera
   
 ### 6.2.3. UDDI
 
-Este protocolo, que también forma parte de la pila SOAP, es mucho más fácil de explicar.
+Este protocolo, que también forma parte de la pila SOAP, es muy fácil de explicar.
 
-La explicación es esta: olvídate de él. Fin.
+Olvídate de que existe. Fin de la explicación.
 
-Ha sido fácil, ¿no?
+Fácil, ¿verdad?
 
-Por si esta explicación necesita alguna aclaración adicional, te cuento que UDDI fue un intento de la industria por estandarizar repositorios de servicios, de manera que cualquier cliente pudiera lanzar una petición a la red para descubrirlos y usarlos.
+Pero si esta explicación te sabe a poco, te cuento que UDDI fue un intento de la industria por estandarizar repositorios de servicios, de manera que cualquier cliente pudiera lanzar una petición a la red para descubrirlos y usarlos.
 
 Imagina que tienes una web que necesita conocer la previsión del tiempo en una zona, la que sea. Puedes localizar un servicio web que te proporcione esa información (ya sea de forma gratuita o mediante una suscripción, eso es irrelevante). Hay, de hecho, muchos servidores que ofrecen este servicio, empezando por el de la Agencia Estatal de Meteorología.
 
@@ -336,31 +336,117 @@ Así que, lo dicho: aunque en teoría el protocolo UDDI forma parte de la pila S
 
 ## 6.3. REST
 
-XXX
+### 6.3.1. ¿Qué es REST?
 
-¿Qué es REST?
-REST (Representational State Transfer) es un mecanismo de intercambio de información entre clientes y servidores de una red.
+**REST (Representational State Transfer)** es un mecanismo de intercambio de información entre clientes y servidores de una red.
+
 A diferencia de SOAP, está orientado a los datos, esto eso, proporciona siempre los mismos tipos de acceso a los recursos, sin posibilidad de definir nuevas operaciones.
-Por esa razón se dice que REST está orientado a los datos mientras que SOAP está orientado a los procesos.
 
-Las 7 operaciones REST
-Un servidor REST (también llamado RESTful) debe implementar estas siete operaciones de acceso a cada tipo de recurso:
+Por esa razón se dice que **REST está orientado a los datos** mientras que **SOAP está orientado a los procesos**.
 
-XXX lista operaciones
+Actualmente, gran parte de las APIs, ya sean públicas o privadas, se programan según el diseño RESTful para que los programadores que las usen sepan qué esperar de la API.
 
-REST vs SOAP
-SOAP es más flexible: permite definir nuevas operaciones sobre los recursos, mientras que REST está limitado a las 7 operaciones predefinidas.
-REST es mucho más sencillo de usar e implementar: las operaciones son bien conocidas y no es necesario describirlas (WSDL) ni publicarlas de ningún modo.
-Para la mayor parte de las aplicaciones, REST es más que suficiente, y de ahí su mayor implantación en la actualidad.
+### 6.3.2. Las 7 operaciones REST
 
-Cómo implementar un servidor RESTful
+Un servidor REST (también llamado **RESTful**) debe implementar siete operaciones de acceso a cada tipo de recurso. Los nombres de las operaciones, los datos que se esperan que se devuelvan y el método de acceso (si se accede al servidor por http, que es lo que nosotros haremos) deben respetarse escrupulosamente.
+
+Imagina que estamos programando un servidor RESTful para acceder, por ejemplo, a un recurso llamado *Producto* dentro de una aplicación más grande (por ejemplo, una tienda online). En la siguiente tabla tienes las siete operaciones que un servidor RESTful puede realizar con ese recurso, es decir, con los productos de la base de datos. También te indico qué significa cada operación y un ejemplo típico de la URL que permitirá el acceso a través de https.
+
+|Operación|Significado|Verbo|URL típica|
+|---|---|---|---|
+|index|Listar todos los producto|GET|https://servidor/producto/|
+|show|Mostrar un producto|GET|https://servidor/producto/id|
+|create|Mostrar formulario de creación de un producto|GET|https://servidor/producto/create|
+|store|Crear un producto con los datos procedentes de un formulario|POST|https://servidor/producto/store|
+|edit|Mostrar el formulario de edición de un producto|GET|https://servidor/producto/edit/id|
+|update|Actualizar el producto con los datos procedentes del formulario|PUT|https://servidor/producto/update/id|
+|destroy|Eliminar un producto|DESTROY|https://servidor/producto/destroy/id|
+
+(Las operaciones *create* y *edit* podrían no estar disponibles en algunas APIs RESTful, cuando estas están diseñadas para que las usen otras aplicaciones y no seres humanos).
+
+Soy consciente de que esta tabla necesita algunas explicaciones adicionales, así que vamos a ello.
+
+En primer lugar, ¿qué es eso de los *verbos* que figura en cada petición?
+
+### 6.3.3. Los verbos http: GET, POST, PUT y DESTROY
+
+El protocolo http define dos tipos de petición al servidor, GET y POST. El estándar REST aumenta estos tipos en otros dos, PUT (o PATCH, en algunas implementaciones) y DESTROY:
+
+* **GET** se utiliza para solicitar datos al servidor. Por ejemplo: "Dame toda la información de un producto".
+* **POST** se utiliza para enviar datos al servidor. Por ejemplo: "Aquí tienes toda la información de un producto; anda, almacénalo en tu base de datos".
+* **PUT/PATCH** se utiliza para solicitar al servidor la modificación de datos que ya existen. Por ejemplo: "Este es el nuevo precio de un producto que ya estaba en tu base de datos. Tómalo y actualízalo".
+* **DESTROY** se utiliza para solicitar la eliminación de datos en el servidor. Por ejemplo: "Elimina este producto".
+
+Por ese motivo, en algunas URLs de la tabla anterior enviamos un id como parte de la ruta. Ese id (que debe ser sustituido por un número real, es decir, por el id de un producto) indicará al servidor qué producto le estamos pidiendo que nos busque, modifique o elimine.
+
+Si ya has trabajado con HTML antes, seguro que conocías el significado de GET y POST, pero probablemente nunca habías oído hablar de PUT y DESTROY, ¿verdad?
+
+### 6.3.4. El problema de PUT y DESTROY
+
+Cuando solicitamos una URL a un servidor sin indicar otra cosa, el protocolo http asumirá que se trata de una petición GET.
+
+Si en un formulario indicamos que el método de envío de los datos al servidor es POST, conseguiremos hacer una petición POST, y los datos que el usuario rellene en ese formulario se enviarán al servidor como parte del paquete http, en una zona especialmente dedicada a empaquetarlos:
+
+```html
+<form action='http://servidor/lo-que-sea' method='POST'>
+...cuerpo del formulario
+</form>
+```
+
+Pero **con HTML5 *no hay manera de hacer una petición al servidor por PUT ni por DESTROY***.
+
+Esto se debe a que la implementación actual de http no contempla los verbos PUT ni DESTROY. Pero, en el estándar REST, estos verbos son fundamentales. Como a nosotros nos interesa construir servidores RESTful con acceso por http, es decir, vía web, aquí tenemos un grave problema.
+
+Mientras llega una nueva implementación de http y/o de HTML, **este problema tiene dos soluciones temporales**:
+
+* Sustituir las llamadas con PUT y DESTROY por llamadas POST convencionales. Esto hará que, en la práctica, nuestro servidor deje de ser RESTful, claro.
+* Parchear las llamadas con PUT y DESTROY mediante un campo oculto (de tipo *hidden*) en el formulario. Esta es la forma en la que se realizan las implementaciones RESTful vía web en la actualidad. Tienes un ejemplo en este formulario:
+
+```html
+<form action='http://servidor/lo-que-sea' method='POST'>
+   <input type='hidden' name='_method' value='PUT'>
+   ...cuerpo del formulario...
+</form>
+```
+
+### 6.3.5. REST y JSON
+
+REST y JSON tienen una relación especial: todas las APIs RESTful devolverán sus datos formateados en JSON, por lo que, si vas a construir un servidor RESTful, harías bien en devolver todos tus datos en ese formato.
+
+Entiéndeme: si a tu servidor le llega una petición de tipo GET a través de esta ruta: https://servidor/producto/18, no hay nada que te impida devolver los datos del producto 18 formateados en XML, por ejemplo, pero tienes que ser consciente de que tu servidor habrá dejado de ser RESTful.
+
+Devolver un producto (o lo que sea) formateado en JSON mediante PHP resulta tan sencillo como hacer esto:
+
+```php
+$producto = modelo-de-productos::get($id); // Obtenemos los datos del producto $id pidiéndoselos a nuestro modelo
+echo json_encode($producto);
+```
+
+### 6.3.6. REST vs SOAP
+
+**SOAP es más flexible que REST**: permite definir nuevas operaciones sobre los recursos, mientras que REST está limitado a las 7 operaciones predefinidas.
+
+**REST es mucho más sencillo de usar e implementar que SOAP**: las operaciones son bien conocidas y no es necesario describirlas (WSDL) ni publicarlas de ningún modo. No hay que estudiarse ninguna API ni pelearse con estructuras de datos desconocidas, puesto que todo el intercambio de información se hace con JSON.
+
+Por todo ello, para la mayor parte de las aplicaciones REST es más que suficiente, y de ahí su mayor implantación en la actualidad.
+
+### 6.3.7. Algunos trucos para implementar un servidor RESTful
+
 Para implementar un servidor RESTful, basta con:
-Crear una arquitectura MVC para los recursos/datos que deseemos servir.
-Con Laravel, esto se puede conseguir con el comando:
-$ php artisan make:controller --resource <controlador>
-En lugar de mostrar los recursos en una vista, los mostraremos mediante JSON con un sencillo echo. (Recuerda que esa salida la recibirá el cliente, no un ser humano)
 
-Es importante respetar los nombres de las peticiones HTTP, así como los verbos (GET, POST, etc), puesto que serán los que el cliente utilice.
+* Crear una arquitectura MVC para los recursos/datos que deseemos servir.
+
+   Con Laravel, esto se puede conseguir con el comando:
+
+```
+$ php artisan make:controller --resource <controlador>
+```
+
+* En lugar de mostrar los recursos en una vista, los mostraremos mediante JSON con un sencillo echo (recuerda que esa salida la recibirá el cliente, no un ser humano)
+
+   Si estamos trabajando con Laravel, en lugar de echo usaremos return al final de cada método del controlador. Laravel se encargará de enviar ese valor devuelto al cliente.
+
+* Es importante respetar los nombres de las peticiones HTTP, así como los verbos (GET, POST, PUT y DESTROY), puesto que serán los que el cliente utilice.
 
 
 
