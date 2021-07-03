@@ -7,16 +7,55 @@ nav_order: 7
 ---
 # 7. Ajax
 
-## 7.1. ¿Qué es Ajax?
+## 7.1. Un poco de introducción al asunto
 
-Ajax = Asynchronous Javascript And XML
-Ajax es una tecnología JS para ejecutar la aplicación web en el cliente (o gran parte de ella) y lanzar peticiones al servidor para refrescar la información mostrada.
-Las peticiones al servidor se lanzan y reciben en segundo plano (= de forma asíncrona)
-Ajax permite actualizar las páginas sin necesidad de recargarlas por completo, lo que mejora la usabilidad y velocidad de respuesta.
+## 7.1.1. ¿Qué es Ajax?
+
+**Ajax** significa **Asynchronous Javascript And XML**.
+
+Qué bien, ¿no?
+
+¿Y eso qué quiere decir?
+
+Ajax es una tecnología javascript para lanzar y recibir las peticiones al servidor en segundo plano. La página sigue funcionando con normalidad mientras la petición al servidor se resuelve: el usuario puede interactuar con ella y la página responde y no se queda *congelada* a la espera de que el servidor conteste.
+
+**Todo eso es lo que significa "de forma asíncrona"**.
+
+Esta forma de trabajar, que puede parecer una chorrada, se creó para que las páginas dieran la impresión de ser más ágiles de lo que en realidad eran (sobre todo en una época en la que las redes eran más lentas y los servidores podían tardar bastante en responder).
+
+En la actualidad, Ajax ha permitido algo que parecía impensable hace una década: que gran parte de la página se ejecute en el cliente y que se pidan al servidor solo los fragmentos de la página que necesitan ser actualizados. Ajax permite actualizar las páginas sin necesidad de recargarlas por completo, lo que mejora la usabilidad y velocidad de respuesta, y cambia radicalmente nuestra forma de programar una aplicación web.
+
+### 7.1.2. Ajax no sirve, en realidad, para nada
+
+Esa es la pura verdad.
+
+Puedes programar una aplicación web completa, compleja y profesional sin hacer una sola petición Ajax.
+
+Pero Ajax mejora el rendimiento y la experiencia del usuario. Puedes sustituir unas pocas peticiones convencionales por peticiones Ajax sin cambiar demasiado en tu aplicación. Por ejemplo, para borrar un recurso, puedes lanzar la petición DESTROY por Ajax y actualizar tu vista para eliminar el recurso del documento HTML cuando el servidor responda.
+
+Esto es fácil de hacer. Y muy recomendable. Te aconsejo empezar a trastear con Ajax de este modo.
+
+### 7.1.3. Y, sin embargo, Ajax ha cambiado la forma en la que desarrollamos aplicaciones web
+
+Como algo que, en realidad, no sirve para nada ha logrado cambiar la forma en la que desarrollamos aplicaciones web puede parecer un misterio a simple vista, pero existe una razón muy simple para ello:
+
+La mayoría de las aplicaciones web se pasan todo el tiempo haciendo lo mismo: accediendo a recursos de una base de datos para consultarlos, crearlos, modificarlos o borrarlos, todo ello mediante un interfaces de usuario básicamente semejantes. Es decir, el interfaz de usuario para crear, modificar y borrar productos de una base de datos es prácticamente el mismo que el que se usa para crear, modificar y borrar proveedores, por decir algo.
+
+Así que alguien se preguntó: ¿por qué estamos programando todo el tiempo lo mismo?
+
+Ajax nos permite hacer algo muy ingenioso para evitar este engorro: diseñar un interfaz de usuario genérico y vacío, solo compuesto por contenedores preparados para nutrirse de datos del servidor.
+
+Por ejemplo, podemos diseñar un típico interfaz de usuario HTML que nos muestre una lista de recursos (productos, proveedores, o lo que sea) junto con los botones de "Update" y "Delete", además de un botón de "Add new". Pero ese interfaz estará vacío, y mediante Ajax lo cargaremos con productos, con proveedores o con lo que necesitemos. Crearemos el interfaz una vez y lo podemos reutilizar miles de veces, para todo tipo de recursos.
+
+Este tipo de aplicaciones, también llamadas **SPA (Single-page applications)**, necesitan una arquitectura algo distinta de la que usamos en las aplicaciones habituales, además de una librería en el lado del cliente para ayudarnos en la creación de contenedores genéricos (librerías como **Angular**, **React** o **Vue.js**). Aunque excede a nuestros propósitos profundizar en estas librerías, hemos visto algunos fundamentos sobre el uso de Vue.js con Laravel en el capítulo dedicado a Laravel. Consútalo si quieres profundizar en esta forma de uso masivo de Ajax.
+
+En lo que sigue de este capítulo, utilizaremos Ajax de forma puntual en el entorno de una aplicación MVC convencional.
 
 ## 7.2. Cómo enviar peticiones Ajax al servidor
 
 ### 7.2.1. Peticiones sin datos al servidor
+
+XXX
 
 peticion_http = new XMLHttpRequest();
 peticion_http.onreadystatechange = procesa_respuesta;
