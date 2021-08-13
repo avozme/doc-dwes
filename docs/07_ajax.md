@@ -47,19 +47,24 @@ Ajax nos permite hacer algo muy ingenioso para evitar este engorro: diseñar un 
 
 Por ejemplo, podemos diseñar un típico interfaz de usuario HTML que nos muestre una lista de recursos (productos, proveedores, o lo que sea) junto con los botones de "Update" y "Delete", además de un botón de "Add new". Pero ese interfaz estará vacío, y mediante Ajax lo cargaremos con productos, con proveedores o con lo que necesitemos. Crearemos el interfaz una vez y lo podemos reutilizar miles de veces, para todo tipo de recursos.
 
-Este tipo de aplicaciones, también llamadas **SPA (Single-page applications)**, necesitan una arquitectura algo distinta de la que usamos en las aplicaciones habituales, además de una librería en el lado del cliente para ayudarnos en la creación de contenedores genéricos (librerías como **Angular**, **React** o **Vue.js**). Aunque excede a nuestros propósitos profundizar en estas librerías, hemos visto algunos fundamentos sobre el uso de Vue.js con Laravel en el capítulo dedicado a Laravel. Consútalo si quieres profundizar en esta forma de uso masivo de Ajax.
+Este tipo de aplicaciones, también llamadas **SPA (Single-page applications)**, necesitan una arquitectura algo distinta de la que usamos en las aplicaciones web tradicionales, además de una librería en el lado del cliente para ayudarnos en la creación de contenedores genéricos (librerías como **Angular**, **React** o **Vue.js**). Aunque excede a nuestros propósitos profundizar en estas librerías, hemos visto algunos fundamentos sobre el uso de Vue.js con Laravel en el capítulo dedicado a Laravel. Consútalo si quieres profundizar en esta forma de uso masivo de Ajax.
 
-En lo que sigue de este capítulo, utilizaremos Ajax de forma puntual en el entorno de una aplicación MVC convencional.
+En lo que sigue de este capítulo, utilizaremos Ajax de forma puntual en el entorno de una aplicación web convencional con arquitectura MVC.
 
 ## 7.2. Cómo enviar peticiones Ajax al servidor
 
 ### 7.2.1. Peticiones sin datos al servidor
 
-XXX
+La forma más sencilla (y primitiva) de usar Ajax es lanzar una petición asíncrona al servidor sin que el usuario de la web se percate de ello (porque se hará en segundo plano). El servidor no sabrá si la petición se lanzó en primer o en segundo plano y, en realidad, no le importa: él se limitará a atender la petición.
 
+Para lanzar una petición mediante Ajax usando JavaScript tradicional (luego veremos cómo hacerlo con jQuery, que simplifica bastante el proceso), necesitamos crear un objeto de tipo XMLHttpRequest. Este objeto nos permitirá controlar todo el proceso de envío de la petición, recepción de la posible respuesta y control de los errores que hayan podido ocurrir.
+
+Observa detenidamente este fragmento de código JavaScript:
+
+```javascript
 peticion_http = new XMLHttpRequest();
 peticion_http.onreadystatechange = procesa_respuesta;
-peticion_http.open('GET', 'http://servidor/recurso', true);
+peticion_http.open('GET', 'http://servidor/recurso');
 peticion_http.send(null);
 
 
@@ -70,6 +75,17 @@ function procesa_respuesta() {
       }
     }
 }
+```
+
+En las cuatro primeras líneas se crea el objeto de tipo XMLHttpRequest y luego se hacen tres cosas clave con él:
+1. Se le indica qué función se debe ejecutar cuando el servidor responda. Recuerda que esta función se ejecutará también en segundo plano, sin que el usuario de la página se percate de que está sucediendo algo.
+2. Se le indica qué recurso del servidor se quiere invocar (típicamente, una URL). Para ello se usa el método open(). Ahí también se indica el método de envío de datos al servidor (GET o POST), incluso si no se envían datos al servidor en absoluto, como en este ejemplo.
+3. Por último, se lanza la petición al servidor con el método send(). El argumento "null" debe sustituirse por los datos que se envían al servidor mediante GET en caso de que los hubiera.
+
+Eso deja lista la petición. JavaScript permanecerá a la escucha en segundo plano hasta que el servidor responda. Cuando lo haga, se ejecutará la función procesa_respuesta().
+
+En esa función se hacen tres cosas muy importantes:
+XXX
 
 ### 7.2.2. Peticiones con datos al servidor (GET)
 
