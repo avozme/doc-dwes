@@ -1,0 +1,233 @@
+I"46<h2 class="no_toc" id="22-caja-de-herramientas-para-desarrollar-de-aplicaciones-web">2.2. Caja de herramientas para desarrollar de aplicaciones web</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#221-html" id="markdown-toc-221-html">2.2.1. HTML</a>    <ul>
+      <li><a href="#brevísima-historia-de-html" id="markdown-toc-brevísima-historia-de-html">Brevísima historia de HTML</a></li>
+    </ul>
+  </li>
+  <li><a href="#223-css" id="markdown-toc-223-css">2.2.3. CSS</a></li>
+  <li><a href="#224-javascript" id="markdown-toc-224-javascript">2.2.4. Javascript</a></li>
+  <li><a href="#225-php" id="markdown-toc-225-php">2.2.5. PHP</a>    <ul>
+      <li><a href="#características-de-php" id="markdown-toc-características-de-php">Características de PHP</a></li>
+      <li><a href="#brevísima-historia-de-php" id="markdown-toc-brevísima-historia-de-php">Brevísima historia de PHP</a></li>
+      <li><a href="#lo-nuevo-en-php-8" id="markdown-toc-lo-nuevo-en-php-8">Lo nuevo en PHP 8</a></li>
+      <li><a href="#ventajas-de-php-sobre-otros-lenguajes" id="markdown-toc-ventajas-de-php-sobre-otros-lenguajes">Ventajas de PHP sobre otros lenguajes</a></li>
+      <li><a href="#inconvenientes-de-php" id="markdown-toc-inconvenientes-de-php">Inconvenientes de PHP</a></li>
+    </ul>
+  </li>
+  <li><a href="#226-mariadb" id="markdown-toc-226-mariadb">2.2.6. MariaDB</a>    <ul>
+      <li><a href="#características-de-mariadb" id="markdown-toc-características-de-mariadb">Características de MariaDB</a></li>
+      <li><a href="#brevísima-historia-de-mariadb" id="markdown-toc-brevísima-historia-de-mariadb">Brevísima historia de MariaDB</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>Para desarrollar apliaciones web necesitamos una caja de herramientas bastante completa. Algunas herramientas son fundamentales, como el martillo o el destornillador de una caja de herramientas convencional. Otras, en cambio, son optativas y dependerán del trabajo que vayamos a realizar y de nuestras propias preferencias como desarrolladores.</p>
+
+<p>En esta sección vamos a hacer un repaso de las herramientas fundamentales, las que no pueden faltar en tu caja de herramientas. Algunas ya las conoces y otras las aprenderemos a manejar a lo largo de este curso. Se trata de:</p>
+
+<ul>
+  <li>DHTML (HTML, CSS y Javascript)</li>
+  <li>PHP u otro lenguaje de script de servidor (Python, Ruby, Perl, etc)</li>
+  <li>MySQL / MariaDB u otro SGBD que permita acceso remoto.</li>
+</ul>
+
+<h3 id="221-html">2.2.1. HTML</h3>
+
+<p>DHTML (Dynamic HTML) no es un lenguaje como tal, sino que, como probablemente sabes ya, es la conjunción de tres lenguajes:</p>
+
+<ul>
+  <li>HTML</li>
+  <li>CSS</li>
+  <li>JavaScript</li>
+</ul>
+
+<p>DHTML y PHP son los lenguajes que nos van a permitir ejecutar programas en el servidor y acceder a sus recursos a través de páginas web, pero existen otras posibles combinaciones como:</p>
+
+<ul>
+  <li>DHTML con ASP</li>
+  <li>DHTML con JSP</li>
+  <li>DHTML con Python, Ruby, Perl, etc.</li>
+</ul>
+
+<p>HTML significa “HyperText Markup Language” (Lenguaje de Etiquetas de Hipertexto). Como sin duda sabrás, se trata de un lenguaje para formatear documentos:</p>
+
+<ul>
+  <li>Permite definir el tipo de letra, tamaño, formato y color de los textos.</li>
+  <li>Permite insertar imágenes y otro contenido multimedia.</li>
+  <li>Permite crear listas, tablas, enumeraciones…</li>
+  <li>Permite crear enlaces entre secciones del mismo documento, o enlaces con otros documentos (hipertexto)</li>
+</ul>
+
+<p>HTML <strong>NO</strong> es un lenguaje de programación: no permite programar algoritmos. Pero sí permite incrustar otros lenguajes de programación en su interior, aumentando así su potencia.</p>
+
+<p>Los trozos de código embebidos dentro de HTML se denominan <strong><em>scripts</em></strong>.</p>
+
+<h4 id="brevísima-historia-de-html">Brevísima historia de HTML</h4>
+
+<ul>
+  <li>En 1990 se crea HTML (procedente de un lenguaje anterior, SGML) junto con la World Wide Web, para formatear los documentos de la www.</li>
+  <li>Se amplía en sucesivas versiones hasta la 3.0, que no consiguió éxito debido a las limitaciones de los navegadores de la época.</li>
+  <li>Comienza la guerra de navegadores: Microsoft y Netscape sacan sus propios “dialectos” de HTML y destrozan en estándar.</li>
+  <li>A partir de HTML 4 se intenta unir las características de los dos, pero el resultado es demasiado complejo.</li>
+  <li>Se hace evidente que hay que hacer una “limpieza” de HTML
+    <ul>
+      <li>Así surge XHTML, la versión XML de HTML, mucho más estricta y formal, con menos añadidos pero igual de potente.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Las versiones actuales de HTML son:</p>
+
+<ul>
+  <li>HTML 4.01 transicional: HTML clásico, con todos los elementos del HTML antiguo. En la actualidad está obsoleto, pero aún quedan muchas páginas antiguas que lo utilizan.</li>
+  <li>HTML 4.01 estricto: también llamado XHTML, no permite usar los elementos HTML desaprobados, tales como definición de formatos. También se considera obsoleto.</li>
+  <li>HTML5: elimina definitivamente los elementos antiguos del lenguaje e incorpora algunos nuevos para completar la asimilación con XML. Es el estándar actual.</li>
+  <li>La especificación para HTML6 (o HTML Next) está actualmente en desarrollo.</li>
+</ul>
+
+<h3 id="223-css">2.2.3. CSS</h3>
+
+<p>CSS significa “Cascade Style Sheet” (Hojas de estilo en cascada).</p>
+
+<p>CSS es un lenguaje para la definición de los formatos utilizados en una página web. Sólo permite definir el formato (es decir, el aspecto) de la página, no su contenido.</p>
+
+<p>Al definir los formatos en otra parte, se pueden reutilizar a lo largo de una o incluso de varias páginas: si cambiamos la definición CSS del formato, se cambian automáticamente los formatos de todas las páginas que usen esa definición.</p>
+
+<p>El objetivo último de CSS es <strong>separar completamente el formato de la página de su contenido</strong>.</p>
+
+<p>CSS 2.1 se usaba con HTML 4. CSS3 se usa con HTML5 y se considera el estándar actual. Está soportado universalmente, aunque, como sin duda habrás sufrido en tus carnes, los diferentes navegadores pueden interpretar de forma ligeramente distinta algunas definiciones CSS.</p>
+
+<h3 id="224-javascript">2.2.4. Javascript</h3>
+
+<p>JavaScript es un lenguaje interpretado que puede ser incrustado dentro del código HTML de una página web.</p>
+
+<p>El código JavaScript puede interactuar y modificar cualquier parte del documento HTML, por lo que dota a las páginas web de dinamismo e interactividad.</p>
+
+<p><strong>JavaScript no es Java</strong>, por mucho que su nombre se parezca. También su sintaxis puede recordar un poco a Java en algunas ocasiones. Pero déjame que te lo repita de nuevo: Javascript no es Java.</p>
+
+<p>La implementación de JavaScript de cada navegador es distinta, obteniéndose resultados que no siempre son iguales, por desgracia para los desarrolladores. Por ejemplo:</p>
+
+<ul>
+  <li>V8 = motor JS de Chrome</li>
+  <li>WebKit = motor JS de Safari</li>
+  <li>Rhino = motor JS de Mozilla Firefox</li>
+  <li>WebKit = motor JS de Microsoft Edge</li>
+</ul>
+
+<h3 id="225-php">2.2.5. PHP</h3>
+
+<p>PHP es un acrónimo recursivo. Significa “PHP Hypertext Preprocessor”</p>
+
+<p>Sí, así es el sentido del humor de los informáticos. Qué le vamos a hacer.</p>
+
+<p>Es un lenguaje de programación de propósito general. Junto con librerías como PHP-Qt o PHP-GTK, puedes programar con él cualquier aplicación de escritorio.</p>
+
+<p>Pero, por circunstancias más debidas al azar que a otra cosa, se empezó a usar para desarrollo web al comienzo de la web 2.0, y hoy en día se utiliza casi exclusivamente para ese propósito.</p>
+
+<p>Cuando se usa en desarrollo web, PHP aparece embebido dentro de documentos HTML.</p>
+
+<h4 id="características-de-php">Características de PHP</h4>
+
+<ul>
+  <li>PHP permite conectarse con múltiples bases de datos: MySQL, MariaDB, Oracle, PostgreSQL, SQL Server, DB2, etc. También puede conectar por ODBC.</li>
+  <li>Se parece mucho a otros lenguajes de tercera generación y orientados a objeto (en particular a C/C++ y, por tanto, a Java). Su curva de aprendizaje para los que ya saben programar es muy plana.</li>
+</ul>
+
+<h4 id="brevísima-historia-de-php">Brevísima historia de PHP</h4>
+
+<ul>
+  <li>Surge en 1995 como extensión de CGI (otro lenguaje para acceso a funciones del servidor)</li>
+  <li>PHP3 (1998) tuvo un gran éxito comercial.</li>
+  <li>PHP4 (2000) es la versión más extendida (por desgracia): la mayoría de los scripts en PHP que circulan por la red están escritos en esta versión obsoleta.</li>
+  <li>PHP5 (2004) tiene soporte para orientación a objetos y una biblioteca de clases bastante bien diseñada. Por lo tanto, desde esta versión PHP pasa de ser un lenguaje estructurado (3GL) a ser un lenguaje orientado a objetos.</li>
+  <li>PHP6 empezó a desarrollarse en 2007 y se canceló en 2014.</li>
+  <li>PHP7 introdujo novedades menores y estuvo vigente hasta 2020. En el momento de escribi esto (junio de 2021) es la versión dominante en la mayoría de los servidores web.</li>
+  <li>PHP8 es la última versión (8.0.7 en junio de 2021). Las versiones PHP4 y PHP5 se consideran obsoletas e inseguras. Aún existe soporte para PHP7, pero todas las nuevas aplicaciones se deberían escribir pensando en PHP8.</li>
+</ul>
+
+<h4 id="lo-nuevo-en-php-8">Lo nuevo en PHP 8</h4>
+
+<p>PHP 8 no tiene demasiadas novedades con respecto a PHP 7, como este no las tenía con respecto a PHP 5.</p>
+
+<p>Debes tener en cuenta que el mayor salto evolutivo se produjo entre PHP 4 y PHP 5. A partir de ahí, y para principiantes como nosotros, la cosa no ha cambiado demasiado.</p>
+
+<p>Algunas de las novedades más destacables de PHP 8 son:</p>
+
+<ul>
+  <li>Mejoras importantes de rendimiento, con la aparición de JIT (Just in Time Compiler), un compilador de PHP que trabaja de forma transparente al programador para incrementar la velocidad de ejecución.</li>
+  <li>Mejoras menores en el manejo de las clases y métodos abstractos.</li>
+  <li>Simplificación en la declaración de atributos.</li>
+  <li>Posibilidad de usar arrays con índices negativos.</li>
+  <li>Etc</li>
+</ul>
+
+<h4 id="ventajas-de-php-sobre-otros-lenguajes">Ventajas de PHP sobre otros lenguajes</h4>
+
+<ul>
+  <li>Es un lenguaje libre y abierto.</li>
+  <li>Es muy eficiente.</li>
+  <li>Es ejecutable en (casi) cualquier servidor.</li>
+  <li>Cuenta con una excelente documentación y miles de foros y sitios donde consultar dudas.</li>
+  <li>La curva de aprendizaje es baja si ya sabes programar.</li>
+  <li>Existen mogollón de entornos de desarrollo para PHP, para todos los gustos.</li>
+  <li>Fácil interoperatibilidad con otros sistemas, en particular con bases de datos.</li>
+  <li>Comunidad muuuy grande.</li>
+  <li>Aunque llevan décadas diciendo que es un lenguaje moribundo, lo cierto es que sigue siendo líder del mercado de aplicaciones web.</li>
+</ul>
+
+<h4 id="inconvenientes-de-php">Inconvenientes de PHP</h4>
+
+<ul>
+  <li>Fallos de diseño (corregidos en su mayoría a partir de PHP 5), como:
+    <ul>
+      <li>Los métodos para acceso a bases de datos cambian según el SGBD usado.</li>
+      <li>Nombres de funciones inconsistentes.</li>
+      <li>No es completamente orientado a objetos.</li>
+      <li>Tipado confuso y, a veces, impredecible.</li>
+    </ul>
+  </li>
+  <li>Grandes (e incompatibles) cambios entre versiones.</li>
+  <li>Pérdida lenta pero constante de cuota de mercado.</li>
+  <li>Pésima relación señal/ruido en la web: ¡hay demasiados <em>malos</em> desarrolladores en PHP!</li>
+</ul>
+
+<h3 id="226-mariadb">2.2.6. MariaDB</h3>
+
+<p>Otra de las herramientas básicas de nuestra caja de herramientas es el gestor de bases de datos relacionales (SGBD).</p>
+
+<p>MySQL / MariaDB es el SGBD líder del mercado de las aplicaciones web. Nos permitirá conectarnos a la base de datos y ejecutar sentencias SQL de forma remota al visitar una aplicación web.</p>
+
+<p>Existen otras posibilidades, desde luego, como:</p>
+<ul>
+  <li>SQL Server</li>
+  <li>Oracle</li>
+  <li>PostgreSQL</li>
+  <li>SQLite</li>
+</ul>
+
+<p>También está la posibilidad de usar base de datos no relacionales, como MongoDB, Cassandra o Redis. PHP puede conectarse también a estos sistemas, pero la forma de trabajar es diferente que con bases de datos relacionales. Como estas últimas son, de lejos, las predominantes en el mercado, nos centraremos en ellas.</p>
+
+<h4 id="características-de-mariadb">Características de MariaDB</h4>
+
+<ul>
+  <li>MariaDB es un gestor de bases de datos relacional multiusuario y multiplataforma.</li>
+  <li>Permite mútiples conexiones remotas.</li>
+  <li>Es software libre.</li>
+  <li>Existen librerías para acceder a MariaDB desde muchos lenguajes: C/C++, Java, PHP, Perl, Pascal… Además, hay drivers ODBC.</li>
+  <li>Está muy extendida en aplicaciones web, generalmente en combinación con PHP.</li>
+  <li>Cuenta un interfaz gráfico programado en PHP, llamado PHPMyAdmin, que se ejecuta en el navegador web. Por supuesto, se puede usar cualquier otro cliente compatible con MySQL, como MySQL Workbench.</li>
+</ul>
+
+<h4 id="brevísima-historia-de-mariadb">Brevísima historia de MariaDB</h4>
+
+<ul>
+  <li>MySQL surgió como un proyecto OpenSource en Suecia en 1995.</li>
+  <li>El objetivo era lograr un SGBD rápido y fiable que cumpliera con el estándar SQL.</li>
+  <li>Las primeras versiones (que se denominaron mSQL) eran muy ineficientes.</li>
+  <li>La popularización de PHP y su ganancia en eficiencia a partir de la versión 3 la han hecho muy popular en la actualidad.</li>
+  <li>Tras su adquisición por Oracle, se intentó relegar al segmento medio-bajo en el mercado de los SGBD y surgió un fork: MariaDB.</li>
+  <li>Versión más reciente (junio 2021): MariaDB 10.5.10</li>
+</ul>
+
+:ET

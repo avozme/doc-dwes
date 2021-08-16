@@ -1,0 +1,111 @@
+<h2 id="54-arquitectura-convenciones-y-configuración-de-laravel">5.4. Arquitectura, convenciones y configuración de Laravel</h2>
+
+<h3 id="541-estructura-de-directorios">5.4.1. Estructura de directorios</h3>
+
+<p>Después de una instalación limpia de Laravel, nos encotraremos con una estructura típica de directorios. Los más importantes (al menos, para empezar) son estos:</p>
+
+<p><strong>composer.json</strong>: información para composer.</p>
+
+<p><strong>/app</strong>: el código de nuestra aplicación. Modelos.</p>
+
+<p><strong>/app/config</strong>: configuración de la aplicación.</p>
+
+<p><strong>/app/http</strong>: peticiones HTTP, incluyendo los controladores.</p>
+
+<p><strong>/database</strong>: migraciones de la BD.</p>
+
+<p><strong>/plugins</strong>: pues eso.</p>
+
+<p><strong>/public</strong>: directorio de acceso público. Aquí se pueden colocar imágenes, scripts o archivos css.</p>
+
+<p><strong>/resources</strong>: assets (imágenes, css, js), archivos de idioma y vistas.</p>
+
+<p><strong>/storage</strong>: caché, sesiones, vistas compiladas…</p>
+
+<p><strong>/vendors</strong>: librerías de terceros.</p>
+
+<h3 id="542-convenciones-en-laravel">5.4.2. Convenciones en Laravel</h3>
+
+<p>Laravel tiene un montón de convenciones que persiguen hacer más sencilla la configuración de la aplicación. Aunque la mayoría no son obligatorias, es recomendable respetarlas para evitar errores de configuración y conflictos con los identificadores.</p>
+
+<ul>
+  <li>
+    <p><strong>Modelos</strong>: Nombres igual que el de la tabla, en singular, en CamelCase y con mayúscula. Ejemplo: RegisteredUser</p>
+  </li>
+  <li>
+    <p><strong>Controladores</strong>: como el modelo, pero añadiendo la palabra “controller” o “controlador”. Ejempo: RegisteredUserController</p>
+  </li>
+  <li>
+    <p><strong>Métodos</strong>: en camelCase empezando con minúscula. Ejemplo: User::getAll()</p>
+  </li>
+  <li>
+    <p><strong>Atributos</strong>: en snake_case empezando con minúscula. Ejemplo: User::first_name</p>
+  </li>
+  <li>
+    <p><strong>Variables</strong>: en camelCase empezando con minúscula. Ejemplos: bannedUsers (colección, en plural), articleContent (variable simple, en singular)</p>
+  </li>
+  <li>
+    <p><strong>Tablas</strong>: en plural y en snake_case. Ej: registered_users.</p>
+  </li>
+  <li>
+    <p><strong>Columnas</strong>: en snake_case, sin referencia al nombre de la tabla. Ejemplo: first_name</p>
+
+    <ul>
+      <li>
+        <p><strong>Clave primaria</strong>: id (integer y auto-increment).</p>
+      </li>
+      <li>
+        <p><strong>Claves ajenas</strong>: nombre tabla ajena en singlular + id. Ejemplo: article_id</p>
+      </li>
+      <li>
+        <p><strong>Timestamps</strong>: created_at y updated_at</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Tablas pivote</strong>: en snake_case, en plural y orden alfabético. Ejemplo: articles_users será el pivote entre articles y users.</p>
+  </li>
+</ul>
+
+<h3 id="543-variables-de-entorno-el-archivo-env">5.4.3. Variables de entorno. El archivo .env</h3>
+
+<p>Este archivo contiene todas las variables de entorno que configuran la aplicación, como:</p>
+
+<ul>
+  <li>
+    <p>APP_ENV: ¿estamos en desarrollo o en producción?</p>
+  </li>
+  <li>
+    <p>APP_DEBUG: ¿mostrar errores para depuración?</p>
+  </li>
+  <li>
+    <p>APP_URL: URL base de la aplicación</p>
+  </li>
+  <li>
+    <p>DB_CONNECTION, DB_HOST, DB_USERNAME, etc.</p>
+  </li>
+</ul>
+
+<p>El archivo example.env contiene una plantilla para que puedas construir tu archivo .env. Simplemente, renombra el archivo example.env y asigna los valores correctos a las variables de entorno.</p>
+
+<p>El archivo .env NO debe sincronizarse con git (o con el control de versiones que usemos) porque contiene información sensible.</p>
+
+<p>En los archivos de configuración haremos referencia a las variables de entorno. Por ejemplo: en /config/database.php usaremos una expresión así:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>'default' =&gt; env('DB_CONNECTION', 'mysql')
+</code></pre></div></div>
+
+<p>El primer parámetro de env() es la variable de entorno y el segundo es el valor por defecto en caso de que la variable no exista.</p>
+
+<h3 id="544-archivos-de-configuración-del-directorio-config">5.4.4. Archivos de configuración del directorio /config</h3>
+
+<p>En este directorio encontraremos multitud de archivos que configuran el funcionamiento de Laravel.</p>
+
+<p>En principio, no es necesario modificar ninguno, porque las configuraciones básicas se manejan desde el archivo .env. Sin embargo, hay veces que sí necesitaremos acceder a estos archivos y tocar alguna configuración.</p>
+
+<p>Los archivos de configuración más importantes que puedes encontrar aquí son:</p>
+
+<p><strong>database.php</strong>: configuración de la conexión a la base de datos. Toma sus valores principales de .env, pero desde aquí podemos cambiar otras cosas, como el controlador (por defecto es MySQL, pero podemos cambiarlo a PostgreSQL, SQLite, etc)
+<strong>app.php</strong>: nombre de la aplicación, estado (desarrollo, producción…)
+<strong>session.php</strong>: forma en la que se almacenarán las sesiones (por defecto, en fichero)</p>
+

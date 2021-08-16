@@ -1,0 +1,525 @@
+I"��<h2 class="no_toc" id="25-ejercicios-resueltos-de-php">2.5. Ejercicios resueltos de PHP</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#251-tabla-de-multiplicar" id="markdown-toc-251-tabla-de-multiplicar">2.5.1. Tabla de multiplicar</a></li>
+  <li><a href="#252-juego-del-número-secreto" id="markdown-toc-252-juego-del-número-secreto">2.5.2. Juego del número secreto</a>    <ul>
+      <li><a href="#juego-del-número-secreto-solución-sin-variables-de-sesión" id="markdown-toc-juego-del-número-secreto-solución-sin-variables-de-sesión">Juego del número secreto: solución sin variables de sesión</a></li>
+      <li><a href="#juego-del-número-secreto-solución-con-variables-de-sesión" id="markdown-toc-juego-del-número-secreto-solución-con-variables-de-sesión">Juego del número secreto: solución con variables de sesión</a></li>
+    </ul>
+  </li>
+  <li><a href="#253-biblioteca" id="markdown-toc-253-biblioteca">2.5.3. Biblioteca</a></li>
+</ul>
+
+<p>En esta sección vamos a mostrar algunos ejemplos sencillos de aplicaciones web muy, muy básicas programadas con PHP. La última de ellas incluye un acceso a una base de datos.</p>
+
+<p>Mira con detenimiento el código y asegúrate de entenderlo. Para empezar a programar con PHP, no hay nada mejor que echar un vistazo a algunos programas fáciles que luego puedas utilizar como plantilla para los tuyos.</p>
+
+<h3 id="251-tabla-de-multiplicar">2.5.1. Tabla de multiplicar</h3>
+
+<p>Vamos a escribir un programa en PHP que pida un número al usuario y muestre su tabla de multiplicar hasta el 25 en una tabla HTML de 5 por 5 casillas.</p>
+
+<p>En la siguiente solución utilizaremos un solo archivo para implementar tanto el formulario HTML como la recogida de datos del formulario más el cálculo de la tabla de multiplicar. Observa como se usa la función isset() para averiguar si estamos enviando los datos del formulario o si, por el contrario, acabamos de lanzar la aplicación y tenemos que mostrar ese formulario al usuario.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns=</span><span class="s">"http://www.w3.org/1999/xhtml"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=UTF-8"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+
+	<span class="cp">&lt;?php
+	if (!isset($_REQUEST["numero"])) {
+		// Si no tenemos un número pasado por GET, mostramos el formulario
+		echo "&lt;form action='03-tabla2.php' method='GET'&gt;
+		Introduce un número:
+		&lt;input type='text' name='numero'&gt;
+		&lt;br&gt;
+		&lt;input type='submit'&gt;
+		&lt;/form&gt;";
+	}
+	else {
+		// Ya tenemos número pasado por GET. Vamos a procesarlo.
+		$n = $_REQUEST["numero"];
+		echo "&lt;table border='1'&gt;";
+		echo "&lt;tr&gt;&lt;td colspan='5'&gt;Tabla de multiplicar del número $n&lt;/td&gt;&lt;/tr&gt;";
+		echo "&lt;tr&gt;";
+		for ($i = 1; $i &lt;= 25; $i++) {
+			if (($i-1) % 5 == 0) echo "&lt;/tr&gt;&lt;tr&gt;";
+			echo "&lt;td&gt;$n x $i = " . $n * $i . "&lt;/td&gt;";
+		}
+		echo "&lt;/tr&gt;";
+		echo "&lt;/table&gt;";
+	}
+	?&gt;</span>
+
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h3 id="252-juego-del-número-secreto">2.5.2. Juego del número secreto</h3>
+
+<p>Vamos a escribir una aplicación web en PHP para jugar al número secreto.</p>
+
+<p>El juego consiste en lo siguiente: el ordenador “pensará” un número al azar entre 1 y 100 y el jugador tendrá que averiguarlo. Cada vez que el jugador haga un intento, la aplicación le indicará si el número secreto es mayor o menor que el número introducido.</p>
+
+<p>Cuando el jugador por fin acierte, la aplicación le dará la enhorabuena y le indicará cuántos intentos ha necesitado para averiguar el número secreto.</p>
+
+<p>Vamos a ver dos soluciones para este programa. En la primera, utilizaremos variables de la URL para mantener vivos los datos del programa. En la segunda, utilizaremos variables de sesión para lograr el mismo efecto de forma mucho más limpia.</p>
+
+<h4 id="juego-del-número-secreto-solución-sin-variables-de-sesión">Juego del número secreto: solución sin variables de sesión</h4>
+
+<p>Este juego necesita que algunas variables, como el número secreto (variable $aleatorio) o el número de intentos (variable $intentos) persistan entre una solicitud al servidor y la siguiente.</p>
+
+<p>Para lograrlo, haremos que el script se envíe a sí mismo el valor de esas variables. Es una solución poco elegante que se dejó de usar hace años, pero que ilustra perfectamente cuál es el primer problema al que nos enfrentamos al desarrollar aplicaciones web: que se ejecutan en el servidor “a tirones”, un trozo cada vez, y para el servidor cada uno de esos trozos es un programa independiente, aunque el usuario tenga la sensación de que forman una aplicación coherente.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns=</span><span class="s">"http://www.w3.org/1999/xhtml"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=UTF-8"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+
+	<span class="cp">&lt;?php
+		if (!isset($_REQUEST["numero"])) {
+			if (!isset($_REQUEST["aleatorio"])) {
+				$intentos = 0;
+				$aleatorio = rand(1,100);
+			} else {
+				$aleatorio = $_REQUEST["aleatorio"];
+				$intentos = $_REQUEST["intentos"];
+			}
+			echo "&lt;form action='05-numero-secreto.php' method='get'&gt;
+				Adivina mi número:
+				&lt;input type='text' name='numero'&gt;&lt;br&gt;
+				&lt;input type='hidden' name='aleatorio' value='$aleatorio'&gt;
+				&lt;input type='hidden' name='intentos' value='$intentos'&gt;
+				&lt;br&gt;				
+				&lt;input type='submit'&gt;
+				&lt;/form&gt;";
+		} else {
+			$n = $_REQUEST["numero"];
+			$aleatorio = $_REQUEST["aleatorio"];
+			$intentos = $_REQUEST["intentos"];
+			$intentos++;
+			echo "Tu número es: $n&lt;br&gt;";
+			if ($n &gt; $aleatorio) {
+				echo "Mi número es MENOR";
+			}
+			else if ($n &lt; $aleatorio) {
+				echo "Mi número es MAYOR";
+			}
+			else {
+				echo "&lt;p&gt;ENHORABUENA, HAS ACERTADO&lt;/p&gt;";
+				echo "Has necesitado $intentos intentos";
+			}
+			echo "&lt;br&gt;&lt;a href='05-numero-secreto.php?aleatorio=$aleatorio&amp;intentos=$intentos'&gt;Sigue jugando...&lt;/a&gt;";
+		}
+
+	?&gt;</span>
+</code></pre></div></div>
+
+<h4 id="juego-del-número-secreto-solución-con-variables-de-sesión">Juego del número secreto: solución con variables de sesión</h4>
+
+<p>En esta solución, se ha sustituido la chapuza de las variables pasadas por URL por <strong>variables de sesión</strong>.</p>
+
+<p>Aunque las veremos con más detalle en el siguiente tema, te puedo adelantar que las variables de sesión permiten almacenar datos persistentes entre sucesivas ejecuciones de scripts desde el mismo cliente.</p>
+
+<p>Es decir, el servidor <strong>recuerda</strong> el valor de determinadas variables para que ese programa ejecutado a tirones se comporte como un todo unificado de cara al usuario.</p>
+
+<p>Observa detenidamente cómo se usan las variables de sesión con PHP mediante el array global $_SESSION.</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">xmlns=</span><span class="s">"http://www.w3.org/1999/xhtml"</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=UTF-8"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;title&gt;&lt;/title&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+
+	<span class="cp">&lt;?php
+		session_start();
+
+		if (!isset($_REQUEST["numero"])) {
+			if (!isset($_REQUEST["aleatorio"])) {
+				$_SESSION["intentos"] = 0;
+				$_SESSION["aleatorio"] = rand(1,100);
+			} else {
+				$aleatorio = $_SESSION["aleatorio"];
+				$intentos = $_SESSION["intentos"];
+			}
+			echo "&lt;form action='05-numero-secreto-v2.php' method='get'&gt;
+				Adivina mi número:
+				&lt;input type='text' name='numero'&gt;&lt;br&gt;
+				&lt;br&gt;				
+				&lt;input type='submit'&gt;
+				&lt;/form&gt;";
+		} else {
+			$n = $_REQUEST["numero"];
+			$aleatorio = $_SESSION["aleatorio"];
+			$intentos = $_SESSION["intentos"];
+			$intentos++;
+			echo "Tu número es: $n&lt;br&gt;";
+			if ($n &gt; $aleatorio) {
+				echo "Mi número es MENOR";
+				echo "&lt;br&gt;&lt;a href='05-numero-secreto-v2.php'&gt;Sigue jugando...&lt;/a&gt;";
+			}
+			else if ($n &lt; $aleatorio) {
+				echo "Mi número es MAYOR";
+				echo "&lt;br&gt;&lt;a href='05-numero-secreto-v2.php'&gt;Sigue jugando...&lt;/a&gt;";
+			}
+			else {
+				echo "&lt;p&gt;ENHORABUENA, HAS ACERTADO&lt;/p&gt;";
+				echo "Has necesitado $intentos intentos";
+				$intentos = 0;
+				unset($_SESSION["aleatorio"]);
+				echo "&lt;br&gt;&lt;a href='05-numero-secreto-v2.php'&gt;Jugar de nuevo&lt;/a&gt;";
+			}
+			$_SESSION["intentos"] = $intentos;
+		}
+
+	?&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+
+<h3 id="253-biblioteca">2.5.3. Biblioteca</h3>
+
+<p>Este es un ejemplo muy importante por dos razones:</p>
+
+<ol>
+  <li>Porque es nuestra primera aplicación web “de verdad”, con una base de datos detrás</li>
+  <li>Porque volveremos sobre ella varias veces para hacerle sucesivas mejoras, hasta dejarla presentable.</li>
+</ol>
+
+<p>Se trata de escribir una aplicación web en PHP que gestione (de forma muy simplificada) una biblioteca.</p>
+
+<p>La aplicación trabajará con una base de datos compuesta de solo dos tablas (ya te dije que estaría muy simplificada): libros y autores.</p>
+
+<p>Esta aplicación nos permitirá, en principio, ver la lista de todos los libros disponibles, así como dar de alta libros nuevos y modificar o borrar los libros existentes.</p>
+
+<p>De momento no trabajaremos con los autores, pero sería fácil extenderla para que también nos dejase hacer altas, bajas y modificaciones de los autores.</p>
+
+<p>Lee este código con especial atención (aunque sea un poco largo), y observa como utilizamos una variable muy especial llamada $action para saber qué tiene que hacer la aplicación en cada momento. Esa variable es el germen de la arquitectura modelo-vista-controlador con la que trabajaremos una y otra vez más adelante.</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- BIBLIOTECA VERSIÓN 1
+     Características de esta versión:
+       - Código monolítico (sin arquitectura MVC)
+       - Sin seguridad
+       - Sin sesiones ni control de acceso
+       - Sin reutilización de código
+--&gt;</span>
+
+
+<span class="cp">&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"&gt;</span>
+<span class="nt">&lt;html</span> <span class="na">lang=</span><span class="s">"es"</span> <span class="na">xmlns=</span><span class="s">"http://www.w3.org/1999/xhtml"</span><span class="nt">&gt;</span>
+
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;meta</span> <span class="na">http-equiv=</span><span class="s">"Content-Type"</span> <span class="na">content=</span><span class="s">"text/html; charset=UTF-8"</span> <span class="nt">/&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+
+<span class="nt">&lt;body&gt;</span>
+    <span class="cp">&lt;?php</span>
+
+    <span class="nv">$db</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">mysqli</span><span class="p">(</span><span class="s2">"localhost:3386"</span><span class="p">,</span> <span class="s2">"root"</span><span class="p">,</span> <span class="s2">"bitnami"</span><span class="p">,</span> <span class="s2">"biblioteca"</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="k">isset</span><span class="p">(</span><span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"action"</span><span class="p">]))</span> <span class="p">{</span>
+        <span class="nv">$action</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"action"</span><span class="p">];</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nv">$action</span> <span class="o">=</span> <span class="s2">"mostrarListaLibros"</span><span class="p">;</span>  <span class="c1">// Acción por defecto</span>
+    <span class="p">}</span>
+
+    <span class="k">switch</span> <span class="p">(</span><span class="nv">$action</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="c1">// --------------------------------- MOSTRAR LISTA DE LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"mostrarListaLibros"</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Biblioteca&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Buscamos todos los libros de la biblioteca</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT * FROM libros
+                                        INNER JOIN escriben ON libros.idLibro = escriben.idLibro
+                                        INNER JOIN personas ON escriben.idPersona = personas.idPersona
+                                        ORDER BY libros.titulo"</span><span class="p">))</span> <span class="p">{</span>
+
+                <span class="c1">// La consulta se ha ejecutado con éxito. Vamos a ver si contiene registros</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nv">$result</span><span class="o">-&gt;</span><span class="n">num_rows</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// La consulta ha devuelto registros: vamos a mostrarlos</span>
+
+                    <span class="c1">// Primero, el formulario de búsqueda</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;form action='index.php'&gt;
+                                &lt;input type='hidden' name='action' value='buscarLibros'&gt;
+                                &lt;input type='text' name='textoBusqueda'&gt;
+                                &lt;input type='submit' value='Buscar'&gt;
+                                &lt;/form&gt;&lt;br&gt;"</span><span class="p">;</span>
+
+                    <span class="c1">// Ahora, la tabla con los datos de los libros</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;table border ='1'&gt;"</span><span class="p">;</span>
+                    <span class="k">while</span> <span class="p">(</span><span class="nv">$fila</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">())</span> <span class="p">{</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;tr&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">titulo</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">genero</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">numPaginas</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">nombre</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">apellido</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;&lt;a href='index.php?action=formularioModificarLibro&amp;idLibro="</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">idLibro</span> <span class="mf">.</span> <span class="s2">"'&gt;Modificar&lt;/a&gt;&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;&lt;a href='index.php?action=borrarLibro&amp;idLibro="</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">idLibro</span> <span class="mf">.</span> <span class="s2">"'&gt;Borrar&lt;/a&gt;&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;/tr&gt;"</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;/table&gt;"</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="c1">// La consulta no contiene registros</span>
+                    <span class="k">echo</span> <span class="s2">"No se encontraron datos"</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// La consulta ha fallado</span>
+                <span class="k">echo</span> <span class="s2">"Error al tratar de recuperar los datos de la base de datos. Por favor, inténtelo más tarde"</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php?action=formularioInsertarLibros'&gt;Nuevo&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- FORMULARIO ALTA DE LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"formularioInsertarLibros"</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Modificación de libros&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Creamos el formulario con los campos del libro</span>
+            <span class="k">echo</span> <span class="s2">"&lt;form action = 'index.php' method = 'get'&gt;
+                    Título:&lt;input type='text' name='titulo'&gt;&lt;br&gt;
+                    Género:&lt;input type='text' name='genero'&gt;&lt;br&gt;
+                    País:&lt;input type='text' name='pais'&gt;&lt;br&gt;
+                    Año:&lt;input type='text' name='ano'&gt;&lt;br&gt;
+                    Número de páginas:&lt;input type='text' name='numPaginas'&gt;&lt;br&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Añadimos un selector para el id del autor o autores</span>
+            <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT * FROM personas"</span><span class="p">);</span>
+            <span class="k">echo</span> <span class="s2">"Autores: &lt;select name='autor[]' multiple='true'&gt;"</span><span class="p">;</span>
+            <span class="k">while</span> <span class="p">(</span><span class="nv">$fila</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">echo</span> <span class="s2">"&lt;option value='"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">idPersona</span> <span class="mf">.</span> <span class="s2">"'&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">nombre</span> <span class="mf">.</span> <span class="s2">" "</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">apellido</span> <span class="mf">.</span> <span class="s2">"&lt;/option&gt;"</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;/select&gt;"</span><span class="p">;</span>
+            <span class="k">echo</span> <span class="s2">"&lt;a href='index.php?action=formularioInsertarAutores'&gt;Añadir nuevo&lt;/a&gt;&lt;br&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Finalizamos el formulario</span>
+            <span class="k">echo</span> <span class="s2">"  &lt;input type='hidden' name='action' value='insertarLibro'&gt;
+					&lt;input type='submit'&gt;
+				&lt;/form&gt;"</span><span class="p">;</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php'&gt;Volver&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- INSERTAR LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"insertarLibro"</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Alta de libros&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Vamos a procesar el formulario de alta de libros</span>
+            <span class="c1">// Primero, recuperamos todos los datos del formulario</span>
+            <span class="nv">$titulo</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"titulo"</span><span class="p">];</span>
+            <span class="nv">$genero</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"genero"</span><span class="p">];</span>
+            <span class="nv">$pais</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"pais"</span><span class="p">];</span>
+            <span class="nv">$ano</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"ano"</span><span class="p">];</span>
+            <span class="nv">$numPaginas</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"numPaginas"</span><span class="p">];</span>
+            <span class="nv">$autores</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"autor"</span><span class="p">];</span>
+
+            <span class="c1">// Lanzamos el INSERT contra la BD.</span>
+            <span class="k">echo</span> <span class="s2">"INSERT INTO libros (titulo,genero,pais,ano,numPaginas) VALUES ('</span><span class="nv">$titulo</span><span class="s2">','</span><span class="nv">$genero</span><span class="s2">', '</span><span class="nv">$pais</span><span class="s2">', '</span><span class="nv">$ano</span><span class="s2">', '</span><span class="nv">$numPaginas</span><span class="s2">')"</span><span class="p">;</span>
+            <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"INSERT INTO libros (titulo,genero,pais,ano,numPaginas) VALUES ('</span><span class="nv">$titulo</span><span class="s2">','</span><span class="nv">$genero</span><span class="s2">', '</span><span class="nv">$pais</span><span class="s2">', '</span><span class="nv">$ano</span><span class="s2">', '</span><span class="nv">$numPaginas</span><span class="s2">')"</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$db</span><span class="o">-&gt;</span><span class="n">affected_rows</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">// Si la inserción del libro ha funcionado, continuamos insertando en la tabla "escriben"</span>
+                <span class="c1">// Tenemos que averiguar qué idLibro se ha asignado al libro que acabamos de insertar</span>
+                <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT MAX(idLibro) AS ultimoIdLibro FROM libros"</span><span class="p">);</span>
+                <span class="nv">$idLibro</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">()</span><span class="o">-&gt;</span><span class="n">ultimoIdLibro</span><span class="p">;</span>
+                <span class="c1">// Ya podemos insertar todos los autores junto con el libro en "escriben"</span>
+                <span class="k">foreach</span> <span class="p">(</span><span class="nv">$autores</span> <span class="k">as</span> <span class="nv">$idAutor</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"INSERT INTO escriben(idLibro, idPersona) VALUES('</span><span class="nv">$idLibro</span><span class="s2">', '</span><span class="nv">$idAutor</span><span class="s2">')"</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">echo</span> <span class="s2">"Libro insertado con éxito"</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// Si la inserción del libro ha fallado, mostramos mensaje de error</span>
+                <span class="k">echo</span> <span class="s2">"Ha ocurrido un error al insertar el libro. Por favor, inténtelo más tarde."</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php'&gt;Volver&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- BORRAR LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"borrarLibro"</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Borrar libros&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Recuperamos el id del libro y lanzamos el DELETE contra la BD</span>
+            <span class="nv">$idLibro</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"idLibro"</span><span class="p">];</span>
+            <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"DELETE FROM libros WHERE idLibro = '</span><span class="nv">$idLibro</span><span class="s2">'"</span><span class="p">);</span>
+
+            <span class="c1">// Mostramos mensaje con el resultado de la operación</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$db</span><span class="o">-&gt;</span><span class="n">affected_rows</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">echo</span> <span class="s2">"Ha ocurrido un error al borrar el libro. Por favor, inténtelo de nuevo"</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="k">echo</span> <span class="s2">"Libro borrado con éxito"</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php'&gt;Volver&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- FORMULARIO MODIFICAR LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"formularioModificarLibro"</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Modificación de libros&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Recuperamos el id del libro que vamos a modificar y sacamos el resto de sus datos de la BD</span>
+            <span class="nv">$idLibro</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"idLibro"</span><span class="p">];</span>
+            <span class="nv">$result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT * FROM libros WHERE libros.idLibro = '</span><span class="nv">$idLibro</span><span class="s2">'"</span><span class="p">);</span>
+            <span class="nv">$libro</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">();</span>
+
+            <span class="c1">// Creamos el formulario con los campos del libro</span>
+            <span class="c1">// y lo rellenamos con los datos que hemos recuperado de la BD</span>
+            <span class="k">echo</span> <span class="s2">"&lt;form action = 'index.php' method = 'get'&gt;
+				    &lt;input type='hidden' name='idLibro' value='</span><span class="nv">$idLibro</span><span class="s2">'&gt;
+                    Título:&lt;input type='text' name='titulo' value='</span><span class="nv">$libro-&gt;titulo</span><span class="s2">'&gt;&lt;br&gt;
+                    Género:&lt;input type='text' name='genero' value='</span><span class="nv">$libro-&gt;genero</span><span class="s2">'&gt;&lt;br&gt;
+                    País:&lt;input type='text' name='pais' value='</span><span class="nv">$libro-&gt;pais</span><span class="s2">'&gt;&lt;br&gt;
+                    Año:&lt;input type='text' name='ano' value='</span><span class="nv">$libro-&gt;ano</span><span class="s2">'&gt;&lt;br&gt;
+                    Número de páginas:&lt;input type='text' name='numPaginas' value='</span><span class="nv">$libro-&gt;numPaginas</span><span class="s2">'&gt;&lt;br&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Vamos a añadir un selector para el id del autor o autores.</span>
+            <span class="c1">// Para que salgan preseleccionados los autores del libro que estamos modificando, vamos a buscar</span>
+            <span class="c1">// también a esos autores.</span>
+            <span class="nv">$todosLosAutores</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT * FROM personas"</span><span class="p">);</span>  <span class="c1">// Obtener todos los autores</span>
+            <span class="nv">$autoresLibro</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT idPersona FROM escriben WHERE idLibro = '</span><span class="nv">$idLibro</span><span class="s2">'"</span><span class="p">);</span>             <span class="c1">// Obtener solo los autores del libro que estamos buscando</span>
+            <span class="c1">// Vamos a convertir esa lista de autores del libro en un array de ids de personas</span>
+            <span class="nv">$listaAutoresLibro</span> <span class="o">=</span> <span class="k">array</span><span class="p">();</span>
+            <span class="k">while</span> <span class="p">(</span><span class="nv">$autor</span> <span class="o">=</span> <span class="nv">$autoresLibro</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">())</span> <span class="p">{</span>
+                <span class="nv">$listaAutoresLibro</span><span class="p">[]</span> <span class="o">=</span> <span class="nv">$autor</span><span class="o">-&gt;</span><span class="n">idPersona</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="c1">// Ya tenemos todos los datos para añadir el selector de autores al formulario</span>
+            <span class="k">echo</span> <span class="s2">"Autores: &lt;select name='autor[]' multiple size='3'&gt;"</span><span class="p">;</span>
+            <span class="k">while</span> <span class="p">(</span><span class="nv">$fila</span> <span class="o">=</span> <span class="nv">$todosLosAutores</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">())</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">in_array</span><span class="p">(</span><span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">idPersona</span><span class="p">,</span> <span class="nv">$listaAutoresLibro</span><span class="p">))</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;option value='</span><span class="nv">$fila-&gt;idPersona</span><span class="s2">' selected&gt;</span><span class="nv">$fila-&gt;nombre</span><span class="s2"> </span><span class="nv">$fila-&gt;apellido</span><span class="s2">&lt;/option&gt;"</span><span class="p">;</span>
+                <span class="k">else</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;option value='</span><span class="nv">$fila-&gt;idPersona</span><span class="s2">'&gt;</span><span class="nv">$fila-&gt;nombre</span><span class="s2"> </span><span class="nv">$fila-&gt;apellido</span><span class="s2">&lt;/option&gt;"</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;/select&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Por último, un enlace para crear un nuevo autor</span>
+            <span class="k">echo</span> <span class="s2">"&lt;a href='index.php?action=formularioInsertarAutores'&gt;Añadir nuevo&lt;/a&gt;&lt;br&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Finalizamos el formulario</span>
+            <span class="k">echo</span> <span class="s2">"  &lt;input type='hidden' name='action' value='modificarLibro'&gt;
+                    &lt;input type='submit'&gt;
+                  &lt;/form&gt;"</span><span class="p">;</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php'&gt;Volver&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- MODIFICAR LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"modificarLibro"</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Modificación de libros&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Vamos a procesar el formulario de modificación de libros</span>
+            <span class="c1">// Primero, recuperamos todos los datos del formulario</span>
+            <span class="nv">$idLibro</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"idLibro"</span><span class="p">];</span>
+            <span class="nv">$titulo</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"titulo"</span><span class="p">];</span>
+            <span class="nv">$genero</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"genero"</span><span class="p">];</span>
+            <span class="nv">$pais</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"pais"</span><span class="p">];</span>
+            <span class="nv">$ano</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"ano"</span><span class="p">];</span>
+            <span class="nv">$numPaginas</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"numPaginas"</span><span class="p">];</span>
+            <span class="nv">$autores</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"autor"</span><span class="p">];</span>
+
+            <span class="c1">// Lanzamos el UPDATE contra la base de datos.</span>
+            <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"UPDATE libros SET
+							titulo = '</span><span class="nv">$titulo</span><span class="s2">',
+							genero = '</span><span class="nv">$genero</span><span class="s2">',
+							pais = '</span><span class="nv">$pais</span><span class="s2">',
+							ano = '</span><span class="nv">$ano</span><span class="s2">',
+							numPaginas = '</span><span class="nv">$numPaginas</span><span class="s2">'
+							WHERE idLibro = '</span><span class="nv">$idLibro</span><span class="s2">'"</span><span class="p">);</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$db</span><span class="o">-&gt;</span><span class="n">affected_rows</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                <span class="c1">// Si la modificación del libro ha funcionado, continuamos actualizando la tabla "escriben".</span>
+                <span class="c1">// Primero borraremos todos los registros del libro actual y luego los insertaremos de nuevo</span>
+                <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"DELETE FROM escriben WHERE idLibro = '</span><span class="nv">$idLibro</span><span class="s2">'"</span><span class="p">);</span>
+                <span class="c1">// Ya podemos insertar todos los autores junto con el libro en "escriben"</span>
+                <span class="k">foreach</span> <span class="p">(</span><span class="nv">$autores</span> <span class="k">as</span> <span class="nv">$idAutor</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"INSERT INTO escriben(idLibro, idPersona) VALUES('</span><span class="nv">$idLibro</span><span class="s2">', '</span><span class="nv">$idAutor</span><span class="s2">')"</span><span class="p">);</span>
+                <span class="p">}</span>
+                <span class="k">echo</span> <span class="s2">"Libro actualizado con éxito"</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// Si la modificación del libro ha fallado, mostramos mensaje de error</span>
+                <span class="k">echo</span> <span class="s2">"Ha ocurrido un error al modificar el libro. Por favor, inténtelo más tarde."</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php'&gt;Volver&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- BUSCAR LIBROS ----------------------------------------</span>
+
+        <span class="k">case</span> <span class="s2">"buscarLibros"</span><span class="o">:</span>
+            <span class="c1">// Recuperamos el texto de búsqueda de la variable de formulario</span>
+            <span class="nv">$textoBusqueda</span> <span class="o">=</span> <span class="nv">$_REQUEST</span><span class="p">[</span><span class="s2">"textoBusqueda"</span><span class="p">];</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Resultados de la búsqueda: </span><span class="se">\"</span><span class="nv">$textoBusqueda</span><span class="se">\"</span><span class="s2">&lt;/h1&gt;"</span><span class="p">;</span>
+
+            <span class="c1">// Buscamos los libros de la biblioteca que coincidan con el texto de búsqueda</span>
+            <span class="k">if</span> <span class="p">(</span><span class="nv">$result</span> <span class="o">=</span> <span class="nv">$db</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"SELECT * FROM libros
+					INNER JOIN escriben ON libros.idLibro = escriben.idLibro
+					INNER JOIN personas ON escriben.idPersona = personas.idPersona
+					WHERE libros.titulo LIKE '%</span><span class="nv">$textoBusqueda</span><span class="s2">%'
+					OR libros.genero LIKE '%</span><span class="nv">$textoBusqueda</span><span class="s2">%'
+					OR personas.nombre LIKE '%</span><span class="nv">$textoBusqueda</span><span class="s2">%'
+					OR personas.apellido LIKE '%</span><span class="nv">$textoBusqueda</span><span class="s2">%'
+					ORDER BY libros.titulo"</span><span class="p">))</span> <span class="p">{</span>
+
+                <span class="c1">// La consulta se ha ejecutado con éxito. Vamos a ver si contiene registros</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nv">$result</span><span class="o">-&gt;</span><span class="n">num_rows</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// La consulta ha devuelto registros: vamos a mostrarlos</span>
+                    <span class="c1">// Primero, el formulario de búsqueda</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;form action='index.php'&gt;
+								&lt;input type='hidden' name='action' value='buscarLibros'&gt;
+                            	&lt;input type='text' name='textoBusqueda'&gt;
+								&lt;input type='submit' value='Buscar'&gt;
+                          &lt;/form&gt;&lt;br&gt;"</span><span class="p">;</span>
+                    <span class="c1">// Después, la tabla con los datos</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;table border ='1'&gt;"</span><span class="p">;</span>
+                    <span class="k">while</span> <span class="p">(</span><span class="nv">$fila</span> <span class="o">=</span> <span class="nv">$result</span><span class="o">-&gt;</span><span class="nf">fetch_object</span><span class="p">())</span> <span class="p">{</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;tr&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">titulo</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">genero</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">numPaginas</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">nombre</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;"</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">apellido</span> <span class="mf">.</span> <span class="s2">"&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;&lt;a href='index.php?action=formularioModificarLibro&amp;idLibro="</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">idLibro</span> <span class="mf">.</span> <span class="s2">"'&gt;Modificar&lt;/a&gt;&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;td&gt;&lt;a href='index.php?action=borrarLibro&amp;idLibro="</span> <span class="mf">.</span> <span class="nv">$fila</span><span class="o">-&gt;</span><span class="n">idLibro</span> <span class="mf">.</span> <span class="s2">"'&gt;Borrar&lt;/a&gt;&lt;/td&gt;"</span><span class="p">;</span>
+                        <span class="k">echo</span> <span class="s2">"&lt;/tr&gt;"</span><span class="p">;</span>
+                    <span class="p">}</span>
+                    <span class="k">echo</span> <span class="s2">"&lt;/table&gt;"</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="c1">// La consulta no contiene registros</span>
+                    <span class="k">echo</span> <span class="s2">"No se encontraron datos"</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// La consulta ha fallado</span>
+                <span class="k">echo</span> <span class="s2">"Error al tratar de recuperar los datos de la base de datos. Por favor, inténtelo más tarde"</span><span class="p">;</span>
+            <span class="p">}</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php?action=formularioInsertarLibros'&gt;Nuevo&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+            <span class="k">echo</span> <span class="s2">"&lt;p&gt;&lt;a href='index.php'&gt;Volver&lt;/a&gt;&lt;/p&gt;"</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+
+            <span class="c1">// --------------------------------- ACTION NO ENCONTRADA ----------------------------------------</span>
+
+        <span class="k">default</span><span class="o">:</span>
+            <span class="k">echo</span> <span class="s2">"&lt;h1&gt;Error 404: página no encontrada&lt;/h1&gt;"</span><span class="p">;</span>
+            <span class="k">echo</span> <span class="s2">"&lt;a href='index.php'&gt;Volver&lt;/a&gt;"</span><span class="p">;</span>
+            <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span> <span class="c1">// switch</span>
+
+    <span class="cp">?&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div>
+<p>```</p>
+:ET

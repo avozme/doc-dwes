@@ -85,10 +85,22 @@ En las cuatro primeras líneas se crea el objeto de tipo XMLHttpRequest y luego 
 Eso deja lista la petición. JavaScript permanecerá a la escucha en segundo plano hasta que el servidor responda. Cuando lo haga, se ejecutará la función procesa_respuesta().
 
 En esa función se hacen tres cosas muy importantes:
-XXX
+1. Se comprueba si el estado de la petición (readyState) es 4. Eso significa que el servidor ha terminado de procesarla. La petición pasa por varios estados hasta completarse, y el servidor informa de todos ellos. Es decir, la función procesa_respuesta() se ejecuta al menos una vez para cada uno de estos estados:
+   * readyState == 1 -> OPENED: Se acaba de abrir la comunicación con el servidor. Es decir, se acaba de ejecutar open().
+   * readyState == 2 -> HEADERS_RECEIVED: Se acaba de enviar la petición al servidor. Es decir, se acaba de ejecutar send().
+   * readyState == 3 -> LOADING: Se está recibiendo la respuesta del servidor.
+   * readyState == 4 -> DONE: Se ha recibido la respuesta del servidor.
+   Por eso es necesario comprobar que readyState == 4 antes de hacer ninguna otra cosa.
+2. Se comprueba que la respuesta del servidor es 200. Esto, según el protocolo http, significa que no hay errores en la página. El servidor puede responder con otros códigos, como 404 (recurso no encontrado) o 403 (prohibido el acceso a ese recurso). Puedes encontrar en miles de sitios de internet todas las posibles respuestas de una petición http.
+3. Si readyState == 4 y status == 200, significa que todo ha ido bien y el servidor ha respondido. Ya podemos hacer lo que sea que tengamos que hacer con esa respuesta. En este ejemplo, nos hemos limitado a mostrar esa respuesta en un alert. Observa en el ejemplo como la respuesta del servidor se recibe en forma de String en el atributo responseText.
 
 ### 7.2.2. Peticiones con datos al servidor (GET)
 
+Si has entendido el ejemplo anterior, este te va a costar muy poco. Simplemente, vamos a enviar algunos datos al servidor por GET, exactament igual que lo haríamos si los enviáramos mediante un formulario. De hecho, el servidor no notará la diferencia.
+
+El código para lograrlo es este:
+
+```javascript
 var cp = document.getElementById("codigo_postal");
 var telefono = document.getElementById("telefono");
  
@@ -97,12 +109,30 @@ query_string = "&codigo_postal=" + encodeURIComponent(cp.value) +
 
 peticion_http = new XMLHttpRequest();
 peticion_http.onreadystatechange = procesa_respuesta;
-peticion_http.open('GET', 'http://servidor/scrip.php', true);
+peticion_http.open('GET', 'http://servidor/scrip.php');
 peticion_http.send(query_string);
 
 function procesa_respuesta() { .... }
+```
+
+No ponemos la función procesa_respuesta() porque es la misma de antes. En cambio, sí que hay algunos añadidos en el código de preparación de la solicitud, ¿verdad?
+
+Para empezar, hemos cogido un par de datos de un formulario: el código postal y el teléfono (puede ser un formulario de alta de usario o algo por el estilo: recuerda que esto solo es un ejemplo).
+
+Luego hemos creado una variable llamada queryString que contiene el string con los datos que queremos enviar al servidor por GET. Como los datos por GET se codifican en la URL, es necesario usar el formato de la URL (separando las variables con el carácter &) y codificar cualquier carácter especial (con la función encodeURIComponente() de Javascript).
+
+Por último, en el momento de hacer send(), hemos agregado nuestra query_string para que sea enviada al servidor. Una vez allí, PHP la podrá procesar como cualquier otra string enviada por GET, es decir, usando las variables superglobales $_GET o $_REQUEST.
 
 ### 7.2.3. Peticiones con datos al servidor (POST)
+
+Si, en lugar de enviar datos al servidor por GET, preferimos enviarlos por POST, la técnica es muy similar a la anterior, con un par de variaciones:
+
+1. Debemos indicar "POST" en lugar de "GET" en el método open(), como es lógico.
+2. Debemos indicarle a Ajax que el paquete http llevará variables POST en su cabecera. Para eso se usa el método setRequestHeader().
+
+Lo puedes ver en el siguiente ejemplo:
+
+```javascript
 var cp = document.getElementById("codigo_postal");
 var telefono = document.getElementById("telefono");
  
@@ -111,13 +141,20 @@ query_string = "&codigo_postal=" + encodeURIComponent(cp.value) +
 
 peticion_http = new XMLHttpRequest();
 peticion_http.onreadystatechange = procesa_respuesta;
-peticion_http.open("POST", "http://servidor/script.php", true);
+peticion_http.open("POST", "http://servidor/script.php");
 peticion_http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 peticion_http.send(query_string);
 
 function procesa_respuesta() { .... }
+```
 
 ### 7.2.4. Peticiones con datos al servidor (XML)
+
+Todo esto está muy bien si lo que enviamos al servidor son un par de datos sueltos, como el código postal y el teléfono en los ejemplos anteriores. Pero ¿y si tenemos que enviar mucha información? Digamos, por ejemplo, un array de códigos postales y teléfonos.
+
+En ese caso, usar GET se hace inviable (por la limitación de caracteres), así que recurriremos a POST y empaquetaremos nuestros datos en un string XML o JSON. En este ejemplo, vamos a usar XML:
+
+```javascript
 var cp = document.getElementById("codigo_postal");
 var telefono = document.getElementById("telefono");
 xml = "<datos>" +
@@ -126,17 +163,30 @@ xml = "<datos>" +
 
 peticion_http = new XMLHttpRequest();
 peticion_http.onreadystatechange = procesa_respuesta;
-peticion_http.open("POST", "http://servidor/script.php", true);
+peticion_http.open("POST", "http://servidor/script.php");
 peticion_http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 peticion_http.send(xml);
 
 function procesa_respuesta() { .... }
+```
 
 ## 7.3. Cómo recibir la respuesta del servidor
 
+En todos los ejemplos anteriores, el servidor conestaba con un simple texto que mostrábamos por medio de un alert() de Javascript. Ni siquiera nos preocupamos por el contenido de ese texto. Podría ser cualquier cosa: algo como "petición procesada", "usuario borrado" o cosas por el estilo.
+
+Pero ¿y si el servidor tiene que contestar algo complejo? Por ejemplo, una tabla completa. En ese caso, como es lógico, necesitamos recurrir a XML o JSON para empaquetar todos los datos de la respuesta y enviarlos desde el servidor hacia el cliente.
+
+Vamos a ver un par de ejemplo, uno resuelto con XML y otro con JSON. En ninguno de los dos casos mostraremos cómo lo hace el servidor para crear los datos: supondremos que eso ya sabes hacerlo, puesto que se trata de PHP. Nos centraremos en cómo procesa Ajax, es decir, Javascript, esa respuesta.
+
 ### 7.3.1. Recepción de datos XML
 
-Recepción de datos XML
+En este ejemplo, el servidor nos devuelve un String XML consistente en un array de códigos postales y teléfonos (de clientes, de usuarios, de lo que sea. Recuerda -otra vez- que solo es un ejemplo).
+
+Observa cómo esa respuesta se accede por medio de responseXML (no responseText, como hasta ahora). A partir de ahí, Javascript puede usar esa respuesta como un objeto XML cualquiera: puede buscar hijos de un nodo, puede buscar nodos por su tag, etc.
+
+En el ejemplo, nos limitamos a recuperar el código postal y el teléfono del primer elemento del array y a mostrarlo en el documento preexistente, en una capa con el ID "respuesta".
+
+```javascript
 function procesaRespuesta() {
   if(peticion_http.readyState == 4) {
     if(peticion_http.status == 200) {
@@ -153,8 +203,19 @@ function procesaRespuesta() {
     }
   }
 }
+```
 
 ### 7.3.2. Recepción de datos JSON
+
+Javascript prefiere JSON a XML, es no es un secreto. Casi todos los programadores lo prefieren, en realidad. Así que veamos cómo hacer lo mismo que antes, pero ahora con JSON.
+
+La respuesta JSON llegará en responseText, no en responseXML. Eso significa que Javascript la recibe como un String cualquiera.
+
+Luego, con la función eval() de Javascript, podemos convertir ese String en un objeto complejo y, a partir de ahí, usar ese objeto para acceder a todos sus elementos.
+
+En el ejemplo, como antes, solo accederemos al primer código postal y al primer teléfono y los mostraremos en la capa "respuesta" de nuestro documento.
+
+```javascript
 function procesaRespuesta() {
   if(http_request.readyState == 4) {
   if(http_request.status == 200) {
@@ -168,27 +229,78 @@ function procesaRespuesta() {
     }
   }
 }
+```
 
 ## 7.4. Ajax y jQuery
 
-El uso de jQuery facilita enormemente la programación de llamadas Ajax al servidor.
-jQuery ofrece varias funciones para hacer llamadas Ajax:
-$.ajax() → La más configurable pero también la más compleja.
-$.get() → Para lanzar peticiones GET sencillas.
-$.post() → Para lanzar peticiones POST sencillas
-$.load() → Para lanzar peticiones GET y cargar la respuesta en una capa.
+El uso de jQuery facilita enormemente la programación de llamadas Ajax al servidor. El decir: se puede manejar Ajax al 100% sin recurrir a jQuery, pero con jQuery es más fácil.
 
-Función $.ajax()
+jQuery ofrece varias funciones para hacer llamadas Ajax:
+
+* $.ajax() → La más configurable pero también la más compleja.
+* $.get() → Para lanzar peticiones GET sencillas.
+* $.post() → Para lanzar peticiones POST sencillas
+* $.load() → Para lanzar peticiones GET y cargar la respuesta en una capa.
+
+Vamos a verlas una por una.
+
+### 7.4.1. Función $.ajax()
+
+Tiene esta sintaxis:
+
+```javascript
 $.ajax({
   url: '/ruta/hasta/script.php',
   type: 'POST',
-  async: true,
   data: 'parametro1=valor1&parametro2=valor2',
-  success: función_procesa_respuesta,
-  error: función_procesa_error
+  contentType: 'tipo de contenido que enviamos al servidor',
+  dataType: 'tipo de contenido con el que responde el servidor',
+  success: function(data) { // Aquí el código para procesar la respuesta },
+  fail: function() { // Aquí el código para procesar el error }
 });
+```
 
-Funciones $.get() y $.post
+Bueno, en realidad $.ajax() admite más argumentos aparte de los que te muestro aquí arriba, pero estos son los principales. Si quieres verlos todos, te sugiero que te des una vuelta por la documentación oficial de jQuery, que por cierto es fantásticamente buena.
+
+Observa como, en una sola invocación, conseguimos hacerlo todo: indicar la URL donde se dirigirá la petición, el tipo de envío de datos (GET o POST), los datos que enviamos al servidor, el tipo de datos que recibiremos como respuesta, el nombre de la función que procesará la respuesta e, incluso, el nombre de la función que procesará el error, en caso de que el servidor responda con un código de error.
+
+En ***contentType*** puedes indicar el tipo de datos que vas a enviar al servidor. Por defecto, se supone que es 'application/x-www-form-urlencoded; charset=UTF-8', pero te puede interesar cambiarlo por 'multipart/form-data', por ejemplo, si vas a enviar un archivo binario (como una imagen).
+
+En ***dataType*** puedes indicar el tipo de datos que se espera que te devuelva el servidor. Por defecto será 'text', es decir, texto plano, pero puedes indicar cosas muy variadas, como 'xml', 'json', 'html' o incluso 'script' si el servidor te va a devolver un fragmento de código JavaScript. Esto ayuda a su procesamiento posterior en la sección ***success***.
+
+Por último, en la sección ***success*** puedes acceder a los datos devueltos por el servidor a través de la variable ***data***, que tendrá el formato correspondiente al tipo de datos que hayas indicado en ***dataType***. Por ejemplo, si en ***dataType*** especificaste que el servidor iba a responder con un objeto json, jQuery tratará de convertir la respuesta a un objeto asumiendo el formato json y te la dejará preparada y lista para usar en el parámetro ***data***.
+
+Aquí vemos un ejemplo de uso de $.ajax():
+
+```javascript
+  $(document).ready(function () {
+    $.ajax({
+      type: "POST",
+      url: "mi-script.php",
+      data: {email: $("#email").val()},
+      success: function (data) {
+                  $("#message").html(data);
+               },
+      error: function (req, status, error) {
+                  alert(req + " " + status + " " + error);
+             }
+    });
+  });
+```
+
+Si es la primera vez que ves código jQuery, esto te sonará tanto como el chino mandarín. Pero no te agobies, que en realidad es muy fácil. Te lo explico en cuatro frases.
+
+La primera línea, ***$(document).ready()***, sirve para indicar al navegador que no debe ejecutar la función que haya ahí dentro hasta que el documento no se haya cargado por completo y el árbol DOM desplegado en la memoria del cliente. Solo entonces se lanzará el resto del código. Es algo muy común en el código jQuery.
+
+Después viene la llamada Ajax, con varios de los atributos que mencionábamos antes. Fíjate que no hemos usado ni ***dataType*** ni ***contentType***, por lo que se asumirán los valores por defecto.
+
+En la sección ***data*** se especifican los datos que se envían a mi-script.php. Solo enviamos un email, pero podríamos enviarle más cosas. Observa que lo hemos formateado en json. Es lo más habitual.
+
+En la sección ***success*** hemos colocado directamente el código de la función que se lanzará al recibir la respuesta del servidor. Esa forma de inyectar funciones sin nombre directamente es muy habitual de jQuery. La función se limita a tomar la respuesta del servidor y mostrarla en una capa con el ID "#message", pero, por supuesto, podría hacer cualquier otra cosa más compleja.
+
+En la sección ***error***, por último, lanzamos un mensaje de error mediante un alert(), que solo saltará si ocurre algún error durante la petición Ajax. Fíjate en que esa función tiene tres parámetros (optativos) que utilizamos para informar al usuario con más detalle de qué error se ha producido.
+
+### 7.4.2. Funciones $.get() y $.post
 $.get(url, datos, funcion_manejadora);
 $.post(url, datos, funcion_manejadora);
 
@@ -201,7 +313,7 @@ $.get('/ruta/hasta/script.php',
 );
 
 
-Función $.load()
+### 7.4.3. Función $.load()
 Inserta el resultado del script del servidor en el elemento seleccionado con $:
 $('#info').load('/ruta/hasta/pagina.php');
 

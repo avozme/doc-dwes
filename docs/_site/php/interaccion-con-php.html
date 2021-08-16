@@ -1,0 +1,182 @@
+<h2 class="no_toc" id="24-interacción-entre-mariadb-y-php">2.4. Interacción entre MariaDB y PHP</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#241-mysqlmariadb-con-php4" id="markdown-toc-241-mysqlmariadb-con-php4">2.4.1. MySQL/MariaDB con PHP4</a>    <ul>
+      <li><a href="#acceso-a-mysql-con-php4-obsoleto" id="markdown-toc-acceso-a-mysql-con-php4-obsoleto">Acceso a MySQL con PHP4 (¡OBSOLETO!)</a></li>
+    </ul>
+  </li>
+  <li><a href="#242-mysqlmariadb-con-php5" id="markdown-toc-242-mysqlmariadb-con-php5">2.4.2. MySQL/MariaDB con PHP5+</a>    <ul>
+      <li><a href="#conectar-a-mysql-con-php5" id="markdown-toc-conectar-a-mysql-con-php5">Conectar a MySQL con PHP5+</a></li>
+      <li><a href="#consultas-sql-con-php5" id="markdown-toc-consultas-sql-con-php5">Consultas SQL con PHP5+</a></li>
+    </ul>
+  </li>
+</ul>
+
+<p>A partir de ahora, vamos a referirnos a MySQL/MariaDB indistintamente. Este será el gestor de bases de datos relacionales que vamos a usar a lo largo del curso. La adaptación a otros gestores, en cualquier caso, es muy simple.</p>
+
+<p>MySQL/MariaDB es un SGBD profesional, por lo que la interacción con él busca ser eficiente y segura, pero no necesariamente fácil.</p>
+
+<p>Hay básicamente tres métodos de utilizar MySQL:</p>
+
+<ul>
+  <li>
+    <p><strong>A través de la línea de comandos:</strong></p>
+
+    <p>Iniciamos una sesión en MySQL con:</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ mysql -h servidor -u nombre_usuario -p
+</code></pre></div>    </div>
+
+    <p>Y luego tenemos a nuestra disposición montones de comandos para hacer cosas con la base de datos, incluyendo cualquier instrucción válida en SQL.</p>
+  </li>
+  <li>
+    <p><strong>A través de una aplicación con interfaz gráfico como PHPMyAdmin</strong>, una aplicación web escrita en PHP que proporciona un interfaz muy cómodo para trabajar con MySQL o MariaDB.</p>
+  </li>
+  <li>
+    <p><strong>A través de un programa escrito en PHP</strong> o algún otro lenguaje con posibilidad de acceso a MySQL. Este método de acceso será el que nosotros practicaremos a lo largo del curso. Por ahora, vamos a ver lo fundamental.</p>
+  </li>
+</ul>
+
+<h3 id="241-mysqlmariadb-con-php4">2.4.1. MySQL/MariaDB con PHP4</h3>
+
+<p>El modo en que se accedía a bases de datos en PHP4 era mediante bibliotecas de funciones diferentes para cada SGBD.</p>
+
+<p>Este tipo de codificación está obsoleta y se desaconseja su uso. Ya no tiene soporte oficial, por lo que no se resolverán futuros problemas de seguridad o estabilidad.</p>
+
+<p><strong>Lo mostramos aquí para que sepáis lo que NO se debe hacer.</strong></p>
+
+<p><strong>Encontraréis mucho código de esta naturaleza en la red que DEBE SER EVITADO.</strong></p>
+
+<h4 id="acceso-a-mysql-con-php4-obsoleto">Acceso a MySQL con PHP4 (¡OBSOLETO!)</h4>
+
+<p>PHP4 utiliza una biblioteca de funciones PHP cuyo nombre empieza por mysql_.</p>
+
+<p>Por ejemplo, para insertar un registro en una BD MySQL, se hacía así:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="c1">//Conectamos con MySQL</span>
+<span class="nb">mysql_connect</span><span class="p">(</span><span class="s2">"URL"</span><span class="p">,</span><span class="s2">"nombre_usuario"</span><span class="p">,</span><span class="s2">"contraseña"</span><span class="p">);</span>
+
+<span class="c1">//Selección de la base de datos con la que vamos a trabajar</span>
+<span class="nb">mysql_select_db</span><span class="p">(</span><span class="s2">"nombre_base_de_datos"</span><span class="p">);</span>
+
+<span class="c1">//Ejecucion de cualquier sentencia SQL válida</span>
+<span class="nb">mysql_query</span><span class="p">(</span><span class="s2">"INSERT INTO clientes (nombre,telefono) VALUES ('</span><span class="nv">$nombre</span><span class="s2">','</span><span class="nv">$telefono</span><span class="s2">')"</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>Y para ejecutar consultas (SELECT), se recogía el resultado en un cursor. Observa cómo se hacía en este ejemplo:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="c1">//Nos conectamos con MySQL</span>
+<span class="nb">mysql_connect</span><span class="p">(</span><span class="err">“</span><span class="no">URL</span><span class="s2">","</span><span class="n">user</span><span class="s2">","</span><span class="n">password</span><span class="s2">");
+
+//Seleccionamos la base de datos con la que vamos a trabajar
+mysql_select_db("</span><span class="n">nombre_base_datos</span><span class="s2">");
+
+//Ejecutamos la consulta SQL
+</span><span class="nv">$result</span><span class="s2">=mysql_query("</span><span class="no">SELECT</span> <span class="o">*</span> <span class="no">FROM</span> <span class="nc">Clientes</span><span class="s2">");
+?&gt;
+
+... continúa en la pág. siguiente ...
+
+Consultas SQL con PHP4 (2/2)
+
+... viene de la pág. anterior ...
+
+&lt;table align="</span><span class="n">center</span><span class="s2">"&gt;&lt;tr&gt;
+&lt;th&gt;Nombre&lt;/th&gt;
+&lt;th&gt;Teléfono&lt;/th&gt;&lt;/tr&gt;
+&lt;?
+//Mostramos los registros
+while (</span><span class="nv">$registro</span><span class="s2">=mysql_fetch_array(</span><span class="nv">$result</span><span class="s2">)) {
+echo '&lt;tr&gt;&lt;td&gt;'.</span><span class="nv">$registro["nombre"]</span><span class="s2">.'&lt;/td&gt;';
+echo '&lt;td&gt;'.</span><span class="nv">$registro["telefono"]</span><span class="s2">.'&lt;/td&gt;&lt;/tr&gt;';
+}
+mysql_free_result(</span><span class="nv">$result</span><span class="s2">)
+?&gt;
+&lt;/table&gt;
+&lt;/body&gt;
+</span></code></pre></div></div>
+
+<p><strong>RECUERDA: esta forma de operar con la base de datos está OBSOLETA y DEBE SER EVITADA.</strong> Te la mostramos aquí solo para que sepas reconocerla si te la encuentras por las procelosas aguas de internet.</p>
+
+<h3 id="242-mysqlmariadb-con-php5">2.4.2. MySQL/MariaDB con PHP5+</h3>
+
+<p>Desde PHP5, se utiliza una biblioteca de clases para acceder a los diferentes SGBDs.</p>
+
+<p>Todos los nuevos desarrollos deberían usar las bibliotecas de clases y prescindir de las viejas librerías de funciones.</p>
+
+<p><em>Vuelvo a repetirlo: mucho código de ejemplo de PHP que circula por la red es PHP4 y DEBE SER EVITADO.</em></p>
+
+<h4 id="conectar-a-mysql-con-php5">Conectar a MySQL con PHP5+</h4>
+
+<p>Por ejemplo, para insertar un registro en una BD MySQL:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="c1">// Conectamos con el servidor y abrimos la BD.</span>
+<span class="nv">$conexdb</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">mysqli</span><span class="p">(</span><span class="s1">'host'</span><span class="p">,</span><span class="s1">'username'</span><span class="p">,</span><span class="s1">'password'</span><span class="p">,</span><span class="s1">'database'</span><span class="p">);</span>
+
+<span class="c1">// Aquí se ejecutaría cualquier sentencia SQL válida.</span>
+<span class="c1">// Por ejemplo:</span>
+<span class="nv">$conexdb</span><span class="o">-&gt;</span><span class="nf">query</span><span class="p">(</span><span class="s2">"INSERT INTO clientes (nombre,telefono) VALUES ('</span><span class="nv">$nombre</span><span class="s2">','</span><span class="nv">$telefono</span><span class="s2">')"</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>PHP proporciona varios mecanismos para acceder a bases de datos (¡demasiadas formas de hacer lo mismo!):</p>
+
+<ul>
+  <li>
+    <p><strong>La extensión mysqli en su forma procedimental.</strong></p>
+
+    <p>Es idéntica a la de PHP4, pero cambiando la palabra “mysql” por “mysqli”.</p>
+
+    <p>Por ejemplo, mysql_connect() cambia a mysqli_connect().</p>
+
+    <p>Esta forma es apta para programadores perezosos y anticuados, que no quieren pasarse a la programación orientada a objetos.</p>
+  </li>
+  <li>
+    <p><strong>La extensión mysqli en su forma orientada a objetos.</strong></p>
+
+    <p>Es la que nosotros estamos usando y usaremos todo el curso.</p>
+  </li>
+  <li>
+    <p><strong>La extensión PDO.</strong></p>
+
+    <p>Se trata de una clase genérica que permite acceder a cualquier gestor de bases de datos mediante el mismo conjunto de métodos. En funcionalidad y rendimiento es idéntica a mysqli.</p>
+  </li>
+</ul>
+
+<h4 id="consultas-sql-con-php5">Consultas SQL con PHP5+</h4>
+
+<p>La ejecución de consultas (SELECT) produce la devolución de un conjunto de registros. Esos registros se manejan en PHP con un cursor. Observa cómo se hace en este ejemplo:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;body&gt;</span>
+<span class="cp">&lt;?php
+//Nos conectamos con MySQL
+$db = new mysqli("URL","user","password", "database");
+
+// Comprobamos que la conexión se ha realizado
+if($db-&gt;connect_error){
+    die("Error en la conexion : ".$db-&gt;connect_error);
+}
+
+//Ejecutamos la consulta SQL
+$result=$db-&gt;query("SELECT * FROM Clientes");
+?&gt;</span>
+<span class="nt">&lt;table</span> <span class="na">align=</span><span class="s">"center"</span><span class="nt">&gt;&lt;tr&gt;</span>
+   <span class="nt">&lt;th&gt;</span>Nombre<span class="nt">&lt;/th&gt;</span>
+   <span class="nt">&lt;th&gt;</span>Teléfono<span class="nt">&lt;/th&gt;&lt;/tr&gt;</span>
+<span class="cp">&lt;?
+//Mostramos los registros
+while ($registro=$result-&gt;fetch_array()) {
+   echo '&lt;tr&gt;&lt;td&gt;'.$registro["nombre"].'&lt;/td&gt;';
+   echo '&lt;td&gt;'.$registro["telefono"].'&lt;/td&gt;&lt;/tr&gt;';
+}
+$db-&gt;free($result);  // Libera memoria usada por cursor
+$db-&gt;close();   // Cierra la conexión con el servidor
+?&gt;</span>
+<span class="nt">&lt;/table&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+</code></pre></div></div>
+
