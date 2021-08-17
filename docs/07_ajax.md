@@ -301,62 +301,111 @@ En la sección ***success*** hemos colocado directamente el código de la funci�
 En la sección ***error***, por último, lanzamos un mensaje de error mediante un alert(), que solo saltará si ocurre algún error durante la petición Ajax. Fíjate en que esa función tiene tres parámetros (optativos) que utilizamos para informar al usuario con más detalle de qué error se ha producido.
 
 ### 7.4.2. Funciones $.get() y $.post
+
+En muchas ocasiones, no necesitamos usar ni la mínima parte de las posibilidades de la función $.ajax(). Cuando tenemos que hacer una llamada sencillita por Ajax al servidor y no queremos complicarnos la vida, puede ser más útil y rápido recurrir a las funciones $.get() y $.post().
+
+Como su propio nombre indica, $.get() lanza una petición Ajax mediante GET y $.post() hace lo mismo, pero con POST. Su sintaxis es esta:
+
+```javascript
 $.get(url, datos, funcion_manejadora);
 $.post(url, datos, funcion_manejadora);
+```
 
-Ejemplo:
-$.get('/ruta/hasta/script.php',
+Aquí tienes un ejemplo en el que llamamos por Ajax a ***mi-script.php***, enviándole mediante GET un nick de usuario. El servidor responderá con un texto plano que contendrá el nombre de ese usuario y lo mostrará mediante un alert():
+
+```javascript
+$.get('mi-script.php',
       { user: 'juanperez03' },
-      function(user) {
-         alert('Hola, ' + user);
+      function(username) {
+         alert('Hola, ' + username);
       }
 );
-
+```
 
 ### 7.4.3. Función $.load()
-Inserta el resultado del script del servidor en el elemento seleccionado con $:
-$('#info').load('/ruta/hasta/pagina.php');
 
-Variación “IfModified”:
+Un caso particularmente simple (y habitual) de uso de Ajax es aquel en el que lanzamos una petición al servidor para rellenar una capa de nuestra página con la información que el servidor nos devuelve.
 
-$.getIfModified('/ruta/hasta/script.php');
-$.postIfModified('/ruta/hasta/script.php');
-$('#info').loadIfModified('/ruta/hasta/script.php');
+Por ejemplo, imagina que tenemos un formulario de registro de usuarios y, en el campo del nick del usuario, deseamos comprobar si ese nick ya está en uso en la base de datos. Mediante Ajax, se puede hacer de forma dinámica y atractiva capturando el evento onblur en del campo nick y lanzando en ese momento una petición Ajax al servidor para que haga la consulta a la base de datos.
 
+Si el usuario ya existe, el servidor puede responder con un texto el tipo "Ese usuario ya existe". En caso contrario, puede responder con "Ese nick está disponible" o algo así. En ambos casos, ese String puede mostrarse en una capa junto al cuadro de texto, una capa que, hasta ese momento, habrá estado vacía.
+
+Este escenario tan habitual se puede resolver con $.ajax(), con $.get() o con $.post(), pero existe una función jQuery específica para ello. Se llama $.load() y tiene esta sintaxis:
+
+```javascript
+$('#info').load('mi-script.php');
+```
+
+Simplemente, se ejecuta ***mi-script.php*** en el servidor y se carga el texto de respuesta en la capa #info. Sin funcion manejadora ni historias. Más fácil, imposible, ¿verdad?
 
 ## 7.5. Ajax y Laravel
 
-Enrutador /routes/web.php
+Al trabajar con Laravel, estamos acostumbrados a que cada método del controlador termine devolviendo una vista completa (retur view...). ¿Pero qué pasa si hacemos una petición Ajax a una aplicación web escrita con Laravel en el lado del servidor?
+
+Laravel puede continuar devolviendo una vista completa, pero es no suele ser lo que Ajax espera recibir como respuesta. Ajax espera respuestas cortas y concisas: algo como 'true' o 'false', o un número, o un String o, como mucho, una estructura de datos más compleja formateada en XML o JSON. Pero no una página web completa con su cabecera, su cuerpo y toda la parafernalia.
+
+Y eso es precisamente lo que devuelve Laravel al rederizar cualquier vista. Así que, ¿cómo lo hacemos?
+
+### 7.5.1. Paso 1. Crear un controlador para las peticiones Ajax
+
+Esto no es imprescindible, pero sí suele ser una práctica habitual: reunir todas las peticiones Ajax en un único controlador. 
+
+Ten en cuenta que, para el servidor, no hay diferencia entre una petición Ajax y una petición normal. El servidor recibe su petición por http o https y la atiende, ejecutando en enrutador, el controlador y todo lo que venga detrás, y produciendo una salida como resultado que se envía de vuelta al cliente. Punto.
+
+Así que suele ser buena idea separar las peticiones Ajax de las peticiones normales mediante la diferenciación de controladores, salvo que tengas una muy biena razón para no hacerlo.
+
+Por lo tanto, crearemos un controlador AjaxController y añadiremos a nuestro enrutador (/routes/web.php) las líneas correspondientes, como esta:
+
+```php
 Route::post('miJqueryAjax','AjaxController@miMetodo');
+```
 
-Ten en cuenta que:
-No es imprescindible crear un controlador específico para atender las peticiones Ajax. Puedes usar métodos de tus controladores habituales.
-Las peticiones Ajax pueden llegar por GET, POST o cualquier otro método. De hecho, el servidor no tiene modo de saber si han llegado por Ajax o no.
+### 7.5.2. Paso 2. Crear los métodos del controlador AjaxController
 
-Controlador /app/controllers/AjaxController.php
+Lo siguiente sería crear los métodos que necesitemos en AjaxController (o, si hemos decidido no crear un controlador específico para Ajax, crear los métodos en los controladores que corresponda).
+
+Solo hay que tener una cosa clara: estos métodos que responderán a las peticiones Ajax **no pueden terminar con una vista**. 
+
+Imagina un método que reponderá a una petición Ajax y que solo deba responder con un String, cuyo valor pueda ser "Ese usuario ya existe" o "Usuario disponible". Lo haríamos así:
+
+```php
 class AjaxController extends Controller {
    public function miMetodo() {
      ...aquí va mi código... 
-     $result = json_encode($mis_variables);
-     echo $result;
+     if ($lo_que_sea) $result = "Ese usuario ya existe";
+     else $result = "Usuario disponible";
+     return $result;
    }
 }
+```
 
-O mejor todavía:
+Imagina ahora que queremos devolver algo más complicado, como un array o una colección de datos. No pasa nada: los formateamos como json y los enviamos de regreso al cliente, así:
+
+```php
 class AjaxController extends Controller {
    public function miMetodo() {
-      $msg = "This is a simple message.";
-      return response()->json($mis_variables);
+     ...aquí va mi código... 
+      return response()->json($mi_variable_compleja);
    }
 }
+```
+
+Por supuesto, esta última manera también te funcionará para devolver un simple String, un booleano o un entero. Es la forma más conveniente de terminar un método de un controlador que va a ser invocado por Ajax y no mediante una petición normal al servidor.
 
 Ten en cuenta que:
-La salida de una petición Ajax suele ser JSON, pero podría ser otra cosa: HTML, XML, o un simple carácter como “0” o “1”.
-Para responder a una petición Ajax no se debe renderizar una vista, sino que basta con un echo en el controlador.
 
-Agregar el token CSRF a las peticiones (1/2)
-Las peticiones enviadas por POST a Laravel deben llevar el token CSRF o serán rechazadas.
-El token debe agregarse a cada petición, así:
+* La salida de una petición Ajax suele ser JSON, pero podría ser otra cosa: HTML, XML o simple texto plano.
+* Lo repetimos una vez más: para responder a una petición Ajax no se debe renderizar una vista (¡salvo que tengas una muy buena excusa para hacerlo!), sino que basta con un return response().
+
+### 7.5.3. Agregar el token CSRF a las peticiones
+
+Como vimos al estudiar Laravel, las peticiones enviadas por POST con Laravel deben llevar el token CSRF o serán rechazadas. Esto se hacía para prevenir cierto tipo de ataques frecuentes a través de formularios HTML. Los detalles no son importantes aquí y, en todo caso, puedes repasar el capítulo sobre Laravel o sobre Sesiones, Cookies y Seguridad para revisar el concepto.
+
+Lo importante ahora es esto: cuando lances una petición POST mediante Ajax, Laravel la rechazará porque no llevará el token CSRF. Recuerda que el servidor no tiene ni idea de si la petición llega desde Ajax o no: para él, se trata de datos que provienen de un formulario HTML, y si no lleva ese token, automáticamente se convierte en un formulario sospechoso.
+
+Así que, si tienes Laravel en el lado del servidor, necesitas agregar el token CSRF a las peticiones por POST, así:
+
+```javascript
 $.ajax({
      method: "POST",
      url: "mi-url",
@@ -365,9 +414,13 @@ $.ajax({
      },
      ...etc... 
 });
+```
 
-Agregar el token CSRF a las peticiones (2/2)
-También puede agregarse automáticamente el token CSRF a todas las peticiones haciendo esto en el header de nuestro layout:
+Por supuesto, puedes añadir más ***data*** a tu petición: tantos datos como necesites enviar al servidor.
+
+Como esto puede ser un poco engorroso, hay una forma de agregar automáticamente el token CSRF a **todas** las peticiones. Basta con escribir esto en el header de nuestro layout:
+
+```html
    <meta name="csrf-token" content="{{ csrf_token() }}">
    <script type="text/javascript">
       $.ajaxSetup({
@@ -376,6 +429,8 @@ También puede agregarse automáticamente el token CSRF a todas las peticiones h
           }
       });
    </script>
+```
+
 A partir de ahora, podremos hacer las peticiones Ajax normalmente, porque el token CSRF se añadirá él solito a cada petición Ajax.
 
 
