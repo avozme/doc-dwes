@@ -7,49 +7,56 @@ nav_order: 8
 ---
 # 8. Otras tecnologías
 
+En esta sección vamos a hacer un repaso rápido a otros lenguajes para desarrollo web del lado del servidor diferentes de PHP.
+
+Será solo una pasada superficial, para que te hagas una idea de qué aspecto tienen estos lenguajes y veas que, en lo sustancial, no difieren mucho unos de otros. Esto quiere decir que, si te manejas bien con PHP, podrás pasarte a cualquiera de estos lenguajes con muy poco esfuerzo y en solo unos días.
+
 ## 8.1. Common Gateway Interface (CGI)
 
-CGI es la definición de la interfaz entre los servidores web y las aplicaciones que se ejecutan en el servidor. Estas aplicaciones pueden estar construidas en cualquier lenguaje como Perl, C, scripting de unix, Python o cualquier otro. CGI sólo define la forma de transferir información en ambos sentidos.
+CGI es la solución más antigua para el desarrollo web en el lado del servidor.
 
-En el diagrama siguiente vemos el esquema general en que se ejecutan programas en el servidor a través de CGI. Las invocaciones se llevan a cabo a través del llenado de un formulario con los parámetros que se envían al programa que corresponda. Por lo tanto, el primer paso es el acceso al formulario en donde se definen los campos, y el programa que se ejecutará cuando se envíen los datos. El segundo paso es justamente el envío de los datos. El tercer paso es la invocación de la ejecución del programa referenciado (en el ejemplo, “programa 1”). Esta invocación es hecha por el servidor web, quien le traspasa los datos recibidos del cliente. Los programas CGI generan una salida, típicamente un documento HTML, que será enviado al cliente como paso final (cuarto).
+En la década de 1990, cuando se empezó a pensar en la posibilidad de crear página dinámicas generadas por el servidor a partir de los recursos del mismo (típicamente, una base de datos), los primeros intentos utilizaron las tecnologías presentes en ese momento en los servidores web.
+
+Todos los servidores tenían un compilador de C/C++, así que alguien pensó: ¿por qué no escribimos las aplicaciones web en C/C++, las compilamos y hacemos que el ejecutable se pueda invocar vía web?
+
+Para lograr esto último, se utilizó CGI (Common Gateway Interface).
+
+CGI es una interfaz entre los servidores web y las aplicaciones que se ejecutan en el servidor. Estas aplicaciones pueden estar construidas en cualquier lenguaje (no solo C/C++). A CGI, eso le da igual. Solo define la forma de transferir información en ambos sentidos.
+
+La figura siguiente muestra la forma en la que se ejecutan programas en el servidor a través de CGI. Si lo observas con atención, verás que no difiere demasiado de la forma en la que trabaja PHP, porque cualquier petición tiene 4 pasos:
+1. Se recibe la petición de un cliente web.
+2. El servidor web recibe la peticion y, a través del interfaz CGI, le pide al sistema operativo que ejecute el programa correspondiente.
+3. La salida del programa se redirige al servidor web. De esto se encarga, nuevamente, el interfaz CGI.
+4. El servidor devuelve al cliente el resultado de la ejecución del programa.
 
 XXX esquema
 
-Ventajas e inconvenientes de CGI
-El interfaz CGI permite que cualquier programa ejecutable en el servidor pueda usarse para generación dinámica de páginas web. Por eso fue la primera alternativa utilizada para este tipo de páginas. Además, está disponible en muchos servicios de hosting web y es relativamente fácil de configurar.
-Sin embargo, tiene un serio problema de rendimiento: cada vez que se envían los datos de un formulario se crea un nuevo proceso en el servidor para ejecutar el programa en cuestión, quien genera una respuesta que se envía a través del servidor HTTP al browser, luego de lo cual se elimina el proceso creado. Esta creación de procesos implica una carga importante para el servidor, por lo cual esta modalidad de generación de contenido dinámico no es muy escalable.
-Existen algunas alternativas para solucionar este problema, como mantener un sólo proceso CGI en memoria que se encargará de procesar todas las peticiones (técnica conocida como FastCGI), pero resulta más complejo de configurar y operar, e implica algunos problemas de seguridad.
+### 8.1.1. Entonces, ¿en qué se diferencia CGI de PHP?
 
-Variables de entorno CGI 
-La comunicación desde el browser al servidor con los datos del formulario se puede hacer en dos modalidades, a través de variables de entorno (GET) o a través de la línea de comando (POST). Estos datos están disponibles en la variable QUERY_STRING en los envíos con GET y en la entrada estándar en los envíos con POST. Adicionalmente existe un conjunto de variables de entorno que existen en ambas modalidades:
-    • SERVER_SOFTWARE    Devuelve el nombre y la versión del software del servidor de información que contesta la petición de usuario (y ejecuta el programa cgi). 
-    • SERVER_NAME    Devuelve nombre de host del servidor, el alias DNS, o la dirección IP como aparecería en las URL autoreferenciadas.
-    • GATEWAY_INTERFACE    Devuelve la revisión de la especificación CGI con que el servidor puede trabajar. Formato: CGI/revisión.
-    • SERVER_PROTOCOL    Da el nombre y revisión del protocolo de información con el que la petición de usuario viene. Formato: protocolo/revisión. 
-    • SERVER_PORT         Devuelve el número de puerto por el cual fue enviada la petición. 
-    • REQUEST_METHOD    Devuelve el método por el cual la petición fue enviada. Para HTTP serán "GET", "HEAD", "POST", etc
-    • PATH_INFO        La información extra sobre el path, tal como es dada por el cliente. En otras palabras, podemos acceder a los scripts por su pathname virtual, seguido de alguna información extra. Esa información extra es enviada como PATH_INFO. La información será decodificada por el servidor si viene de una URL antes de pasarla al script CGI.
-    • PATH_TRANSLATED    El servidor proporciona una versión traducida del PATH_INFO, que transforma el path virtual al físico.
-    • SCRIPT_NAME    Path virtual al script que va a ejecutar, usado para autoreferenciar URL.
-    • QUERY_STRING    La información que sigue al signo ‘?’ en la URL que referencia al script. Es la información de la pregunta. No deberá ser decodificada de ningún modo. Esta variable será activada cuando hay una petición de información, sin hacer caso de la decodificación de la línea de comandos. 
-    • REMOTE_HOST    El nombre de host que realiza la petición. Si el servidor no posee esta información activará REMOTE_ADDR y dejará esta desactivada.
-    • REMOTE_ADDR    La dirección IP del host remoto que realiza la petición. 
-    • AUTH_TYPE    Si el servidor soporta autentificación de usuario , y el script está protegido, esta es el método de autentificación específico del protocolo para validar el usuario. 
-    • REMOTE_USER    Si el servidor soporta autentificación de usuario , y el script está protegido, este será el nombre de usuario con el que se ha autentificado. 
-    • REMOTE_IDENT    Si el servidor HTTP soporta autentificación RFC 931 , entonces está variable se activará con el nombre del usuario remoto obtenido por el servidor. Esta varible solo se utilizará durante el login. 
-    • CONTENT_TYPE    Para peticiones que tienen información añadida, como HTTP POST y PUT, este será el tipo de datos contenido. 
-    • CONTENT_LENGTH    La longitud del contenido tal como es dado por el cliente.
-La forma de acceder a estas variables, lógicamente, dependerá del lenguaje que estemos usando. Cada lenguaje proporcionará sus propias librerías para hacer uso de CGI y facilitar el desarrollo de aplicaciones CGI.
+Lo primero, CGI no es un lenguaje de programación. Eso ya lo hemos dicho. Es un ***interfaz*** entre el servidor web y el sistema operativo para poder ejecutar cualquier programa escrito en cualquier lenguaje a través de la web.
 
-Respuesta al cliente
-La respuesta se envía a través de la salida estandar y puede ser cualquier cosa comprensible por el navegador web. Para el caso de texto HTML (que es lo más habitual), se debe comenzar enviando el string:
-Content-Type: text/html
-...seguido de una línea en blanco. Detrás del texto “Content-Type:” puede colocarse cualquier tipo MIME reconocible por el navegador.
+Puede parecer una solución perfecta, ¿verdad? Pero, si fuera así, ¿por qué no se sigue usando de forma masiva? ¿Por qué se abandonó en favor de PHP u otros de los lenguajes que vamos a ver más adelante?
+
+La respuesta breve es: CGI tiene un serio problema de rendimiento.
+
+Cada vez que se recibe una petición de un cliente, se crea un nuevo proceso en el servidor para ejecutar el programa en cuestión. Este proceso necesita un espacio de memoria para colocar su código fuente y sus datos, y esto recursos solo se liberan cuando el servidor termina de responder al cliente. Esta creación de procesos independientes implica una carga importante para el servidor, por lo cual esta modalidad de generación de contenido dinámico no es muy escalable.
+
+Por su parte, PHP (y otras soluciones que veremos más adelante) no crean un proceso independiente para cada petición recibida, sino que un mismo macro-proceso se encarga de gestionarlas todas. En términos de escalabilidad, esta opción es mucho mejor. Así que, cuando los servidores empezaron a recibir muchas visitas simultáneas, CGI comenzó a abandonarse. Sencillamente, ningún servidor podía soportar grandes volúmenes de peticiones.
+
+Existen algunas alternativas para solucionar este problema de CGI, como mantener un sólo proceso CGI en memoria que se encargue de procesar todas las peticiones (técnica conocida como FastCGI y que, de hecho, se sigue utilizando en la actualidad, incluso para ejecutar PHP en el servidor), pero resulta más complejo de configurar y operar, e implica algunos problemas de seguridad. En cualquier caso, estos detalles de configuración del servidor son cosas que competen más a los administradores de sistemas que a los desarrolladores.
+
 
 ## 8.2. Perl
 
+A partir de este punto, veremos varios lenguajes alternativos a PHP (es decir, su "competencia") siguiendo siempre el mismo esquema:
+* Primero, enumeraremos las características y filosofia del lenguaje.
+* Luego explicaremos a grandes rasgos cómo hay que configurar el servidor para poder usar ese lenguaje para desarrollo web.
+* Después mostraremos la sintaxis básica del lenguaje.
+* Por último, escribiremos dos ejemplos completos en cada lenguaje: un sencillo "hola, mundo" y un programa algo más complejo que lanza una validación de login mediante ajax. En este segundo caso, la parte del cliente será siempre la misma, y solo cambiaremos la parte del servidor. Eso te permitirá apreciar las diferencias entre unos lenguajes y otros. Enseguida te darás cuenta de que esas diferencias son mínimas.
+
 ### 8.2.1. Características del lenguaje Perl
 
+XXX 
 Fecha de aparición: 1987
 Última revisión: 5.30.1 (nov 2019)
 Perspectivas: 
@@ -99,19 +106,19 @@ else {
 
 Entrada / salida
 
-# Entrada de datos estándar:
+#### Entrada de datos estándar:
 chop ( $variable = <STDIN> );
 
-# Lectura de datos desde un formulario HTML:
+#### Lectura de datos desde un formulario HTML:
 use CGI;
 my $cgi = CGI->new;
 my $username = $cgi->param("username");
 
-# Salida:
+#### Salida:
 print "cadena $variable cadena..."; 
 
 Subprogramas
-# Comentarios
+#### Comentarios
 Sub nombre-rutina (argumentos) {
    Acciones
 }
