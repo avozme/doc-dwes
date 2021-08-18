@@ -432,7 +432,3 @@ Como esto puede ser un poco engorroso, hay una forma de agregar automáticamente
 ```
 
 A partir de ahora, podremos hacer las peticiones Ajax normalmente, porque el token CSRF se añadirá él solito a cada petición Ajax.
-
-
-
-

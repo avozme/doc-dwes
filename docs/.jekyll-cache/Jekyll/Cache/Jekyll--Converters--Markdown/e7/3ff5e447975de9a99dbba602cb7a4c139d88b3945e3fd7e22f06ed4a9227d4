@@ -1,4 +1,4 @@
-<h1 id="7-ajax">7. Ajax</h1>
+I"��<h1 id="7-ajax">7. Ajax</h1>
 
 <h2 id="71-un-poco-de-introducción-al-asunto">7.1. Un poco de introducción al asunto</h2>
 
@@ -422,3 +422,4 @@ Por eso es necesario comprobar que readyState == 4 antes de hacer ninguna otra c
 </code></pre></div></div>
 
 <p>A partir de ahora, podremos hacer las peticiones Ajax normalmente, porque el token CSRF se añadirá él solito a cada petición Ajax.</p>
+:ET
