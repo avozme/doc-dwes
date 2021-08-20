@@ -56,42 +56,49 @@ A partir de este punto, veremos varios lenguajes alternativos a PHP (es decir, s
 
 ### 8.2.1. Características del lenguaje Perl
 
-XXX 
-Fecha de aparición: 1987
-Última revisión: 5.30.1 (nov 2019)
-Perspectivas: 
-Uso decreciente. 
-Apto para tareas pequeñas y rápidas. 
-Cuenta con desarrolladores muy fieles y experimentados. Documentación muy extensa.
-Soporte amplio en cualquier servidor.
+Fecha de aparición: 1987.
 
-Filosofía
-Versión mejorada del shell scripting de Unix.
-Pensado para procesamiento rápido de archivos de texto y automatización de tareas de administración del sistema.
-Favorece la programación ágil, rápida y sucia de scripts. 
-Énfasis en las expresiones regulares.
-Multiparadigma.
-En combinación con CGI, se popularizó para aplicaciones web antes de la aparición de PHP.
+Perspectivas: 
+* Uso decreciente. 
+* Apto para tareas pequeñas y rápidas. 
+* Cuenta con desarrolladores muy fieles y experimentados. Documentación muy extensa.
+* Soporte amplio en cualquier servidor.
+
+Filosofía de Perl:
+* Versión mejorada del shell scripting de Unix.
+* Pensado para procesamiento rápido de archivos de texto y automatización de tareas de administración del sistema.
+* Favorece la programación ágil, rápida y sucia de scripts. 
+* Énfasis en las expresiones regulares.
+* Multiparadigma.
+* En combinación con CGI, se popularizó para aplicaciones web antes de la aparición de PHP.
 
 ### 8.2.2. Configuración necesaria en el servidor
 
-Instalar el intérprete Perl (usr/bin/perl).
-Activar los módulos perl y/o cgi de Apache y configurar el handler para CGI.
-Se puede ejecutar el intérprete Perl de forma nativa en Apache, o bien hacerlo a través de CGI.
-Lo primero es más difícil de configurar y raramente se encuentra en hostings web compartidos.
-Instalar módulos Perl adicionales para acceso a bases de datos, etc.
+Para utilizar Perl en un servidor Apache o similar, necesitaremos:
+
+1. Instalar el intérprete Perl (usr/bin/perl).
+2. Activar los módulos perl y/o cgi de Apache y configurar el handler para CGI.
+3. Instalar módulos Perl adicionales para acceso a bases de datos, etc.
+
+Se puede ejecutar el intérprete Perl de forma nativa en Apache, o bien hacerlo a través de CGI. Lo primero es más difícil de configurar y raramente se encuentra en hostings web compartidos.
 
 ### 8.2.3. Sintaxis básica de Perl
 
-Las variables no se declaran, tienen tipado dinámico y son globales por defecto.
+Las variables en Perl no se declaran, tienen tipado dinámico y son globales por defecto.
+
+```perl
 $var = valor;
 print "La variable var vale $variable";
+```
 
 Algunos operadores:
-Comparación: lt, gt, le, ge, eq, ne... 
-Asignación: =
 
-Algunas estructuras de control
+* Comparación: lt, gt, le, ge, eq, ne... 
+* Asignación: =
+
+Algunas estructuras de control:
+
+```perl
 while (condicion) {
   Acciones
 }
@@ -103,115 +110,185 @@ if (condicion) {
 else {
   Acciones-2
 }
+```
 
-Entrada / salida
+### 8.2.4. Entrada / salida
 
-#### Entrada de datos estándar:
+Entrada de datos estándar:
+
+```perl
 chop ( $variable = <STDIN> );
+```
 
-#### Lectura de datos desde un formulario HTML:
+Lectura de datos desde un formulario HTML:
+
+```perl
 use CGI;
 my $cgi = CGI->new;
 my $username = $cgi->param("username");
+```
 
-#### Salida:
+Salida:
+
+```perl
 print "cadena $variable cadena..."; 
+```
 
-Subprogramas
-#### Comentarios
-Sub nombre-rutina (argumentos) {
+### 8.2.5. Bibliotecas, funciones y clases
+
+Para utilizar una biblioteca o ***package***, como se denominan en Perl, se emplea la palabra **use**:
+
+```perl
+use nombre-biblioteca;
+```
+
+Las bibliotecas se empaquetan en archivos con extensión .pm (***Perl Modules***). Dentro de ellas, puede haber una colección de funciones o métodos que se declaran así:
+
+```perl
+package nombre-biblioteca;
+
+Sub nombre-funcion (argumentos) {
    Acciones
 }
+```
 
-Bibliotecas
-use biblioteca
+Estas funciones pueden usarse desde fuera de la biblioteca con esta sintaxis:
 
-### 8.2.4. Ejemplo 1 en Perl: Hola mundo
+```perl
+use nombre-biblioteca;
 
+nombre-biblioteca::nombre-funcion(argumentos);
+```
+
+Los ***packages*** también pueden usarse para construir clases (o algo parecido) de las que luego se pueden instanciar objetos. Más o menos así:
+
+```perl
+  package nombre-de-la-clase;
+
+  sub new {
+      # Este es el método constructor
+      my $self = {};      # Array para los atributos
+      $self->{VAR1} = 0;  # Un atributo
+      $self->{VAR2} = 9;  # Otro atributo
+  }
+
+  sub otro-método{
+       # Aquí van el resto de métodos de la clase
+  }
+  sub DESTROY {
+       # Método destructor
+  }
+  1    # Para que el intérprete Perl no se queje al interpretar este archivo
+```
+
+Como puedes observar, Perl está lleno de peculiaridades que muchos consideran anticuadas o, como mínimo, poco elegantes. Observa si no la forma que tiene de crear los atributos de instancia, los caprichosos nombres de los métodos (a veces en minúscula, a veces en mayúscula) o la necesidad de terminar el ***package*** con un 1 para que el intérprete Perl lo considere un script válido.
+
+Por último, para instanciar un objeto de esta clase:
+
+```perl
+use nombre-de-la-clase;
+$objeto = nombre-de-la-clase->new();
+```
+
+### 8.2.6. Ejemplo 1 en Perl: Hola mundo
+
+```perl
 #!/usr/bin/perl
 print "Content-type: text/html\n\n";
 print "<html><title>Hola mundo</title><body>";
 print "Hola, mundo";
 print "</body></html>";
+```
 
+### 8.2.7. Ejemplo 2 en Perl: login con comprobación de email por Ajax
 
-### 8.2.5. Ejemplo 2 en Perl: login con comprobación de email por Ajax
+Este segundo ejemplo, como hemos explicado más arriba, consistirá en un formulario de login que comprobará el nombre de usuario y la contraseña mediante una petición Ajax.
 
-Formulario HTML
+#### Formulario HTML
 
+El formulario de login es un simple código HTML que será idéntico en todos los ejemplos que veremos en el resto de este capítulo, así que solo lo mostraremos aquí por primera vez.
+
+```html
 <form id="loginForm" name="loginForm" method="post" action="">
   <fieldset>
-    <legend>Enter information</legend>
     <p>
-      <label for="username">Username</label>
+      <label for="username">Nombre de usuario</label>
       <br />
       <input type="text" id="username" name="username" class="text" size="20" />
     </p>
     <p>
-      <label for="password">Password</label>
+      <label for="password">Contraseña</label>
       <br />
       <input type="password" id="password" name="password" class="text" size="20" />
     </p>
     <p>
-      <button type="submit" class="button positive">
-       <img alt="ok" src=
-       "http://www.blueprintcss.org/blueprint/plugins/buttons/icons/tick.png" /> 
-       Login
-      </button>
+      <button type="submit">Login</button>
     </p>
   </fieldset>
 </form>
+```
 
-Script AJAX/jQuery
+#### Script jQuery
 
+El script que lanza la petición Ajax (cuyo código puede ir en el mismo archivo que el formulario) será ***casi*** idéntico en todos los ejemplos: solo cambiará el nombre del script al que se lanza la petición.
+
+En nuestro caso actual, es script lo hemos llamado **login.pl** (la extensión .pl denota que se trata de un script escrito en lenguaje Perl). Como es lógico, en ejemplos posteriores, tendrías que cambiar el nombre de ese archivo por el que corresponda (login.py si estamos usando Python, login.rb si estamos usando Ruby, etc).
+
+Para no repetirnos innecesariamente, no volveremos a mostrar tampoco el código de este script en los ejemplos sucesivos.
+
+Observa que Javascript está esperando que el servidor responda con un JSON que puede llevar estos tres datos en su interior:
+* data.error: Un string con un texto de error en caso de que el usuario o la contraseña sean incorrectos.
+* data.success: Un string con un texto de éxito en caso de que el usuario y la contraseña sean correctos.
+* data.userId: Un entero con el ID del usuario logueado (solo en caso de éxito).
+
+```javascript
 $(document).ready(function(){
-  $("form#loginForm").submit(function() { // loginForm is submitted
-    var username = $('#username').attr('value'); // get username
-    var password = $('#password').attr('value'); // get password
+  $("form#loginForm").submit(function() { 
+    var username = $('#username').attr('value'); // Obtenemos el username
+    var password = $('#password').attr('value'); // Obtenemos la password
 
-    if (username && password) { // values are not empty
+    if (username && password) { // Los valores de username y password no están vacíos
       $.ajax({
         type: "GET",
-        url: "/cgi-bin/login.pl", // URL of the Perl script
-        contentType: "application/json; charset=utf-8",
+        url: "login.pl", 
         dataType: "json",
-        // send username and password as parameters to the Perl script
         data: "username=" + username + "&password=" + password,
-        // script call was *not* successful
-        error: function(XMLHttpRequest, textStatus, errorThrown) { 
-          $('div#loginResult').text("responseText: " + XMLHttpRequest.responseText 
-            + ", textStatus: " + textStatus 
-            + ", errorThrown: " + errorThrown);
-          $('div#loginResult').addClass("error");
-        }, // error 
-        // script call was successful 
-        // data contains the JSON values returned by the Perl script 
         success: function(data){
-          if (data.error) { // script returned error
+          if (data.error) { // El servidor ha devuelto un error de login
             $('div#loginResult').text("data.error: " + data.error);
             $('div#loginResult').addClass("error");
-          } // if
-          else { // login was successful
+          } 
+          else {            // El servidor ha hecho el login correctamente
             $('form#loginForm').hide();
             $('div#loginResult').text("data.success: " + data.success 
               + ", data.userid: " + data.userid);
             $('div#loginResult').addClass("success");
-          } //else
-        } // success
-      }); // ajax
-    } // if
+          } 
+        } 
+      }); 
+    } 
     else {
-      $('div#loginResult').text("enter username and password");
+      $('div#loginResult').text("Debe escribir su nombre de usuario y su contraseña");
       $('div#loginResult').addClass("error");
-    } // else
+    } 
     $('div#loginResult').fadeIn();
     return false;
   });
 });
+```
 
+#### Script Perl en el lado del servidor (login.pl)
 
-Script Perl en el lado del servidor (login.pl)
+Este sería el script en Perl que respondería a la petición Ajax anterior.
 
+Observa que, a pesar de la peculiar sintaxis de Perl, la estructura del algoritmo es idéntica a la que usaríamos si lo escribiéramos en PHP:
+1. Recuperamos los datos del formulario (username y password)
+2. Conectamos con la base de datos
+3. Lanzamos la consulta contra la tabla de usuarios
+4. En función del resultado de la consulta, preparamos nuestro JSON de respuesta al cliente
+5. Devolvemos el JSON al cliente
+
+```perl
 #!/usr/bin/perl -T
 use CGI;
 use DBI;
@@ -244,115 +321,167 @@ my $json = ($userID) ?
 # return JSON string
 print $cgi->header(-type => "application/json", -charset => "utf-8");
 print $json;
-
+```
 
 
 
 ## 8.3. Python
 
 ### 8.3.1. Características del lenguaje Python
-Fecha de aparición: 1991
-Última revisión: 3.8.1 (dic 2019)
-Perspectivas: 
-Uso creciente. 
-Es el sustituto natural de Perl para el desarrollo rápido de scripts. 
-También usado en grandes proyectos como alternativa a PHP.
-Menos extendido que PHP, pero comunidad con muchos desarrolladores profesionales (mejor relación señal/ruido)
-Muchas bibliotecas de terceros → flexibilidad
 
-Filosofía
-Es la versión “limpia” de Perl. Pensado para escribir scripts de forma rápida y limpia.
-Énfasis en la legibilidad: Python es casi pseudocódigo (código “pythonico” → v. “El Zen de Python”)
-Interpretado. Tipado dinámico. Fuertemente tipado.
-Expresiones regulares heredadas de Perl.
-Multiparadigma: imperativo, O.O., funcional.
+Fecha de aparición: 1991
+
+Perspectivas: 
+
+* Uso creciente. 
+* Es el sustituto natural de Perl para el desarrollo rápido de scripts. 
+* También usado en grandes proyectos como alternativa a PHP.
+* Menos extendido que PHP, pero comunidad con muchos desarrolladores profesionales (mejor relación señal/ruido)
+* Muchas bibliotecas de terceros → flexibilidad
+
+Filosofía:
+
+* Es la versión “limpia” de Perl. Pensado para escribir scripts de forma rápida y limpia.
+* Énfasis en la legibilidad: Python es casi pseudocódigo (código “pythonico” → v. “El Zen de Python”)
+* Interpretado. Tipado dinámico. Fuertemente tipado.
+* Expresiones regulares heredadas de Perl.
+* Multiparadigma: imperativo, O.O., funcional.
 
 ### 8.3.2. Configuración necesaria en el servidor
 
-Instalar el intérprete Python (/usr/bin/python). El más extendido es CPhyton.
-Activar los módulos python y/o cgi de Apache y configurar el handler de Apache para CGI.
-Python puede funcionar de forma nativa integrado en Apache o a través de CGI.
-Lo primero es más rápido, lo segundo más frecuente.
-Instalar módulos adicionales (p. ej: para acceso a bases de datos) si es necesario.
+Para hacer funcionar Python en un servidor Apache o similar, es necesario:
+
+1. Instalar el intérprete Python (/usr/bin/python). El más extendido es CPhyton.
+2. Activar los módulos python y/o cgi de Apache y configurar el handler de Apache para CGI.
+3. Instalar módulos adicionales (p. ej: para acceso a bases de datos) si es necesario.
+
+Python puede funcionar de forma nativa integrado en Apache o a través de CGI. Lo primero es más rápido; lo segundo, más frecuente.
+
 
 ### 8.3.3. Sintaxis básica de Python
 
-Las variables no se declaran obligatoriamente, tienen tipado dinámico y son locales por defecto.
+Las variables en Python no se declaran obligatoriamente: tienen tipado dinámico y son locales por defecto.
+
+```python
 varariable = valor;
 print "La variable var vale %s" (variable);
-Tiene muchos tipos de datos complejos predefinidos: listas, tuplas, diccionarios...
-Algunos operadores:
-Comparación: <, >, <=, >=, ==, != 
-Asignación: =
+```
 
+En Python hay muchos tipos de datos complejos predefinidos: listas, tuplas, diccionarios...
 
-Algunas estructuras de control
+Algunos operadores son:
 
-¡El código debe indentarse OBLIGATO-RIAMENTE!
+* Comparación: <, >, <=, >=, ==, != 
+* Asignación: =
 
-La indentación marca el final del bloque
+Y estas son algunas estructuras de control. **¡Cuidado! ¡El código debe indentarse OBLIGATORIAMENTE!** No existen las llaves ({ y }) en Python. ¡La indentación (o sangrado) marca los bloques!
 
+```python
 while condicion:
   Acciones
-
-
 
 if condicion:
   Acciones-1
 else:
   Acciones-2
-  
-  
-  Entrada / salida
+```
 
-# Entrada de datos estándar:
+### 8.3.4. Entrada / Salida
+
+La entrada de datos por teclado puede hacerse con raw_input():
+
+```python
 variable = raw_input("Texto")
+```
 
-# Lectura de datos de un formulario HTML:
+Pero a nosotros nos interesa hacer entrada de datos a través de un formulario HTML. Esto se hace así:
+
+```python
 import cgi
 form = cgi.FieldStorage()
 campo = form["campo"].value
+```
 
-# Salida:
+En cuanto a la salida de datos, se usa ***print*** con cadenas de formato, seguida de una lista de variables. Cada elemento de la cadena de formato marcado con un % se sustituirá por una variable de la lista, en el mismo orden en el que estén escritas. Por ejemplo:
+
+```python
 print "cadena %s cadena %s ..." (variable1, variable2) 
+```
 
-Subprogramas
-# Comentarios
-def nombre-rutina (argumentos):
-   Acciones
-   [return valor1, varlor2...]
+El símbolo %s significa que en esa posición irá un String. Otras posibilidades son %d (enteros) o %f (float). Esta forma de especificar las cadenas de formato está directamente tomada del lenguaje C.
 
-Módulos
-import modulo
+En Python existen muchas otras formas de hacer una salida de datos, pero ***print*** es lo suficientemente potente como para que puedas utilizarla para cualquier cosa imaginable en una aplicación web.
 
-### 8.3.4. Ejemplo 1 en Python: Hola mundo
+### 8.3.5. Bibliotecas, funciones y clases
 
+En Python hay tres niveles de agrupación de bibliotecas:
+
+* Módulos: un módulo es un fichero con código Python en su interior. Puede ser una clase o un puñado de funciones sueltas, por ejemplo.
+* Paquetes (*packages*): un paquete es un directorio que contiene varios módulos. También puede contener subpaquetes. Los paquetes se instalan y desinstalan con un gestor de paquetes (como *pip*, que viene a ser como *composer* en PHP).
+* Bibliotecas (*libraries*): una biblioteca es cualquier fragmento de código reutilizable que se puede incluir en otros proyectos. Las bibliotecas pueden ser paquetes o no. Existe una *Python Standard Library* que contiene todas las funciones básicas de Python y viene preinstalada con el *core* del lenguaje.
+
+Podemos incluir una librería en nuestro proyecto Python usando la palabra *import*:
+
+```python
+import mi-librería
+```
+
+Como hemos dicho, dentro de cada módulo puede haber clases o subrutinas sueltas. Una subrutina (procedimiento o función) se declara así en Python (observa de nuevo como la indentación o sangrado es fundamental porque marca el comienzo y final de los bloques de código):
+
+```python
+def mi-funcion(param1, param2, etc):
+    # Aquí va el código de la función
+    [return valor1, varlor2...]
+```
+
+En cuanto a las clases, la sintaxis para declararlas y muy similar a PHP, Java o C++ (recordando que, en Python, no se usan las llaves sino la indentación):
+
+```python
+class MyClass:
+    
+    un_atributo = valor
+    otro_atributo = valor
+
+    # Esto es un constructor
+    def __init__(self):
+        self.un_atributo = 0
+ 
+
+    def un_metodo(parámetros):
+        return lo_que_sea
+```
+
+### 8.3.6. Ejemplo 1 en Python: Hola mundo
+
+```python
 #!/usr/bin/python
 print "Content-type: text/html\n\n"
 print "<html><body>"
 print "<h1>Hola, mundo</h1>"
 print "</body></html>"
+```
 
-### 8.3.5. Ejemplo 2 en Python: login con comprobación de email por Ajax
+### 8.3.7. Ejemplo 2 en Python: login con comprobación de email por Ajax
 
-url: "/cgi-bin/login.py", // URL of the Python script
+Repetimos ahora el ejemplo del login con comprobación de usuario y contraseña mediante Ajax, pero no mostraremos de nuevo el código del formulario ni de la llamada Ajax. Para ver ese código, revisa la sección que dedicamos al lenguaje Perl. Allí solo tendrás que cambiar el nombre del script (login.pl) por login.py.
 
+El código de ese script sí que cambia, claro. Esta es la versión del mismo escrita en Python:
 
-Script Python en el lado del servidor (login.py)
+```python
 #!/usr/bin/python
 
 import cgi
 import MySQLdb 
 
-# read the CGI params
+# Capturamos los valores del formulario
 form = cgi.FieldStorage()
 usuario = form["username"].value;
 password = form["password"].value;
 
 print "Usuario = ", usuario, " Pass = ", password
 
-# check the username and password in the database
-db=MySQLdb.connect(host='localhost',user='root',passwd='root',db='perl')
+# Lanzamos la consulta contra la base de datos
+db=MySQLdb.connect(host='localhost', user='yo-que-sé', passwd='vete-a-saber', db='lo-que-sea')
 cursor=db.cursor()
 num_rows = cursor.execute("SELECT id FROM users WHERE username = '%s' AND password = '%s';", (usuario, password))
 userid = cursor.fetchone()
@@ -363,25 +492,29 @@ if num_rows == 0:
    print "{'error': 'Usuario o contrase&ntilde;a incorrectos'}"
 else:
    print "{'success': 'El usuario y la contrase&ntilde;a son v&aacute;lidos', 'userid': '%d'", userid
-
+```
 
 
 ## 8.4. .NET
 
+XXX
+
 ### 8.4.1. Características de .NET
 
 Fecha de aparición: 1996 (ASP) / 2002 (.NET)
-Última revisión: 4.7.1 (oct 2017)
-Perspectivas: 
-Alternativa de Microsoft a JSP para desarrollo de grandes proyectos, donde PHP se queda pequeño.
-Componentes exclusivos en el servidor y altas prestaciones. 
-Coste más elevado y problemas de seguridad endémicos.
 
-Filosofía
-Framework de código cerrado y propietario.
-Tecnología multilenguaje. Suele correr con VBS (Visual Basic Script), pero puede hacerlo con otros. 
-Puede funcionar como PHP, embebido dentro de HTML.
-ASP.Net incluye controles de servidor exclusivos de Microsoft (equivalentes a los ActiveX del lado del cliente)
+Perspectivas: 
+
+* Alternativa de Microsoft a JSP para desarrollo de grandes proyectos, donde PHP se queda pequeño.
+* Componentes exclusivos en el servidor y altas prestaciones. 
+* Coste más elevado y problemas de seguridad endémicos.
+
+Filosofía:
+
+* Framework de código cerrado y propietario.
+* Tecnología multilenguaje. Suele correr con VBS (Visual Basic Script), pero puede hacerlo con otros. 
+* Puede funcionar como PHP, embebido dentro de HTML.
+* ASP.Net incluye controles de servidor exclusivos de Microsoft (equivalentes a los ActiveX del lado del cliente)
 
 ### 8.4.2. Configuración necesaria en el servidor
 
@@ -421,7 +554,7 @@ else
   Acciones-2
 end if
 
-Entrada / Salida
+### 8.4.4. Entrada / Salida
 
 // Leer datos de un formulario (GET):
 variable = request.QueryString("campo");
@@ -430,6 +563,8 @@ variable = request.Form("campo");
 
 // Salida:
 response.write ("cadena" + variable + "cadena2"); 
+
+### 8.4.5. Bibliotecas, funciones y clases
 
 Subrutinas
 sub nombre(parametros)
@@ -441,7 +576,7 @@ Bibliotecas
 
 
 
-### 8.4.4. Ejemplo 1 en VBasic: Hola mundo
+### 8.4.6. Ejemplo 1 en VBasic: Hola mundo
 
 <%
    response.write("<html><body>")
@@ -450,7 +585,7 @@ Bibliotecas
 %>
 
 
-### 8.4.5. Ejemplo 2 en VBasic: login con comprobación de email por Ajax
+### 8.4.7. Ejemplo 2 en VBasic: login con comprobación de email por Ajax
 
 url: "/ruta/al/script.asp", // URL of the ASP script
 
@@ -480,25 +615,24 @@ else
 con.close
 %>
 
-
-
-
 ## 8.5. JSP
 
 ### 8.5.1. Características del lenguaje JSP
 
 Fecha de aparición: 1995
-Última revisión: Java 11 (ago 2012)
-Perspectivas: 
-Usado para proyectos grandes y complejos, donde PHP (y otros lenguajes de scripting) se quedan pequeños.
-El lenguaje de programación es Java, es decir, lo conoce cualquier programador. 
-Velocidad de ejecución superior a la de otros lenguajes semi-interpretados.
 
-Filosofía
-Adaptación natural de Java al lado del servidor.
-Orientado a objetos. Multiplataforma. Fuertemente tipado. 
-Puede embeberse dentro de HTML, como PHP.
-El código Java se precompila en un Servlet y se deja cargado en la memoria del servidor. Las peticiones subsiguientes se ejecutan así mucho más rápidas.
+Perspectivas: 
+
+* Usado para proyectos grandes y complejos, donde PHP (y otros lenguajes de scripting) se quedan pequeños.
+* El lenguaje de programación es Java, es decir, lo conoce cualquier programador. 
+* Velocidad de ejecución superior a la de otros lenguajes semi-interpretados.
+
+Filosofía:
+
+* Adaptación natural de Java al lado del servidor.
+* Orientado a objetos. Multiplataforma. Fuertemente tipado. 
+* Puede embeberse dentro de HTML, como PHP.
+* El código Java se precompila en un Servlet y se deja cargado en la memoria del servidor. Las peticiones subsiguientes se ejecutan así mucho más rápidas.
 
 ### 8.5.2. Configuración necesaria en el servidor
 
@@ -539,13 +673,15 @@ else {
   Acciones-2
 }
 
-Entrada / Salida
+### 8.5.4. Entrada / Salida
 
 // Leer datos de un formulario:
 variable = request.getParameter("campo");
 
 // Salida:
 out.println ("cadena" + variable + "cadena2"); 
+
+### 8.5.5. Bibliotecas, funciones y clases
 
 Clases y métodos
 class mi-clase extends clase-madre {
@@ -557,7 +693,7 @@ class mi-clase extends clase-madre {
 Módulos
 import modulo;
 
-### 8.5.4. Ejemplo 1 en JSP: Hola mundo
+### 8.5.6. Ejemplo 1 en JSP: Hola mundo
 
 <%
    out.println("<html><body>");
@@ -565,7 +701,7 @@ import modulo;
    out.println("</body></html>");
 %>
 
-### 8.5.5. Ejemplo 2 en JSP: login con comprobación de email por Ajax
+### 8.5.7. Ejemplo 2 en JSP: login con comprobación de email por Ajax
 
 url: "/ruta/al/script.jsp", // URL of the JSP script
 
@@ -603,23 +739,35 @@ conex.close()
 ### 8.6.1. Características del lenguaje Ruby
 
 Fecha de aparición: 1995
-Última revisión: 2.6.1 (feb 2013)
-Perspectivas: 
-Uso y popularidad creciente.
-Base de programadores fiel y especializada.
-Excelente relación señal/ruido.
-Aún tiene que resolver algunas cosas:
-El lenguaje todavía está en fase de importantes cambios.
-Tiene peor rendimiento que Python o PHP.
-Muchos módulos (gemas) están mal documentados.
 
-Filosofía
-Completa – y verdaderamente – orientado a objetos. Todo es un objeto.
-Admite otros paradigmas ocultos bajo los objetos. 
-“Rápido y fácil”. Es un lenguaje divertido: de programadores para programadores. 
-Curva de aprendizaje larga pero nunca abrupta.
-Lenguaje de scripting Unix: expresiones regulares.
-En combinación con Rails, ideal para desarrollo web MVC rápido y basado en prototipos.
+Perspectivas: 
+
+* Uso y popularidad creciente.
+* Base de programadores fiel y especializada.
+* Excelente relación señal/ruido.
+* Aún tiene que resolver algunas cosas:
+* El lenguaje todavía está en fase de importantes cambios.
+* Tiene peor rendimiento que Python o PHP.
+* Muchos módulos (gemas) están mal documentados.
+
+Filosofía:
+
+* Completa – y verdaderamente – orientado a objetos. Todo es un objeto.
+* Admite otros paradigmas ocultos bajo los objetos. 
+* “Rápido y fácil”. Es un lenguaje divertido: de programadores para programadores. 
+* Curva de aprendizaje larga pero nunca abrupta.
+* Lenguaje de scripting Unix: expresiones regulares.
+* En combinación con Rails, ideal para desarrollo web MVC rápido y basado en prototipos.
+
+**¿Y Ruby on Rails?**
+
+Rails es un framework para desarrollar aplicaciones web MVC con Ruby.
+Apareció en 2004 y gustó tanto que otros frameworks para otros lenguajes (como CodeIgniter para PHP) copiaron su forma de trabajar:
+Abundantes capas de abstracción para evitar tareas de bajo nivel, como ActiveRecord.
+Scaffolding
+Integración con Ajax mediante jQuery, Prototype o Script.aculo.us
+CoC & DRY (Convention over Configuration & Don't Repeat Yourself)
+
 
 ### 8.6.2. Configuración necesaria en el servidor
 
@@ -629,17 +777,7 @@ Configurar el manejador de Apache para CGI.
 Instalar módulos adicionales para Ruby (como cgi o mysql) si son necesarios.
 Como en el caso de Perl o Python, Ruby puede correr de forma nativa en Apache (más rápido pero menos frecuente) o como script CGI.
 
-### 8.6.3. ¿Y Ruby on Rails?
-
-¿Y Ruby on Rails?
-Rails es un framework para desarrollar aplicaciones web MVC con Ruby.
-Apareció en 2004 y gustó tanto que otros frameworks para otros lenguajes (como CodeIgniter para PHP) copiaron su forma de trabajar:
-Abundantes capas de abstracción para evitar tareas de bajo nivel, como ActiveRecord.
-Scaffolding
-Integración con Ajax mediante jQuery, Prototype o Script.aculo.us
-CoC & DRY (Convention over Configuration & Don't Repeat Yourself)
-
-### 8.6.4. Sintaxis básica de Ruby
+### 8.6.3### 8.6.4. . Sintaxis básica de Ruby
 
 No es necesario declarar las variables. El tipado es dinámico (duck)
 Todo es un objeto, incluso números enteros o valores constantes:
@@ -673,7 +811,7 @@ num_rows.times do
    ...
 end
 
-Entrada / Salida
+### 8.6.4. Entrada / Salida
 
 // Leer datos de un formulario
 require "cgi"
@@ -683,7 +821,8 @@ variable = cgi["campo"];
 // Salida:
 print "cadena", variable, "cadena2", ... 
 
-Clases y métodos
+### 8.6.5. Bibliotecas, funciones y clases
+
 class nombre_clase < clase-madre
     def nombre(parametros)
        Acciones;
@@ -694,7 +833,7 @@ Bibliotecas (gemas)
 include "modulo"
 require "modulo"
 
-### 8.6.5. Ejemplo 1 en Ruby: Hola mundo
+### 8.6.6. Ejemplo 1 en Ruby: Hola mundo
 
 #!/usr/bin/ruby
 
@@ -703,7 +842,7 @@ print "<html><body>"
 print "<h1>Hola, mundo</h1>"
 print "</body></html>"
 
-### 8.6.6. Ejemplo 2 en Ruby: login con comprobación de email por Ajax
+### 8.6.7. Ejemplo 2 en Ruby: login con comprobación de email por Ajax
 
 url: "/cgi-bin/login.rb", // URL of the Ruby script
 
@@ -743,7 +882,16 @@ TODO
 
 ### 8.7.1. Características del lenguaje NodeJS
 
-TODO
+
+Fecha de aparición: XXX
+
+Perspectivas: 
+
+* TODO
+
+Filosofía:
+
+* TODO
 
 ### 8.7.2. Configuración necesaria en el servidor
 
@@ -753,16 +901,21 @@ TODO
 
 TODO
 
-### 8.7.4. Ejemplo 1 en NodeJS: Hola mundo
+### 8.7.4. Entrada / Salida con NodeJS
 
 TODO
 
-### 8.7.5. Ejemplo 2 en NodeJS: login con comprobación de email por Ajax
+### 8.7.5. Bibliotecas, funciones y clases
 
 TODO
 
+### 8.7.6. Ejemplo 1 en NodeJS: Hola mundo
 
+TODO
 
+### 8.7.7. Ejemplo 2 en NodeJS: login con comprobación de email por Ajax
+
+TODO
 
 ## 8.8. Y otras tecnologías aún más extrañas
 

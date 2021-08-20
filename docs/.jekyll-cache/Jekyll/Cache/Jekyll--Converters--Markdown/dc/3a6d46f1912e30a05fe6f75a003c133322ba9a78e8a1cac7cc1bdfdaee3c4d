@@ -1,4 +1,4 @@
-<h1 id="8-otras-tecnologías">8. Otras tecnologías</h1>
+I",�<h1 id="8-otras-tecnologías">8. Otras tecnologías</h1>
 
 <p>En esta sección vamos a hacer un repaso rápido a otros lenguajes para desarrollo web del lado del servidor diferentes de PHP.</p>
 
@@ -884,3 +884,4 @@ Se trata de un lenguaje para desarrollo de aplicaciones concurrentes (es decir, 
 
 (SSJS = Server Side JavaScript): hace mucho tiempo que se especula con la posibilidad de programar scripts del lado del servidor en JavaScript. Al fin y al cabo, JS es un lenguaje dominado por cualquier desarrollador web. No existe por ahora ninguna solución estandarizada: a veces, el JS se traduce a Java para ejecutarlo como JSP, otras veces se compila a código nativo del servidor (como hace NodeJS), otras veces se instala un plugin en el servidor para ejecutarlo nativamente, o bien se reduce su uso sólo a generar y procesar información JSON, etc. JS en el lado del servidor necesita siempre de librerías adicionales para acceder a los recursos del servidor (p.ej: bases de datos) 
 </body></html>
+:ET
