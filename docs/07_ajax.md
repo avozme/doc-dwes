@@ -410,7 +410,7 @@ $.ajax({
      method: "POST",
      url: "mi-url",
      data: {
-         "_token": "{{ csrf_token() }}",
+         "_token": "{{ csrf_token() }}"
      },
      ...etc... 
 });
