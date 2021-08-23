@@ -1,9 +1,0 @@
-I"�<h1 id="2-introducción-a-php">2. Introducción a PHP</h1>
-
-<p>En este capítulo vamos a conocer la sintaxis básica de PHP y cómo este lenguaje trabaja en el lado del servidor para ayudarnos a crear aplicaciones web dinámicas, es decir, aplicaciones que generan un HTML distinto según los datos de entrada.</p>
-
-<p>También conoceremos el kit de herramientas básico que vamos a necesitar para convertirnos en desarrolladores/as web y nos conectaremos a una base de datos remota para enviar y recuperar información.</p>
-
-<p>Por último, veremos algunos ejemplos de aplicaciones web sencillas que puedes utilizar como base para tus propios desarrollos.</p>
-
-:ET
