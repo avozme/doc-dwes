@@ -1,4 +1,4 @@
-<h1 id="81-sistemas-de-control-de-versiones">8.1. Sistemas de control de versiones</h1>
+I"z<h1 id="81-sistemas-de-control-de-versiones">8.1. Sistemas de control de versiones</h1>
 
 <p>Es inconcebible que un desarrollador trabaje en la actualidad sin un sistema de control de versiones.</p>
 
@@ -354,3 +354,4 @@ git log –oneline (muestra historial de cambios simplificado)</p>
 
 <p>-Ramas?</p>
 
+:ET
