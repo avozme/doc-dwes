@@ -6,6 +6,10 @@ parent: Desarrollo Web en Entorno Servidor
 nav_order: 6
 ---
 # 6. Servicios web
+{: .no_toc }
+
+- TOC
+{:toc}
 
 ## 6.1. ¿Qué es un servicio web?
 

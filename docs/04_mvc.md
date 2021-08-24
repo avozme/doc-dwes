@@ -7,6 +7,10 @@ has_children: false
 parent: Desarrollo Web en Entorno Servidor
 ---
 # 4. Arquitectura MVC
+{: .no_toc }
+
+- TOC
+{:toc}
 
 Cuando hablamos de arquitectura de una aplicación web nos referimos a la estructura básica que la sustenta, como los pilares de un edificio en construcción. Si quitas las paredes, las ventanas, las puertas, los azulejos de la cocina... todavía pueden distinguirse las formas fundamentales, ¿verdad?
 
@@ -479,7 +483,7 @@ class DbAbstract {
 }
 ```
 
-## 4.6. Una explicación del patrón MVC
+## 4.6. El patrón MVC en la teoría
 
 Ahora que hemos aprendido a manejarnos con el patrón MVC por medio de un ejemplo, estamos en condiciones de definirlo de manera más teórica y, oh maravilla, incluso entender esa definición.
 

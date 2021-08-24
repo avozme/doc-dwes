@@ -1,18 +1,25 @@
 ---
 layout: page
-title: Anexo I. Sistemas de control de versiones. Git
+title: Apéndice I. Sistemas de control de versiones. Git
 permalink: /scv-git/
 nav_order: 9
 has_children: false
 parent: Desarrollo Web en Entorno Servidor
 ---
-# 8.1. Sistemas de control de versiones
+# Apéndice 1. Sistemas de control de versiones. Git
+{: .no_toc }
+
+- TOC
+{:toc}
+
+
+# A1.1. Sistemas de control de versiones
 
 Es inconcebible que un desarrollador trabaje en la actualidad sin un sistema de control de versiones.
 
 Fíjate que en la frase anterior no tiene cabida tu opinión. Lo siento, pero es lo que hay. No importa si te gustan estos sistemas o no. No importa si estás los usas de forma habitual o siempre has huido de ellos como de la peste. No importa si ni siquiera sabes qué son o cómo funcionan. Si quieres dedicarte profesionalmente al desarrollo de software, tienes que conocerlos porque te los vas a encontrar vayas donde vayas.
 
-## 8.1.1. ¿Qué es un sistema de control de versiones?
+## A1.1.1. ¿Qué es un sistema de control de versiones?
 
 Un sistema de control de versiones es un almacén en la nube pensado para equipos de desarrollo de software.
 
@@ -33,7 +40,7 @@ Pero es que incluso para un programador/a solitario, que trabaja de forma autón
 
 Así que ya lo sabes: si aún no los usas, este es el momento de hacer un esfuerzo e incorporar un sistema de control de versiones a tu vida.
 
-## 8.1.2. ¿Cómo funcionan los sistemas de control de versiones?
+## A1.1.2. ¿Cómo funcionan los sistemas de control de versiones?
 
 Existen muchos sistemas de control de versiones, aunque el mercado está dominado por unos pocos de ellos (CVS, Subversion, Mercurial, Bazaar y, sobre todo, Git). Cada uno tiene sus propias peculiaridades, pero suelen compartir varias características comunes:
 
@@ -45,13 +52,13 @@ Existen muchos sistemas de control de versiones, aunque el mercado está dominad
 La sincronización con el repositorio remoto, por lo tanto, no puede ser automática (como en Google Drive o Dropbox), sino que hemos de hacerla explícita, momento en el cual el sistema nos avisará de posibles conflictos. Esta es la única manera de resolver adecuadamente esos conflictos en proyectos donde haya mucha gente trabajando simultáneamente.
 
 
-# 8.2. Git básico
+# A1.2. Git básico
 
 Git es, en la actualidad, el sistema de control de versiones más utilizado del mundo con diferencia. También es uno de los más completos y complejos. Así que, si aprendes a utilizar Git, podrás apañártelas con cualquier otro sistema de control de versiones.
 
 En esta sección vamos a ver cómo se usa Git a nivel básico. El acceso a las funciones avanzadas irá viniendo solo, con el tiempo y el uso.
 
-## 8.2.1. Poniendo en marcha Git
+## A1.2.1. Poniendo en marcha Git
 
 Git es un sistema de control de versiones de código abierto. De hecho, se creó inicialmente (y se sigue usando para ello) para desarrollar el núcleo de Linux. Eso quiere decir que cualquiera puede coger el código, modificarlos, adaptalo y distribuirlo.
 
@@ -76,7 +83,7 @@ Cuando hayas aprendido a apañarte con los comandos, es posible que no quieras r
 
 Por último, ten en cuenta que todos los entornos de desarrollo medianamente potentes ofrecen una integración absoluta con Git. Es decir, que si usas Visual Studio Code, o Eclipse, o NetBeans, o muchos otros, no necesitarás ningún cliente git adicional, porque ya lo traen incorporado. Tan solo debes configurar la ruta el repositorio remoto y al local, y hala, a programar y a sincronizar como si no hubiera un mañana.
 
-### 8.2.2. Creando un repositorio nuevo
+## A1.2.2. Creando un repositorio nuevo
 
 Vale, ya tenemos nuestra cuenta en GitHub o GitLab y hemos instalado un cliente Git en nuestra máquina. ¿Ahora qué?
 
@@ -185,7 +192,7 @@ Ese archivo es muy importante porque contiene una lista de todas las cosas que n
    Por ejemplo, en el caso de Laravel, se aconseja no incluir la carpeta "vendor" en el repositorio remoto. Es decir, hay que añadir la carpeta "vendor" a .gitignore antes de la primera sincronización. En "vendor" se encuentran todas las librerías de terceros que usa Laravel. Entonces, para desplegar esta aplicación en un servidor, ¿de dónde sacamos todas esas librerías? Fácil: cuando despleguemos el código en un servidor, solo tendremos que ejecutar "composer update" en el directorio raíz de la aplicacion, y el propio composer se encargará de instalar las librerías.
 
 
-## 8.3. Flujo de trabajo básico con Git
+# A1.3. Trabajo básico con Git
 
 Bueno, pues ya tenemos nuestros repositorios inicializados, conectados con el remoto y con el archivo .gitignore a punto. ¿Qué hacemos ahora?
 
@@ -193,7 +200,7 @@ Muy fácil: ponernos a trabajar como si git no existiera.
 
 Y luego, cuando des por finalizada una parte de la aplicación (un método, una clase, una funcionalidad concreta: tú decides cada cuánto tiempo haces esto), pasarla a la ***Staging Area***.
 
-### 8.3.1. Un momento... ¿Staging quéeee?
+## A1.3.1. Un momento... ¿Staging quéeee?
 
 La ***Staging Area*** es como la pista de despegue de Git.
 
@@ -229,7 +236,7 @@ $ git add *
 
 Por fin, cuando tengas una o varias cosas preparadas en la Staging Area... Bueno, entonces llega el momento de hacer un **commit**.
 
-### 8.3.2. Hacer commit
+## A1.3.2. Hacer commit
 
 Un **commit** (palabra que podríamos traducir por "perpetrar") consiste en empaquetar todos los cambios de la Staging Area para enviarlos a otro repositorio, normalmente el repositorio remoto.
 
@@ -253,7 +260,7 @@ Los commits deben llevar textos descriptivos breves pero informativos. Por ejemp
 
 Pero, ¡ojo!, hacer commit **no sube los archivos al repositorio remoto**. Todavía no. Recuerda que Git quiere que estés muy seguro/a de que subes lo que realmente tienes que subir, así que aún te falta un último paso: hacer ***push***.
 
-### 8.3.3. Subir el commit: hacer push
+## A1.3.3. Subir el commit: hacer push
 
 El último paso para enviar nuestros cambios locales al repositorio remoto (típicamente, GitHub o GitLab) consiste en hacer ***push***. Es decir, literalmente, "empujar" los cambios al repositorio remoto.
 
@@ -267,7 +274,7 @@ $ git push
 
 Lo normal es que el repositorio remoto te pida tu nombre de usuario y contraseña, pero eso dependerá de si el acceso a ese repositorio está autenticado o no. Por supuesto, tanto GitHub como GitLab te solicitarán que te identifiques.
 
-### 8.3.4. Bajarnos la última versión del código
+## A1.3.4. Bajar la última versión del código
 
 Si podemos subir nuestros cambios al repositorio remoto, tendremos que tener una forma de bajar los cambios del resto de miembros del equipo, ¿verdad?
 
@@ -279,7 +286,7 @@ $ git pull
 
 Es recomendable hacer pull antes de hacer push, por si alguien a tocado alguno de los archivos que nosotros pretendemos subir. En ese caso, Git nos avisará del conflicto y nos ayudará a resolverlo (más adelante veremos cómo). No podremos hacer push hasta resolver ese conflicto, para evitar pérdidas de código.
 
-### 8.3.5. Resumiéndolo todo: diagrama del flujo de trabajo habitual
+## A1.3.5. Resumiéndolo todo: flujo de trabajo habitual con git
 
 Si resumimos lo dicho hasta ahora, tenemos que, después de inicializar el repositorio (cosa que hay que hacer solo una vez), el trabajo cotidiano con Git consiste en:
 
@@ -314,7 +321,7 @@ $ git status
 
 ¿Es potente o no es potente este Git? Pues aún no has visto nada.
 
-## 8.4. Algunas cosillas avanzadas sobre git
+# A1.4. Algunas cosillas avanzadas sobre git
 
 Solo con lo que hemos visto hasta ahora (add, commit, push y pull) ya tienes suficiente para empezar a funcionar con git. Luego, conforme te surjan otras necesidades, puedes ir curioseando por internet para profundizar en ciertos aspectos.
 
@@ -326,7 +333,7 @@ Imagínate la escena: un día llegas a clase después de haberte acosatado a las
 
 Tranquilidad: ahí está Git para sacarte del embrollo.
 
-### 8.4.1. Regreso al pasado: cómo revertir los cambios
+## A1.4.1. Regreso al pasado: cómo revertir los cambios
 
 Las causas de un desastre como ese pueden ser tantas que, en la práctica, es como si fueran infinitas. Un problema con el proxy, un merge mal hecho, una desconfiguración de uno de los servidores locales que ha afectado a algún archivo clave, un error de algún miembro del equipo que ha sobreescrito cientos de archivos con versiones incorrectas... Causas infinitas, como te digo.
 
@@ -383,7 +390,7 @@ Y, para regresar al presente, es decir, al último commit, basta con teclear:
 $ git checkout main
 ```
 
-### 8.4.3. Cuando dos personas se encaprichan del mismo archivo
+## A1.4.2. Cuando dos personas se encaprichan del mismo archivo
 
 Cuando ejecutas *git pull*, traes a tu repositorio local las versiones más recientes de todos los archivos del proyecto. Esto ya lo sabíamos.
 
@@ -411,7 +418,7 @@ Si usas cualquier editor de texto medianamente potente, te mostrará esas línea
 
 Una vez que hayas resuelto manualmente las líneas en conflicto, basta con guardar los cambios y hacer *git add* y *git commit -m "Resolviendo el conflicto bla,bl,bla"* para que el *git pull* y el *git push* vuelvan a funcionar a la perfección.
 
-### 8.4.4. Proyectos que se complican: cómo crear ramas
+## A1.4.3. Proyectos que se complican: cómo crear ramas
 
 Imagina esta situación: tienes un proyecto ya en marcha, con una versión más o menos estable funcionando, y entonces surge la necesidad de desarrollar una nueva funcionalidad.
 
@@ -464,7 +471,7 @@ Por último, para fusionar una rama con otra (típicamente, con la rama principa
 
 En este punto, tendrás que resolver manualmente los conflictos que puedan surgir (si los hay), como hemos explicado más arriba.
 
-### 8.4.5. ¿Aún quieres saber más?
+## A1.4.4. ¿Aún quieres saber más?
 
 Git es un sistema de control de versiones increíblemente completo. Sus creadores parecen haber pensado en escenarios de lo más aberrante y han tenido en cuenta casi cada cosa que puede suceder en un proyecto complejo. Si no, no se explica la enorme cantidad de comandos y posibilidades que ofrece.
 

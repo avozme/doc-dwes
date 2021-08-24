@@ -6,6 +6,10 @@ parent: Desarrollo Web en Entorno Servidor
 nav_order: 7
 ---
 # 7. Ajax
+{: .no_toc }
+
+- TOC
+{:toc}
 
 ## 7.1. Un poco de introducción al asunto
 
@@ -300,7 +304,7 @@ En la sección ***success*** hemos colocado directamente el código de la funci�
 
 En la sección ***error***, por último, lanzamos un mensaje de error mediante un alert(), que solo saltará si ocurre algún error durante la petición Ajax. Fíjate en que esa función tiene tres parámetros (optativos) que utilizamos para informar al usuario con más detalle de qué error se ha producido.
 
-### 7.4.2. Funciones $.get() y $.post
+### 7.4.2. Funciones $.get() y $.post()
 
 En muchas ocasiones, no necesitamos usar ni la mínima parte de las posibilidades de la función $.ajax(). Cuando tenemos que hacer una llamada sencillita por Ajax al servidor y no queremos complicarnos la vida, puede ser más útil y rápido recurrir a las funciones $.get() y $.post().
 
@@ -360,7 +364,7 @@ Por lo tanto, crearemos un controlador AjaxController y añadiremos a nuestro en
 Route::post('miJqueryAjax','AjaxController@miMetodo');
 ```
 
-### 7.5.2. Paso 2. Crear los métodos del controlador AjaxController
+### 7.5.2. Paso 2. Crear los métodos del controlador
 
 Lo siguiente sería crear los métodos que necesitemos en AjaxController (o, si hemos decidido no crear un controlador específico para Ajax, crear los métodos en los controladores que corresponda).
 
@@ -397,7 +401,7 @@ Ten en cuenta que:
 * La salida de una petición Ajax suele ser JSON, pero podría ser otra cosa: HTML, XML o simple texto plano.
 * Lo repetimos una vez más: para responder a una petición Ajax no se debe renderizar una vista (¡salvo que tengas una muy buena excusa para hacerlo!), sino que basta con un return response().
 
-### 7.5.3. Agregar el token CSRF a las peticiones
+### 7.5.3. Paso 3. Agregar el token CSRF a las peticiones
 
 Como vimos al estudiar Laravel, las peticiones enviadas por POST con Laravel deben llevar el token CSRF o serán rechazadas. Esto se hacía para prevenir cierto tipo de ataques frecuentes a través de formularios HTML. Los detalles no son importantes aquí y, en todo caso, puedes repasar el capítulo sobre Laravel o sobre Sesiones, Cookies y Seguridad para revisar el concepto.
 
