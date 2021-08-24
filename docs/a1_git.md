@@ -296,10 +296,10 @@ Workspace   Staging area (INDEX)  Local repo (HEAD)   Remote repo
     |             |                     |                  |
     | git add →   |                     |                  |
     |             |    git commit →     |                  |
-    |             |                     |    git push →    |
-    |             |                     |                  |
     |             |                     |                  |
     | ← ← ← ← ←   |     ← ← ← ← ←       |   ← git pull     |
+    |             |                     |                  |
+    |             |                     |    git push →    |
     |             |                     |                  |
     |             |                     |                  |
 ```
@@ -375,7 +375,9 @@ El comando que te permite saltar momentáneamente a cualquier commit es **git ch
 $ git checkout id-del-commit
 ```
 
-Ahora puedes ver y rescatar el código fuente válido. Y, para regresar al último commit, basta con teclear:
+Ahora puedes ver y rescatar el código fuente válido sin temor: nada de lo que hagas en este estado afectará al tu proyecto, porque los cambios se perderán cuando salgas de este "viaje en el tiempo" (salvo que crees una nueva rama del proyecto, pero esa es otra historia).
+
+Y, para regresar al presente, es decir, al último commit, basta con teclear:
 
 ```
 $ git checkout main
@@ -383,10 +385,91 @@ $ git checkout main
 
 ### 8.4.3. Cuando dos personas se encaprichan del mismo archivo
 
-XXX 
--Resolver conflictos. Merge
+Cuando ejecutas *git pull*, traes a tu repositorio local las versiones más recientes de todos los archivos del proyecto. Esto ya lo sabíamos.
+
+Si *git pull* se ejecuta sin contratiempos, aparecerá un mensaje informándote de ello.
+
+Pero los contratiempos existen, qué le vamos a hacer. La vida sería muy aburrida y predecible sin ellos.
+
+El contratiempo más habitual, con diferencia, al hacer *git pull* es el aviso de un conflicto el alguno de los archivos modificados en el repositorio remoto. Eso quiere decir que *tú* has estado tocando el código de un archivo *al mismo tiempo que otra persona de tu equipo*.
+
+Supongamos que, en un archivo A, tú has añadido las líneas A1, A2 y A3, mientras que otra persona ha añadido las líneas A4, A5 y A6. Si la otra persona ha subido el archivo A al repositorio remoto antes que tú, git se dará cuenta cuando intentes hacer *git pull* de que tu copia local del archivo y la que hay en el repositorio remoto no coinciden: no solo porque la tuya tiene las nuevas líneas A1, A2 y A3, sino porque a la tuya *le faltan* las líneas A4, A5 y A6.
+
+En ese caso, y para no perder ninguna de las nuevas líneas de código, git te mostrará un mensaje de advertencia y creará una versión nueva del archivo A en la que estarán **todas las líneas de código nuevas, tanto las tuyas como las de la otra persona**, rodeadas de unas marcas de texto como estas:
+
+```
+    <<<<<<< HEAD
+        espacio
+    ============
+        Espacio
+    >>>>>>> nueva-rama
+```
+
+Ahora, lo único que tienes que hacer es buscar manualmente esas líneas conflictivas y resolverlas a mano, es decir, quedarte con las líneas correctas y borrar las que no lo sean. Borra también todas las marcas que ha puesto ahi git para indicarte el conflicto.
+
+Si usas cualquier editor de texto medianamente potente, te mostrará esas líneas resaltadas e incluso te ayudará a encontrarlas.
+
+Una vez que hayas resuelto manualmente las líneas en conflicto, basta con guardar los cambios y hacer *git add* y *git commit -m "Resolviendo el conflicto bla,bl,bla"* para que el *git pull* y el *git push* vuelvan a funcionar a la perfección.
 
 ### 8.4.4. Proyectos que se complican: cómo crear ramas
 
--Ramas?
+Imagina esta situación: tienes un proyecto ya en marcha, con una versión más o menos estable funcionando, y entonces surge la necesidad de desarrollar una nueva funcionalidad.
 
+Y esta nueva funcionalidad va a poner patas arriba una parte importante del código y va a dejar la aplicación hecha unos zorros durante un tiempo.
+
+Si trabajas con tu repositorio como hemos hecho hasta ahora, el resultado es que, durante ese tiempo, todo tu proyecto dejará de funcionar. No podrás hacer demos a los clientes (ni a tus profesores/as), no podrás probar la aplicación, no podrás cargarla con datos reales, etc. ¡Todo quedará paralizado hasta que la nueva funcionalidad esté en marcha!
+
+En un equipo de desarrollo grande, esta es una situación cotidiana que provocaría que gran parte de la gente se tuviera que quedar de brazos cruzados a la espera de la finalización de la nueva funcionalidad. Pero incluso en un equipo pequeño es un engorro llegar a este extremo.
+
+Para evitarlo, existen **las ramas** (*branches*) de Git.
+
+Una rama no es más que una copia del repositorio que puede evolucionar por su cuenta mientras la rama original permanece inalterada.
+
+Los desarrolladores/as que trabajen en esa rama pueden así trabajar en la nueva funcionalidad sin que el resto del equipo se vea afectado. Cuando la nueva funcionalidad se termine, lo único que hay que hacer es fusionar las dos ramas. Esto puede ser un trabajo ímprobo si se han estado modificando los mismos archivos en la rama principal y en la rama nueva, pero no se trata de un fallo de Git, que quede claro, sino de un fallo de organización del equipo.
+
+Y si la nueva funcionalidad nunca llega a terminarse (cosa que puede ocurrir por miles de razones), no pasa nada: la rama se elimina, o simplemente se abandona, y la rama principal sigue intacta.
+
+Crear una rama nueva es tan sencillo como usar este comando:
+
+```
+$ git branch nombre-nueva-rama
+```
+
+El comando *git branch* tiene muchas otras posibilidades. Aquí te pongo unas cuantas:
+
+```
+$ git branch --list          (saca un listado de todas las ramas existentes)
+$ git branch -d nombre-rama  (elimina una rama)
+$ git branch -D nombre-rama  (elimina una rama a lo bestia, incluso si tiene cambios sin fusionar)
+$ git branch -m nuevo-nombre (cambia en nombre de la rama actual)
+```
+
+Ten en cuenta que, cuando creas una rama, *aún no estás trabajando en ella*. Si quieres cambiar a esa rama para empezar a trastear con ella sin tocar a la principal, debes hacer un *git checkout*:
+
+```
+$ git checkout nombre-rama
+```
+
+Por último, para fusionar una rama con otra (típicamente, con la rama principal o *main*), tienes que seguir estos pasos:
+
+1. Asegúrate de estar situado en la rama que va a recibir la fusión. Si esa rama es *main*, tienes que hacer:
+    ```
+    $ git checkout main
+    ```
+2. Haz un *git pull* para tener disponible la última versión del código.
+3. Realiza la fusión de las dos ramas con *git merge*:
+    ```
+    $ git merge nombre-rama
+    ```
+
+En este punto, tendrás que resolver manualmente los conflictos que puedan surgir (si los hay), como hemos explicado más arriba.
+
+### 8.4.5. ¿Aún quieres saber más?
+
+Git es un sistema de control de versiones increíblemente completo. Sus creadores parecen haber pensado en escenarios de lo más aberrante y han tenido en cuenta casi cada cosa que puede suceder en un proyecto complejo. Si no, no se explica la enorme cantidad de comandos y posibilidades que ofrece.
+
+Si necesitas saber más cosas sobre Git, internet está plagada de contenidos de calidad (y otros bastante penosos) sobre este sistema.
+
+Como siempre te recomiendo, acude en primer lugar a la referencia oficial: https://git-scm.com/docs
+
+Personalmente, a mí me gustan mucho los tutoriales de Atlassian. Aunque están orientados a BitBucket (un servicio competidor de GitHub o GitLab), casi todas sus recomendaciones son aplicables a cualquier servidor Git. Los puedes encontrar aquí: https://www.atlassian.com/es/git/tutorials
