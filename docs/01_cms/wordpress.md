@@ -665,130 +665,137 @@ Cuando Wordpress busque alguno de estos archivos y no le encuentre, recurrirá a
 
 ### 1.2.5. Plugins de Wordpress
 
-XXX
+Los plugins de Wordpress, como cualquier plugin, son **añadidos que incrementan las funcionalidades del sistema base**. La arquitectura flexible de Wordpress permite realizar esa ampliación en casi cualquier sentido y es una de las razones del éxito de este CMS: con los plugins adecuados, un CMS originalmente pensado para hacer *blogging* puede convertirse casi en cualquier cosa.
 
-(El contenido de esta sección está adaptado de: www.cristalab.com/tutoriales/como-crear-un-plugin-para-wordpress-c54308l/)
+Los plugins, como ya hemos visto, se gestionan desde el menú "Plugins" del *dashboard*. Al instalar y activar un plugin, lo más habitual es que aparezca una nueva entrada de menú en algún sitio del *dashboard*. Cada plugin es virtualmente un programa nuevo acoplado a Wordpress, por lo que debes remitirte a la documentación de ese plugin para saber cómo utilizarlo.
 
-Los plugins, como en cualquier otro sistema, añaden funcionalidades a Wordpress. La arquitectura flexible de Wordpress permite realizar esa ampliación en casi cualquier sentido, dotando a Wordpress de esa capacidad polimórfica que lo hace tan útil en muchas circunstancias.
+Hay muchos plugins gratuitos, otros muchos de pago y una gran mayoría que tienen una versión limitada gratuita y otra de pago con funciones adicionales. El desarrollo de plugins para Wordpress es una industria que proporciona muchos puestos de trabajo a programadores/as en la actualidad.
 
-A partir de aquí vamos a crear un sencillo plugin para Wordpress que pueda servir de base para desarrollos posteriores más realistas.
+Como hicimos con los *themes*, **vamos a ilustrar con un ejemplo el proceso de creación de plugins**. Haremos algo muy sencillo pero bien construido, de manera que pueda servirte para desarrollos posteriores más realistas.
 
-El plugin se llamará "Saludo" y contendrá algunas funciones para saludar que nos servirán para ilustrar el funcionamiento del sistema de plugins de Wordpress.
+El plugin se llamará **"Chiste"** y se encargará de imprimir un chiste aleatorio cada vez que lo llamemos desde nuestra plantilla. El chiste aleatorio se extraerá de una tabla con chistes que almacenaremos en la base de datos. Lo puedes usar para imprimir un chiste en tu web de cuando en cuando, o para mostrar un chiste diferente cada vez que se carga la página, o yo qué sé para qué.
+
+Construiremos el plugin paso a paso, desde una versión muy simple que siempre contará el mismo chiste hasta la versión definitiva. De este modo, comprenderás muy bien el funcionamiento del sistema de plugins de Wordpress.
 
 #### **Crear un plugin nuevo**
 
-Para crear el plugin "Saludo" basta con crear un archivo llamado ***saludo.php*** en una carpeta llamada también "saludo" y ubicada a su vez en carpeta_raiz/wp-content/plugins/
+Para crear el plugin "Chiste" basta con crear un archivo llamado ***chiste.php*** en una carpeta llamada también *chiste* y ubicada a su vez en *wp-content/plugins/*
 
-Dentro del archivo saludo.php, escribiremos el comentario de cabecera para que Wordpress lo reconozca como un plugin válido (igual que sucede con las plantillas). Es importante respetar la sintaxis.
+Dentro del archivo *chiste.php*, escribiremos el comentario de cabecera para que Wordpress lo reconozca como un plugin válido (igual que sucede con las plantillas). Es muy importante respetar la sintaxis.
 
 ```php
 <?php
    /*
       Plugin Name: nombre del plugin
-      Plugin URI: url oficial de tu maravilloso plugin
-      Description: que carajos hace tu plugin
-      Version: numero de intentos para que esta cosa resulte
-      Author: Nombre del mono programador
-      Author URI: url del mono programador
+      Plugin URI: uri oficial del desarrollador/a del plugin
+      Description: qué hace el plugin
+      Version: numero de versión
+      Author: Nombre del programador/a
+      Author URI: uri del programador/a
    */
    
    /*
-      esto aparecerá directamente en el panel de 
-      administración de plugins
+      Todo esto aparecerá en el panel de 
+      administración de plugins del dashboard
    */ 
 ?>
 ```
 
 #### **Añadir funciones al plugin**
 
-Vamos a crear nuestra primera función con un código algo más complejo. Todo lo que sigue se debe escribir en el mismo archivo ***saludo.php***.
+Vamos a crear nuestra primera función dentro del plugin. Abre el archivo ***chiste.php*** y añade esto:
 
 ```php
-<?php
-   // Aquí van los comentarios de la cabecera que vimos antes
-   function saludo(){
-      echo 'hola mundo';   
+   function chiste(){
+      echo "Van dos por tres calles y se cae el de enmedio";   
    }
-?>
 ```
+
+Supongo que este código no requiere demasiada explicación, ¿no? Pues ahí lo dejamos.
 
 #### **Instalar y desinstalar el plugin**
 
-Para poder instalar y desinstalar el plugin desde el panel de administracion de Wordpress, es necesario crear dos funciones en ***saludo.php***: una para instalar y otra para desinstalar. Estas funciones, por ahora, las dejaremos vacías.
+Para poder instalar y desinstalar un plugin desde el panel de administracion de Wordpress, es necesario crear dos funciones más en ***chiste.php***: una para instalar y otra para desinstalar. Estas funciones, por ahora, las dejaremos vacías.
 
-Además, al final del archivo ***saludo.php*** hay que usar la funcion del API de Wordpress add_action() para indicar las funciones que activar y desactivan el plugin.
+Además, al final del archivo ***chiste.php*** hay que usar la funcion del API de Wordpress add_action() para indicar las funciones que activan y desactivan el plugin.
+
+Es más fácil hacerlo que explicarlo. Ahí va:
 
 ```php
-<?php
-   ...
-   function saludo_instala(){
-      //   Por ahora la dejamos vacía
+   function chiste_instala(){
+      // Por ahora, la dejamos vacía
    }
-   function saludo_desinstala(){
-      //   Por ahora la dejamos vacía
+   function chiste_desinstala(){
+      // Por ahora, la dejamos vacía
    }   
-// Ojo con la sintaxis de la funcion add_action!
-add_action('activate_saludo/saludo.php','saludo_instala');
-add_action('deactivate_saludo/saludo.php', 'saludo_desinstala');
-?>
+
+   add_action('activate_chiste/chiste.php','chiste_instala');
+   add_action('deactivate_chiste/chiste.php', 'chiste_desinstala');
 ```
 
 #### **Cómo usar las funciones del plugin**
 
-Ahora ya puedes usar tu maravilloso plugin. Sólo debes colocar en la sección de tu plantilla que estimes conveniente la siguiente línea:
+Ahora ya puedes usar este plugin tan chistoso. Solo debes colocar en alguna sección de tu plantilla la siguiente línea:
 
 ```php
-<?php saludo(); ?>
+<?php chiste(); ?>
 ```
+
+Por ejemplo, si colocas esa función en el archivo *header.php* de tu plantilla, cada vez que se cargue el header (es decir, en todas las páginas), la función *chiste()* será invocada y, hala, un chiste impreso en tu pantalla.
 
 #### **Configurar el plugin desde el panel de administración**
 
-Nos falta crear un item dentro del panel de administración que nos permita modificar las opciones de este plugin. El ítem lo daremos de alta dentro del menú "opciones", y para esto programaremos tres funciones más en nuestro archivo ***saludo.php***:
+Ahora vamos a crear una entrada dentro de los menús del *dashboard* que nos permita modificar las opciones de este plugin.
 
-* saludo_panel(): aquí incluiremos el html que será expresado en nuestro panel. Para no mezclar html dentro del código, usaremos la función include() a modo de template.
-* saludo_add_menu(): aquí usaremos a su vez la función de WP add_options_page.
-* saludo_add_action(): para desencadenar todo esto usaremos esta función que es también parte del API de WP.
+La entrada de menú la integraremos en el menú "opciones". Para lograrlo, necesitamos dos funciones más en nuestro archivo ***chiste.php***:
+
+* *chiste_panel()*: aquí incluiremos el html necesario para la pantalla de configuración de nuestro plugin. Para no mezclar html dentro del código, usaremos la función include() de PHP, de manera que podamos colocar el HTML en otro archivo a parte.
+* *chiste_add_menu()*: aquí usaremos la función del API de Wordpress *add_options_page()*, que sirve para añadir una entrada al menó "Opciones".
+
+Además, llamaremos a otra función del API, *add_action()*, para provocar la invocación de *chiste_add_menu()* cada vez que Wordpress vaya a crear su menú de administración.
 
 ```php
 <?php
-   ...
-   
-   function saludo_panel(){      
+   function chiste_panel(){      
       include('template/panel.html');
    }
-   function saludo_add_menu(){   
+   function chiste_add_menu(){   
       if (function_exists('add_options_page')) {
          //add_menu_page
-         add_options_page('saludo', 'saludo', 8, basename(__FILE__), 'saludo_panel');
+         add_options_page('chiste', 'chiste', 'manage_options', basename(__FILE__), 'chiste_panel');
       }
    }
    if (function_exists('add_action')) {
-      add_action('admin_menu', 'saludo_add_menu'); 
+      add_action('admin_menu', 'chiste_add_menu'); 
    } 
-      
-   ...
 ?>
 ```
 
-Además, necesitaremos un formulario html para poder visualizar la pantalla de configuración en el panel de administración de Wordpress. Crearemos algo muy sencillo. Por supuesto, se puede mejorar con un poco de HTML y CSS. Lo escribiremos en el archivo ***template/panel.html***:
+Quizá la línea de *add_options_page()* requiera alguna explicación adicional, ¿verdad? Lo único que hacemos ahí es añadir una entrada al menú de opciones del *dashboard*, indicándole en los parámetros:
+* El título de la pantalla de administración de nuestro plugin ("chiste").
+* El texto de la entrada de menú (también "chiste").
+* El permiso necesario del usuario que podrá ver este elemento de menú. Hemos elegido "manage_options", que es un permiso típico de los administradores del sitio. Otros usuarios de menor nivel no podrán acceder a este menú. Tienes una lista completa de los permisos (o *capabilities*, en jerga de Wordpress) en https://wordpress.org/support/article/roles-and-capabilities/)
+* La URI amigable para esta opción de menú. Puede ser cualquier cosa, siempre que no esté ya en uso. Hemos usado el propio nombre del archivo (*basename(__FILE__)*) para evitar conflictos con otras opciones de menú.
+* El nombre de la función que se invocará cuando se haga clic en ese elemento de menú (es decir, *chiste_panel()*).
+
+
+El archivo *panel.html* será un simple formulario html que mostrará la configuración del plugin. Crearemos algo muy sencillo. Por supuesto, se puede mejorar con un poco de HTML y CSS. Lo guardaremos en ***template/panel.html***:
 
 ```html
-<form method="post" action="" id="saludo">
-<label for="saludo_inserta" accesskey="s">Inserte su saludo<input type='text' id='saludo_inserta'  name='saludo_inserta' value='' /></label>
+<form method="post" action="" id="chiste">
+<label for="chiste_inserta" accesskey="s">Inserte su chiste<input type='text' id='chiste_inserta'  name='chiste_inserta' value='' /></label>
 <input type='submit' name='' value='enviar' />
 </form>
 ```
 
-Por último, modificaremos la función saludo_panel() para poder visualizar nuestros avances:
+Por último, modificaremos la función *chiste_panel()* para poder visualizar nuestros avances:
 
 ```php
 <?php
-   ...   
-   function saludo_panel(){      
+   function chiste_panel(){      
       include('template/panel.html');
    }
-   echo "<h1>{$_POST['saludo']}</h1>";
-   ...
+   echo "<h1>{$_POST['chiste']}</h1>";
 ?>
 ```
 
@@ -796,101 +803,80 @@ Podemos probar que todo funciona escribiendo algo en el formulario (pulsando "En
 
 #### **Acceder a la BD desde nuestro plugin**
 
-Vamos a ver cómo se puede acceder a la BD de Wordpress desde un plugin.
+También se puede acceder a la base de datos de Wordpress desde un plugin. Esto es práctico para, por ejemplo, crear nuestra propia tabla adicional con la que gestionar el contenido del plugin, que es justo lo que nosotros queremos.
 
 Para ello, antes debemos desinstalar el plugin desde el panel de control. Solo así podremos modificar la función de instalación y ejecutarla más adelante de nuevo.
 
-Las funciones de Wordpress que manejan la DB se llaman con una variable global denominada ***$wpdb***:
+Las funciones de Wordpress que manejan la BD se invocan con una variable global ***$wpdb***:
 
 ```php
 <?php
-...
-
-function saludo_instala(){
-   global $wpdb; // <-- sin esto no funcionara nada con la DB no cambies nada
-   $table_name= $wpdb->prefix . "saludos";
+function chiste_instala(){
+   global $wpdb;   // Variable para acceder a la BD
+   $table_name= $wpdb->prefix . "chistes";
    $sql = " CREATE TABLE $table_name(
-      id mediumint( 9 ) NOT NULL AUTO_INCREMENT ,
-      saludo tinytext NOT NULL ,
+      id INTEGER NOT NULL AUTO_INCREMENT ,
+      chiste TEXT NOT NULL ,
       PRIMARY KEY ( `id` )   
    ) ;";
    $wpdb->query($sql);
-   $sql = "INSERT INTO $table_name (saludo) VALUES ('Hola Mundo');";
+   $sql = "INSERT INTO $table_name (chiste) VALUES ('Van dos por tres calles y se cae el de enmedio');";
    $wpdb->query($sql);
 }   
 
-function saludo_desinstala(){
+function chiste_desinstala(){
    global $wpdb; 
-   $tabla_nombre = $wpdb->prefix . "saludos";
+   $tabla_nombre = $wpdb->prefix . "chistes";
    $sql = "DROP TABLE $tabla_nombre";
    $wpdb->query($sql);
 }   
-   
-...
 ?>
 ```
 
-Por supuesto, hay que agregar los datos a la DB desde nuestro panel en opciones/saludo, para lo cual modificaremos la función saludo_panel():
+Por supuesto, hay que agregar los datos a la BD desde nuestro panel de configuración del plugin, para lo cual modificaremos la función *chiste_panel()*:
 
 ```php
-<?php
-...
-
-function saludo_panel(){
+function chiste_panel(){
    include('template/panel.html');         
    global $wpdb; 
-   $table_name = $wpdb->prefix . "saludos";
-   if(isset($_POST['saludo_inserta'])){   
-         $sql = "INSERT INTO $table_name (saludo) VALUES ('{$_POST['saludo_inserta']}');";
+   $table_name = $wpdb->prefix . "chistes";
+   if(isset($_POST['chiste_inserta'])){   
+         $sql = "INSERT INTO $table_name (chiste) VALUES ('{$_POST['chiste_inserta']}');";
          $wpdb->query($sql);
    }
 }
-      
-...
-?>
 ```
 
-¡Ahora que ya podemos insertar saludos en nuestra BD!
+¡Ahora que ya podemos insertar chistes en nuestra BD desde el *dashboard* de Wordpress!
 
-sólo nos queda poder mostrarlos en nuestra función saludo(). Para esto extraeremos un saludo de manera aleatoria a nuestra BD:
+Solo nos queda poder mostrarlos en nuestra función *chiste()*. Para esto, extraeremos un chiste de manera aleatoria de nuestra BD modificando la función *chiste()*:
 
-```
-<?php
-...
-
-function saludo(){
+```php
+function chiste(){
    global $wpdb; 
-   $table_name = $wpdb->prefix . "saludos";
-   $saludo= $wpdb->get_var("SELECT saludo FROM $table_name ORDER BY RAND() LIMIT 0, 1; " );
-   include('template/saludo.html');      
+   $table_name = $wpdb->prefix . "chistes";
+   $chiste = $wpdb->get_var("SELECT chiste FROM $table_name ORDER BY RAND() LIMIT 0, 1; " );
+   include('template/chiste.html');      
 }
-   
-...
-?>
 ```
 
-Ahora modifiquemos nuestro ***saludo.html*** para que imprima la variable $saludo:
+Ahora modifiquemos nuestro ***template/chiste.html*** para que imprima la variable $chiste:
 
 ```html
-<h1><?php echo $saludo;?></h1>
+<h1><?php echo $chiste;?></h1>
 ```
 
-Por último, vamos modificar el html de nuestro panel para que se adapte al html del administrador de WP y no quede tan feo:
+Para terminar, vamos modificar el html de nuestro panel de opciones para que se adapte al html del administrador de Wordpress y no quede tan feo. Esto es solo una cuestión estética, por supuesto. Pero, ya que hacemos algo, vamos a hacerlo bien:
 
 ```html
  <div class="wrap"> 
    <form method="post" action="">
       <fieldset>
-         <legend>Ingresar Nuevo Saludo</legend>
-         <label for="saludo" accesskey="s">Inserte su saludo<input type='text' id='saludo_inserta'  name='saludo_inserta'  /></label>
-         <input type='submit' name='' value='enviar' />
+         <legend>Introduce un nuevo chiste</legend>
+         <label for = "chiste" accesskey = "c">Escriba el chiste<input type = "textarea" id = "chiste_inserta"  name= "chiste_inserta" /></label>
+         <input type = "submit" name="" value="Enviar" />
       </fieldset>
    </form>
 </div>
 ```
-
-Con todo esto ya tenemos listo nuestro plugin.
-
-Por supuesto, siguiendo la misma lógica podríamos eliminar o modificar registros o hacer cualquier otra operación que necesitásemos con la base de datos.
-
 

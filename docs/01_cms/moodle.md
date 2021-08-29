@@ -16,6 +16,8 @@ grand_parent: Desarrollo Web en Entorno Servidor
 
 ### 1.3.1. Características de Moodle
 
+XXX
+
 Moodle es un sistema de gestión de contenidos orientado a **crear comunidades de aprendizaje** en línea. Este tipo de plataformas tecnológicas también se conoce como **LMS (Learning Management System)**. Su licencia es GPL (es decir: es software libre).
 
 Está programado en lenguaje PHP y puede usar diferentes gestores de bases de datos para almacenar el contenido: MySQL o PostgreSQL son los más habituales, pero también es posible utilizar Oracle o SQL Server.
