@@ -80,7 +80,7 @@ Pero, personalmente, creo que tiene más sentido clasificarlos por su **funciona
 * CMS para blogs.
 * CMS para foros.
 * CMS para wikis.
-* CMS para e-learning (aprendizaje por internet)
+* CMS para e-learning (aprendizaje en línea)
 * CMS para e-commerce (comercio electrónico)
 * CMS para publicaciones digitales (periódicos, revistas...)
 
