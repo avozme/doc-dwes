@@ -14,6 +14,8 @@ grand_parent: Desarrollo Web en Entorno Servidor
 - TOC
 {:toc}
 
+(La información de esta sección está adaptada de [docs.moodle.org](https://docs.moodle.org), donde toda la documentación se encuentra publicada bajo una licencia [GNU General Public License](https://docs.moodle.org/dev/License))
+
 ### 1.3.1. Características de Moodle
 
 Moodle es un sistema de gestión de contenidos orientado a **crear comunidades de aprendizaje** en línea. Este tipo de plataformas tecnológicas también se conoce como **LMS (Learning Management System)**. Su licencia es GPL (es decir: es software libre).
