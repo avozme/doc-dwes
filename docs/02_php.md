@@ -12,7 +12,7 @@ En este capítulo vamos a conocer la sintaxis básica de PHP y cómo este lengua
 
 También conoceremos el kit de herramientas básico que vamos a necesitar para convertirnos en desarrolladores/as web y nos conectaremos a una base de datos remota para enviar y recuperar información.
 
-Por último, veremos algunos ejemplos de aplicaciones web sencillas que puedes utilizar como base para tus propios desarrollos.
+Por último, veremos algunos ejemplos de aplicaciones web sencillas que puedes utilizar como base para tus propios desarrollos. Esta será una práctica habitual a lo largo de todo este curso de programación: siempre ofreceremos ejemplos de código real para comprender y aplicar la parte más "teórica".
 
 {:toc}
 

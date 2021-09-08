@@ -22,16 +22,20 @@ El código PHP se escribe incrustado dentro de un documento de texto mediante es
 <?php .... ?>
 ```
 
-La sintaxis clásica está obsoleta desde PHP 7:
+La siguiente sintaxis está obsoleta desde PHP7. Si la encuentras en alguna web, huye de allí lo más rápido que puedas:
 
 ```html
 <script language= "php"> ... </script>
 ```
-Este archivo debe tener extensión .php.
+**Este archivo debe tener extensión .php, *nunca .html***
 
-El servidor ejecuta el código PHP que encuentre dentro del archivo, mientras que el código HTML es enviado al cliente sin modificar.
+Cuando el servidor web encuentre un archivo con extensión .html, lo enviará al cliente sin mirar ni siquiera lo que hay en su interior.
+
+En cambio, cuando el servidor web encuentre un archivo con extensión .php, lo abrirá y buscará las etiquetas <?php ... ?>, y ejecutará el código que haya dentro antes de enviar el resultado al cliente. El resto del archivo, es decir, lo que esté fuera de las etiquetas de PHP, se enviará al cliente sin modificar.
 
 ### 2.3.2. Comentarios
+
+Los comentarios de PHP se pueden escribir de varias formas:
 
 ```php
 // Comentario de una línea
@@ -41,26 +45,30 @@ El servidor ejecuta el código PHP que encuentre dentro del archivo, mientras qu
 
 ### 2.3.3. Operadores
 
-* Operadores: son iguales que los de C/C++:
-* Asignación: 	$a = 3;
+Los operadores en PHP son iguales que los de Java, que, a su vez, los heredó de C/C++:
+
+* Asignación: $a = 3;
 * Comparación:  ==, <=, >=, !=, <=>, etc.
 * Operadores aritméticos: +, -, *, /, %...
-* Operadores lógicos: &&, ||, !
+* Operadores lógicos: &&, \|\|, !
 
 ### 2.3.4. Variables
 
 Las variables de una función/clase/método PHP son siempre **locales**, es decir, sólo están disponibles en esa función/clase/método, salvo que se indique otra cosa.
 
-Si se definen variables fuera de una función, serán globales a todo el fichero actual, pero no pueden usarse en el código ubicado en otros ficheros.
+Si se definen variables fuera de una función, serán **globales** a todo el fichero actual, pero no pueden usarse en el código ubicado en otros ficheros. Existen maneras de lograr que una variable sea global a todo el código, pero, vamos... ¿en serio quieres hacer eso?
+
+(Nota anticipatoria: hay ciertas situaciones en las que una aplicación web *necesita* variables globales, pero ya lo veremos en su momento. Por ahora, solo recuerda que usar variables globales es una pésima práctica de programación).
 
 El **identificador** de variable siempre debe empezar por $. Esta es una peculiaridad de PHP que al principio descoloca un poco.
 
-No es necesario declararlas: al inicializarlas queda especificado el tipo. A partir de PHP 7 pueden indicarse los tipos predefinidos (int, float, string...)
+En PHP, no es necesario declarar las variables: al inicializarlas queda especificado el tipo. A partir de PHP7 pueden indicarse los tipos predefinidos (int, float, string...), pero solo es algo optativo.
+
 Ejemplos:
 
 ```php
-$a = 4;                  // Variable entera (PHP 5)
-int $a = 4;              // Variable entera (PHP 7+)
+$a = 4;                  // Variable entera (PHP5+)
+int $a = 4;              // Variable entera (PHP7+)
 $media = 52.75;          // Variable real
 $texto = "Hoy es lunes"; // Variable string
 ```
@@ -70,6 +78,14 @@ Cualquier variable puede **cambiarse de tipo** con la función **setType()**:
 ```php
 $a = "10";                 // a es una cadena
 setType($a, "integer");    // a se convierte a entero
+```
+
+El tipado de PHP es débil, así que puedes encontrarte expresiones donde se mezclan tipos. PHP hará las conversiones que le parezca oportunas, con resultados a veces imprevisibles, por lo que no es buena idea recurrir a estas estratagemas a menos que sepas muy bien lo que estás haciendo y el resultado que obtendrás. Por ejemplo:
+
+```php
+$a = 3;                // a es un integer
+$b = "Hoy es lunes";   // b es un string
+$c = $a + $b;          // ¡Esto funciona, pero ¿a que no predices bien el resultado?
 ```
 
 Los **tipos de datos** predefinidos en PHP son:
@@ -100,7 +116,11 @@ $a["POR"] = "Portugal";
 
 ### 2.3.6. Estructuras de control
 
+Vamos a hacer un repaso muy rápido por las estructuras de control de PHP. Si ya conoces otros lenguajes como Java, todas te resultarán familiares.
+
 #### Condicionales
+
+El condicional doble tiene la sintaxis habitual:
 
 ```php
 if (condición)
@@ -113,7 +133,11 @@ acciones-2;
 }
 ```
 
+Por supuesto, la parte del ```else``` puede eliminarse si no la necesitas, y obtendrías un condicional simple.
+
 #### Bucle while
+
+El bucle de *tipo while* tiene este aspecto:
 
 ```php
 while (condición)
@@ -123,6 +147,8 @@ acciones;
 ```
 
 #### Bucle repeat
+
+El bucle de *tipo repeat*, es decir, con la condición al final, tiene esta sintaxis:
 
 ```php
 do
@@ -156,6 +182,8 @@ El bucle foreach se repite una vez para cada valor guardado en el array. Ese val
 
 
 ### 2.3.7. Funciones y procedimientos
+
+XXX
 
 Los subprogramas (funciones y procedimientos) se escriben en PHP con la misma palabra: function.
 

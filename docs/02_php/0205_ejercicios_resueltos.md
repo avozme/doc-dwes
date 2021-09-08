@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 2.5 Ejercicios resueltos
+title: 2.5 Mis primeras aplicaciones web
 permalink: /php/ejercicios-resueltos
 nav_order: 5
 has_children: false
@@ -9,7 +9,7 @@ grand_parent: Desarrollo Web en Entorno Servidor
 ---
 
 
-## 2.5. Ejercicios resueltos de PHP
+## 2.5. Mis primeras aplicaciones web
 {: .no_toc }
 
 - TOC
@@ -17,7 +17,7 @@ grand_parent: Desarrollo Web en Entorno Servidor
 
 En esta sección vamos a mostrar algunos ejemplos sencillos de aplicaciones web muy, muy básicas programadas con PHP. La última de ellas incluye un acceso a una base de datos.
 
-Mira con detenimiento el código y asegúrate de entenderlo. Para empezar a programar con PHP, no hay nada mejor que echar un vistazo a algunos programas fáciles que luego puedas utilizar como plantilla para los tuyos.
+Mira con detenimiento el código y asegúrate de entenderlo. Para empezar a programar con PHP, no hay nada mejor que echar un vistazo a algunos programas fáciles que luego puedas utilizar como plantilla para los tuyos. Eso sí, es conveniente que antes hayas leído y comprendido el resto de apartados de este capítulo.
 
 ### 2.5.1. Tabla de multiplicar
 
