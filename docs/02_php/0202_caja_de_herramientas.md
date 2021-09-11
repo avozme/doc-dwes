@@ -24,6 +24,8 @@ En esta sección vamos a hacer un repaso de las herramientas fundamentales, las 
 
 ### 2.2.1. HTML
 
+![Logo de HTML5](/assets/images/02-logo-html.png)
+
 **DHTML** (Dynamic HTML) no es un lenguaje como tal, sino que, como probablemente sabes ya, es la conjunción de tres lenguajes:
 
 * HTML
@@ -64,6 +66,8 @@ Después de esta accidentada historia, nos encontramos que, en la situación act
 
 ### 2.2.3. CSS
 
+![Logo de CSS3](/assets/images/02-logo-css.jpg)
+
 **CSS** significa ***"Cascade Style Sheet"*** (Hojas de estilo en cascada).
 
 CSS, como sin duda ya sabes, es un lenguaje para la definición de los formatos utilizados en una página web. Sólo permite definir el formato (es decir, el aspecto: colores, tipografías, disposición de los elementos...) de la página, no su contenido.
@@ -79,6 +83,8 @@ Tampoco es necesario que te conviertas en un experto/a en CSS de la noche a la m
 
 ### 2.2.4. Javascript
 
+![Logo de Javascript](/assets/images/02-logo-js.jpg)
+
 JavaScript es un lenguaje interpretado que puede ser incrustado dentro del código HTML de una página web.
 
 El código JavaScript puede **interactuar y modificar cualquier parte del documento HTML**, por lo que dota a las páginas web de **dinamismo e interactividad**.
@@ -91,7 +97,11 @@ Este texto tampoco es un manual de Javascript. Nuevamente, si no sabes nada de J
 
 Porque déjame que te cuente un secreto: no se puede programar una aplicación web solo con PHP. Cualquier aplicación web lleva parte de su código en el servidor (PHP u otro lenguaje de servidor) y parte en el cliente (ya sabes: HTML, CSS y Javascript), si bien es cierto que muchos programadores se especializan más en una parte que en la otra. Pero *debes conocer ambas caras de la moneda para poder participar con éxito en el desarrollo de una aplicación web completa*.
 
+Por último, ten en cuenta que son muy pocos los desarrollos que, en la actualidad, se hacen directamente con Javascript clásico en el lado del cliente. Lo más habitual es utilizar librerías más o menos simples, o incluso completísimos frameworks, que ocultan el Javascript que existe debajo. Algunas de las librerías más populares son: **Prototype, jQuery, Angular, Vue.js o React**.
+
 ### 2.2.5. PHP
+
+![Logo de PHP](/assets/images/02-logo-php.jpg)
 
 **PHP** es un acrónimo recursivo. Significa ***“PHP Hypertext Preprocessor”***.
 
@@ -102,6 +112,10 @@ PHP es un lenguaje de programación de propósito general. De hecho, junto con l
 Pero, por circunstancias más debidas al azar que a otra cosa, se empezó a usar para desarrollo web al comienzo de la web 2.0, y hoy en día se utiliza casi exclusivamente para ese propósito. Que es el propósito que a nosotros nos interesa, claro.
 
 Cuando se usa en desarrollo web, PHP aparece embebido dentro de documentos HTML. Enseguida veremos cómo se hace eso.
+
+Igual que sucedía con Javascript, pocos proyectos nuevos se desarrollan con PHP clásico. Lo normal es usar un framework (o colección compleja de librerías) que ocultan en todo o en parte el funcionamiento de PHP, que sigue corriendo debajo. Por supuesto, cualquier desarrollador/a web debe conocer tanto PHP como el funcionamiento de los frameworks que corren sobre PHP.
+
+Nosotros nos centraremos primero en PHP clásico, y más adelante veremos los frameworks para PHP, centrándonos en uno de los más populares y potentes que existen en la actualidad: **Laravel**.
 
 #### Características de PHP
 
@@ -168,6 +182,8 @@ PHP también presenta algunos inconvenientes, por supuesto. No hay nada perfecto
 * Pésima relación señal/ruido en la web: ¡hay demasiados *malos* desarrolladores en PHP!
 
 ### 2.2.6. MariaDB
+
+![Logo de MariaDB](/assets/images/02-logo-mariadb.jpg)
 
 Otra de las herramientas básicas de nuestra caja de herramientas es el **gestor de bases de datos relacionales** (SGBD).
 

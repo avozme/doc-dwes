@@ -1,6 +1,6 @@
 ---
 layout: page
-title: 2.5 Mis primeras aplicaciones web
+title: 2.5 Ejercicios resueltos
 permalink: /php/ejercicios-resueltos
 nav_order: 5
 has_children: false
@@ -9,35 +9,102 @@ grand_parent: Desarrollo Web en Entorno Servidor
 ---
 
 
-## 2.5. Mis primeras aplicaciones web
+## 2.5. Ejercicios resueltos
 {: .no_toc }
 
 - TOC
 {:toc}
 
+Ya hemos visto muy superficialmente cómo es el lenguaje PHP y cómo se puede acceder desde él a una base de datos externa para almacenar o recuperar información de ella. Ahora nos queda poner eso en práctica antes de poder profundizar más en el desarrollo de aplicaciones web complejas.
+
 En esta sección vamos a mostrar algunos ejemplos sencillos de aplicaciones web muy, muy básicas programadas con PHP. La última de ellas incluye un acceso a una base de datos.
 
-Mira con detenimiento el código y asegúrate de entenderlo. Para empezar a programar con PHP, no hay nada mejor que echar un vistazo a algunos programas fáciles que luego puedas utilizar como plantilla para los tuyos. Eso sí, es conveniente que antes hayas leído y comprendido el resto de apartados de este capítulo.
+Mira con detenimiento el código y asegúrate de comprenderlo. Para empezar a programar con PHP, no hay nada mejor que echar un vistazo a algunos programas fáciles que luego puedas utilizar como plantilla para los tuyos. 
+
+Eso sí, es imprescindible que, después, dediques un tiempo a tratar de escribir tú mismo/a tus propios programas sencillos. Al final de esta sección te propondremos algunos, aunque tú puedes cambiarlos por otros que te apetezcan más. Lo importante es que recuerdes siempre algo que parece obvio pero que, a menudo, la gente olvida: *a programar solo puede aprenderse programando*.
 
 ### 2.5.1. Tabla de multiplicar
 
 Vamos a escribir un programa en PHP que pida un número al usuario y muestre su tabla de multiplicar hasta el 25 en una tabla HTML de 5 por 5 casillas.
 
-En la siguiente solución utilizaremos un solo archivo para implementar tanto el formulario HTML como la recogida de datos del formulario más el cálculo de la tabla de multiplicar. Observa como se usa la función isset() para averiguar si estamos enviando los datos del formulario o si, por el contrario, acabamos de lanzar la aplicación y tenemos que mostrar ese formulario al usuario.
+El usuario escribirá el número en un formulario HTML.
 
-```html
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+#### Solución 1: con dos archivos fuente
+
+Esta primera solución la vamos a plantear con dos archivos:
+
+* ***index.php***: contendrá el formulario en el que vamos a pedir al usuario que escriba un número. En el action del formulario, pondremos el nombre del segundo archivo para enviarle el número.
+* ***tabla.php***: recibirá el número escrito en el formulario y calculará la tabla de multiplicar, escribiendo la salida en formato HTML.
+
+**ARCHIVO *index.php***
+
+```php
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title></title>
+    <title>Tabla de multiplicar - Versión 1</title>
+  </head>
+  <body>
+    <form action='tabla.php' method='GET'>
+	   Introduce un número:
+	   <input type='text' name='numero'>
+	   <br>
+	   <input type='submit'>
+    </form>
+  </body>
+</html>
+```
+
+**ARCHIVO *tabla.php***
+
+```php
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tabla de multiplicar - Versión 1</title>
+  </head>
+  <body>
+
+	<?php
+		// Recuperamos el número escrito en el formulario.
+		$n = $_REQUEST["numero"];
+		// Mostramos la tabla de multiplicar en una tabla HTML
+		echo "<table border='1'>";
+		echo "<tr><td colspan='5'>Tabla de multiplicar del número $n</td></tr>";
+		echo "<tr>";
+		for ($i = 1; $i <= 25; $i++) {
+			if (($i-1) % 5 == 0) echo "</tr><tr>";
+			echo "<td>$n x $i = " . $n * $i . "</td>";
+		}
+		echo "</tr>";
+		echo "</table>";
+	?>
+
+  </body>
+</html>
+```
+
+#### Solución 2: con un solo archivo
+
+Vamos a mejorar la solución anterior **uniendo todo el código en un solo archivo**, que podemos llamar *index.php*.
+
+Eso signfica que, ahora, en el *action* del formulario, escribiremos *index.php*, de modo que, al pulsar submit, el número se enviará al mismo programa. Es decir, *index.php* se ejecutará dos veces: una para mostrar el formulario y otra para calcular la tabla de multiplicar.
+
+Observa como se usa la ***función isset()*** para averiguar en cuál de esas dos ejecuciones estamos. Esta función recibe como parámetro una variable y nos dice si esa variable existe o, por el contrario, si no ha sido declarada ni inicializada aún.
+
+```php
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tabla de multiplicar - Versión 2</title>
   </head>
   <body>
 
 	<?php
 	if (!isset($_REQUEST["numero"])) {
-		// Si no tenemos un número pasado por GET, mostramos el formulario
-		echo "<form action='03-tabla2.php' method='GET'>
+		// Si no tenemos un número pasado por GET, significa que estamos en la primera ejecución,
+		// así que mostramos el formulario
+		echo "<form action='index.php' method='GET'>
 		Introduce un número:
 		<input type='text' name='numero'>
 		<br>
@@ -45,7 +112,7 @@ En la siguiente solución utilizaremos un solo archivo para implementar tanto el
 		</form>";
 	}
 	else {
-		// Ya tenemos número pasado por GET. Vamos a procesarlo.
+		// Ya tenemos número pasado por GET. Vamos a calcular su tabla de multiplicar.
 		$n = $_REQUEST["numero"];
 		echo "<table border='1'>";
 		echo "<tr><td colspan='5'>Tabla de multiplicar del número $n</td></tr>";
@@ -65,38 +132,36 @@ En la siguiente solución utilizaremos un solo archivo para implementar tanto el
 
 ### 2.5.2. Juego del número secreto
 
-Vamos a escribir una aplicación web en PHP para jugar al número secreto. 
+Vamos a escribir una aplicación web en PHP para jugar al *juego del número secreto*. 
 
-El juego consiste en lo siguiente: el ordenador "pensará" un número al azar entre 1 y 100 y el jugador tendrá que averiguarlo. Cada vez que el jugador haga un intento, la aplicación le indicará si el número secreto es mayor o menor que el número introducido. 
+Es un juego clásico que consiste en lo siguiente: el ordenador elegirá un número al azar entre 1 y 100 y el jugador tendrá que averiguarlo. Cada vez que el jugador haga un intento, la aplicación le indicará si el número secreto es mayor o menor que el número introducido. 
 
 Cuando el jugador por fin acierte, la aplicación le dará la enhorabuena y le indicará cuántos intentos ha necesitado para averiguar el número secreto.
 
-Vamos a ver dos soluciones para este programa. En la primera, utilizaremos variables de la URL para mantener vivos los datos del programa. En la segunda, utilizaremos variables de sesión para lograr el mismo efecto de forma mucho más limpia.
+Vamos a ver dos soluciones para este programa. En la primera, utilizaremos las variables de la URL para mantener vivos los datos del programa. En la segunda, utilizaremos **variables de sesión** para lograr el mismo efecto de forma mucho más limpia.
 
 #### Juego del número secreto: solución sin variables de sesión
 
-Este juego necesita que algunas variables, como el número secreto (variable $aleatorio) o el número de intentos (variable $intentos) persistan entre una solicitud al servidor y la siguiente.
+Este juego necesita que algunas variables, como el número secreto (variable *$aleatorio*) o el número de intentos (variable *$intentos*) persistan entre una solicitud al servidor y la siguiente.
 
-Para lograrlo, haremos que el script se envíe a sí mismo el valor de esas variables. Es una solución poco elegante que se dejó de usar hace años, pero que ilustra perfectamente cuál es el primer problema al que nos enfrentamos al desarrollar aplicaciones web: que se ejecutan en el servidor "a tirones", un trozo cada vez, y para el servidor cada uno de esos trozos es un programa independiente, aunque el usuario tenga la sensación de que forman una aplicación coherente. 
+Para lograrlo, haremos que el script se envíe a sí mismo el valor de esas variables en la última línea. Supondremos que el archivo se llama *index.php*.
 
-```html
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+Esta es **una solución muy poco elegante**, un estilo de programación de aplicaciones web que se dejó de usar hace años, pero que ilustra perfectamente cuál es el primer problema al que nos enfrentamos al desarrollar aplicaciones web: *que se ejecutan en el servidor "a tirones", un trozo cada vez, y para el servidor cada uno de esos trozos es un programa independiente, aunque el usuario tenga la sensación de que forman una aplicación coherente*. 
+
+```php
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title></title>
+    <title>Juego del número secreto</title>
   </head>
   <body>
 
 	<?php
-		if (!isset($_REQUEST["numero"])) {
-			if (!isset($_REQUEST["aleatorio"])) {
-				$intentos = 0;
-				$aleatorio = rand(1,100);
-			} else {
-				$aleatorio = $_REQUEST["aleatorio"];
-				$intentos = $_REQUEST["intentos"];
-			}
+        // Primero, comprobamos su ya existe la variable "numero" en la URL.
+        // Si no existe, significa que el usuario tiene que escribir un número: tenemos que mostrarle el formulario.
+        // Si ya existe, significa que el usuario ha escrito algún número y tenemos que comprobar si coincide con el aleatorio.
+        if (!isset($_REQUEST['numero']])) {
+            // La variable "numero" NO existe. Vamos a pedirle que lo escriba en un formulario
 			echo "<form action='05-numero-secreto.php' method='get'>
 				Adivina mi número:
 				<input type='text' name='numero'><br>
@@ -105,10 +170,21 @@ Para lograrlo, haremos que el script se envíe a sí mismo el valor de esas vari
 				<br>				
 				<input type='submit'>
 				</form>";
+            // ¿Y el número aleatorio? Si aún no existe, significa que es LA PRIMERA ejecución y aún tenemos que elegirlo.
+            // En cambio, si ya existe, tendremos que recuperarlo para seguir usando el mismo aleatorio y no uno nuevo cada vez.
+            if (!isset($_REQUEST['aleatorio'])) {
+				$intentos = 0;
+				$aleatorio = rand(1,100);
+			} else {
+				$aleatorio = $_REQUEST['aleatorio'];
+				$intentos = $_REQUEST['intentos'];
+			}
 		} else {
-			$n = $_REQUEST["numero"];
-			$aleatorio = $_REQUEST["aleatorio"];
-			$intentos = $_REQUEST["intentos"];
+            // La variable "numero" existe. Eso indica que el usuario escribió un número en el formulario.
+            // Vamos a recuperar ese número y a compararlo con el aleatorio.
+			$n = $_REQUEST['numero'];
+			$aleatorio = $_REQUEST['aleatorio'];
+			$intentos = $_REQUEST['intentos'];
 			$intentos++;
 			echo "Tu número es: $n<br>";
 			if ($n > $aleatorio) {
@@ -121,7 +197,9 @@ Para lograrlo, haremos que el script se envíe a sí mismo el valor de esas vari
 				echo "<p>ENHORABUENA, HAS ACERTADO</p>";
 				echo "Has necesitado $intentos intentos";
 			}
-			echo "<br><a href='05-numero-secreto.php?aleatorio=$aleatorio&intentos=$intentos'>Sigue jugando...</a>";
+            // Volvemos a llamar a este mismo programa, pasándole como variables de URL el aleatorio
+            // y el número de intentos, para seguir jugando con el mismo número secreto.
+			echo "<br><a href='index.php?aleatorio=$aleatorio&intentos=$intentos'>Sigue jugando...</a>";
 		}
 
 	?>
@@ -133,58 +211,61 @@ En esta solución, se ha sustituido la chapuza de las variables pasadas por URL 
 
 Aunque las veremos con más detalle en el siguiente tema, te puedo adelantar que las variables de sesión permiten almacenar datos persistentes entre sucesivas ejecuciones de scripts desde el mismo cliente.
 
-Es decir, el servidor **recuerda** el valor de determinadas variables para que ese programa ejecutado a tirones se comporte como un todo unificado de cara al usuario.
+Es decir, *el servidor **recuerda** el valor de determinadas variables* para que ese programa ejecutado a tirones se comporte como un todo unificado de cara al usuario.
 
-Observa detenidamente cómo se usan las variables de sesión con PHP mediante el array global $_SESSION.
+Observa detenidamente cómo se usan las variables de sesión con PHP mediante el array global $_SESSION para obtener una solución más elegante que la anterior.
 
-```html
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+```php
+<!DOCTYPE html>
+<html>
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title></title>
+    <title>Juego del número secreto</title>
   </head>
   <body>
 
 	<?php
-		session_start();
+		session_start();  // Para poder usar variables de sesión
 
-		if (!isset($_REQUEST["numero"])) {
-			if (!isset($_REQUEST["aleatorio"])) {
-				$_SESSION["intentos"] = 0;
-				$_SESSION["aleatorio"] = rand(1,100);
-			} else {
-				$aleatorio = $_SESSION["aleatorio"];
-				$intentos = $_SESSION["intentos"];
-			}
+		if (!isset($_REQUEST['numero'])) {
+			// NO existe la variable número: vamos a mostrar el formulario
 			echo "<form action='05-numero-secreto-v2.php' method='get'>
 				Adivina mi número:
 				<input type='text' name='numero'><br>
 				<br>				
 				<input type='submit'>
 				</form>";
+			// ¿Será la primera ejecución? Vamos a ver si ya existe la variable "aleatorio".
+			// Si no existe, la creamos, pero esta vez como variable de sesión, no de URL.
+			// Esa variable quedará almacenada en el servidor y seguirá existiendo hasta que
+			// cerremos la sesión.
+			if (!isset($_SESSION['aleatorio'])) {
+				$_SESSION['aleatorio'] = rand(1,100);
+				$_SESSION['intentos'] = 0;
+			}
 		} else {
-			$n = $_REQUEST["numero"];
-			$aleatorio = $_SESSION["aleatorio"];
-			$intentos = $_SESSION["intentos"];
-			$intentos++;
-			echo "Tu número es: $n<br>";
+			// Existe la variable "numero": significa que el usuario rellenó el formulario y pulsó "submit".
+			// Vamos a compararla con el aleatorio.
+			// Guardaremos "numero" y "aleatorio" en variable locales
+			// para manejarlas con más comodidad, pero no es imprescindible hacerlo.
+			$n = $_REQUEST['numero'];
+			$aleatorio = $_SESSION['aleatorio'];
+			$_SESSION['intentos']++;
+
+            echo "Tu número es: $n<br>";
 			if ($n > $aleatorio) {
 				echo "Mi número es MENOR";
-				echo "<br><a href='05-numero-secreto-v2.php'>Sigue jugando...</a>";
+				echo "<br><a href='index.php'>Sigue jugando...</a>";
 			}
 			else if ($n < $aleatorio) {
 				echo "Mi número es MAYOR";
-				echo "<br><a href='05-numero-secreto-v2.php'>Sigue jugando...</a>";
+				echo "<br><a href='index.php'>Sigue jugando...</a>";
 			}
 			else {
 				echo "<p>ENHORABUENA, HAS ACERTADO</p>";
-				echo "Has necesitado $intentos intentos";
-				$intentos = 0;
-				unset($_SESSION["aleatorio"]);
-				echo "<br><a href='05-numero-secreto-v2.php'>Jugar de nuevo</a>";
+				echo "Has necesitado ".$_SESSION['intentos']." intentos";
+				unset($_SESSION['aleatorio']);  // Esto destruye la variable de sesión
+				echo "<br><a href='index.php'>Jugar de nuevo</a>";
 			}
-			$_SESSION["intentos"] = $intentos;
 		}
 
 	?>
@@ -196,18 +277,20 @@ Observa detenidamente cómo se usan las variables de sesión con PHP mediante el
 
 Este es un ejemplo muy importante por dos razones:
 
-1. Porque es nuestra primera aplicación web "de verdad", con una base de datos detrás
-2. Porque volveremos sobre ella varias veces para hacerle sucesivas mejoras, hasta dejarla presentable.
+1. Porque es nuestra primera aplicación web "de verdad", con una base de datos detrás.
+2. Porque volveremos sobre ella varias veces a lo largo de las siguientes secciones para hacerle sucesivas mejoras, hasta dejarla presentable.
 
-Se trata de escribir una aplicación web en PHP que gestione (de forma muy simplificada) una biblioteca.
+El código fuente es más largo, pero fácil de seguir. No te desesperes ni intentes leerlo en dos minutos para marcharte a hacer otra cosa. Tómatelo con calma, como si leer el código fuente fuera como leer un manual de instrucciones de un electrodoméstico nuevo que aún no tienes ni idea de cómo se usa.
 
-La aplicación trabajará con una base de datos compuesta de solo dos tablas (ya te dije que estaría muy simplificada): libros y autores.
+**Se trata de escribir una aplicación web en PHP que gestione, de forma muy simplificada, una biblioteca**.
 
-Esta aplicación nos permitirá, en principio, ver la lista de todos los libros disponibles, así como dar de alta libros nuevos y modificar o borrar los libros existentes. 
+La aplicación trabajará con una base de datos compuesta de solo dos tablas (ya te dije que estaría muy simplificada): *libros* y *autores*.
 
-De momento no trabajaremos con los autores, pero sería fácil extenderla para que también nos dejase hacer altas, bajas y modificaciones de los autores.
+Esta aplicación nos permitirá, en principio, ver la lista de todos los libros disponibles, así como dar de alta libros nuevos y modificar o borrar los libros existentes. De momento no trabajaremos con los autores, pero sería fácil extenderla para que también nos dejase hacer altas, bajas y modificaciones de los autores.
 
-Lee este código con especial atención (aunque sea un poco largo), y observa como utilizamos una variable muy especial llamada $action para saber qué tiene que hacer la aplicación en cada momento. Esa variable es el germen de la arquitectura modelo-vista-controlador con la que trabajaremos una y otra vez más adelante.
+Al leer el código, observa cómo utilizamos una variable muy especial llamada ***$action*** para saber qué tiene que hacer la aplicación en cada momento. Esa variable es el germen de la *arquitectura modelo-vista-controlador* con la que trabajaremos una y otra vez más adelante.
+
+XXX
 
 ```php
 <!-- BIBLIOTECA VERSIÓN 1
@@ -218,28 +301,29 @@ Lee este código con especial atención (aunque sea un poco largo), y observa co
        - Sin reutilización de código
 -->
 
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html lang="es" xmlns="http://www.w3.org/1999/xhtml">
-
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8">
 </head>
 
 <body>
     <?php
 
-    $db = new mysqli("localhost:3386", "root", "bitnami", "biblioteca");
+    $db = new mysqli("servidor-de-base-de-datos", "usuario", "password", "nombre-base-de-datos");
 
+    // Miramos el valor de la variable "action", si existe. Si no, le asignamos una acción por defecto
     if (isset($_REQUEST["action"])) {
         $action = $_REQUEST["action"];
     } else {
         $action = "mostrarListaLibros";  // Acción por defecto
     }
 
+    // CONTROL DE FLUJO PRINCIPAL
+    // El programa saltará a la sección del switch indicada por la variable "action"
     switch ($action) {
 
-            // --------------------------------- MOSTRAR LISTA DE LIBROS ----------------------------------------
+        // --------------------------------- MOSTRAR LISTA DE LIBROS ----------------------------------------
 
         case "mostrarListaLibros":
             echo "<h1>Biblioteca</h1>";
